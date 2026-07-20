@@ -3,41 +3,358 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Don Ventas · Portal</title>
-<link rel="stylesheet" href="dv-shared/blocks.css">
-<link rel="stylesheet" href="app/portal.css">
+<title>Don Ventas — Tu marca es tu ventaja</title>
+<meta name="description" content="Branding estratégico para PyMEs de México. Construimos el sistema operativo de marca que deja tu negocio listo para vender.">
+<link rel="canonical" href="https://donventas.mx/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://donventas.mx/">
+<meta property="og:site_name" content="Don Ventas">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Don Ventas — Tu marca es tu ventaja">
+<meta property="og:description" content="Branding estratégico para PyMEs de México. Construimos el sistema operativo de marca que deja tu negocio listo para vender.">
+<meta property="og:image" content="https://donventas.mx/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Don Ventas — branding que vende">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Don Ventas — Tu marca es tu ventaja">
+<meta name="twitter:description" content="Branding estratégico para PyMEs de México. Construimos el sistema operativo de marca que deja tu negocio listo para vender.">
+<meta name="twitter:image" content="https://donventas.mx/og-image.png">
+<meta name="theme-color" content="#0E1117">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="icon" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["ProfessionalService", "Organization"],
+      "@id": "https://donventas.mx/#org",
+      "name": "Don Ventas",
+      "alternateName": "Don Ventas — Branding que vende",
+      "url": "https://donventas.mx/",
+      "logo": "https://donventas.mx/favicon-192.png",
+      "image": "https://donventas.mx/og-image.png",
+      "description": "Agencia de branding estratégico para PyMEs y emprendedores de México. Construimos el sistema operativo de marca que deja tu negocio listo para vender.",
+      "slogan": "Tu marca es tu ventaja.",
+      "email": "arturo.villagomez@donventas.mx",
+      "founder": {"@type": "Person", "name": "Arturo Villagómez"},
+      "areaServed": [
+        {"@type": "City", "name": "Ciudad de México"},
+        {"@type": "City", "name": "Mérida"}
+      ],
+      "knowsAbout": ["Branding", "Identidad de marca", "Estrategia de marca", "Diseño de marca", "Marketing para PyMEs", "Posicionamiento de marca"],
+      "priceRange": "$$"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://donventas.mx/#website",
+      "url": "https://donventas.mx/",
+      "name": "Don Ventas",
+      "inLanguage": "es-MX",
+      "publisher": {"@id": "https://donventas.mx/#org"}
+    },
+    {
+      "@type": "Service",
+      "name": "Sistema operativo de marca",
+      "serviceType": "Branding estratégico",
+      "provider": {"@id": "https://donventas.mx/#org"},
+      "areaServed": ["Ciudad de México", "Mérida", "México"],
+      "audience": {"@type": "Audience", "audienceType": "PyMEs y emprendedores"},
+      "description": "Branding integral en 3 capas: fundación (investigación de mercado), sistema de identidad de marca completo y retainer de evolución. Metodología Ruta Don Ventas (F0–F4)."
+    }
+  ]
+}
+</script>
 </head>
-<body>
+<body data-screen-label="Landing — Ruta A (Terminal de marca)">
 
-<!-- AUTH / ONBOARDING (lo llena DVAuth) -->
-<div id="auth"></div>
-
-<!-- APP SHELL -->
-<div id="app">
-  <div class="top" id="topBar"></div>
-  <aside class="side" id="side"></aside>
-  <main id="main"><div id="viewHost"></div></main>
+<!-- NAV -->
+<div class="nav">
+  <div class="in">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 100 100" fill="none"><path d="M22 16 L22 84 L58 50 Z" stroke="#F2F5F9" stroke-width="9" stroke-linejoin="round"></path><path d="M54 20 L84 50 L54 80" stroke="#3B74F2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <b>DON<br><i>VENTAS</i><sup class="tm">™</sup></b>
+    </a>
+    <nav class="links">
+      <a href="#sistema">Sistema</a>
+      <a href="#prueba">Prueba</a>
+      <a href="#precios">Precios</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn" href="https://app.donventas.mx">Entrar <span class="ar">↗</span></a>
+      <a class="btn solid" href="#contacto">Diagnóstico gratis</a>
+    </div>
+  </div>
 </div>
 
-<!-- modales + toast -->
-<div id="modalHost"></div>
-<div class="toast" id="toast"></div>
-<div class="demoBadge" id="modeBadge">Portal MVP · F2 · datos demo</div>
-<script>document.addEventListener('DOMContentLoaded',function(){try{var b=document.getElementById('modeBadge');if(b&&window.DVSupa&&DVSupa.LIVE())b.textContent='Portal MVP · F2 · EN VIVO';}catch(e){}});</script>
+<a id="top"></a>
 
-<template id="__bundler_thumbnail">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0E1117"/><g transform="translate(18,22)"><rect x="0" y="0" width="20" height="56" rx="3" fill="#161B23" stroke="#3B74F2" stroke-width="1.6"/><path d="M4 8 L4 20 L10 14 Z" fill="#F2F5F9"/><path d="M9 9 L14 14 L9 19" stroke="#3B74F2" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="28" y="0" width="40" height="14" rx="3" fill="#3B74F2"/><rect x="28" y="20" width="40" height="13" rx="3" fill="none" stroke="#EEF1F6" stroke-width="1.6" opacity=".7"/><rect x="28" y="39" width="40" height="13" rx="3" fill="none" stroke="#EEF1F6" stroke-width="1.6" opacity=".45"/></g></svg>
-</template>
+<!-- HERO -->
+<header class="hero">
+  <div class="in wrap">
+    <div>
+      <div class="eyebrow">Branding estratégico · PyMEs de México</div>
+      <h1>Tu marca<br>es tu <span class="bl">ventaja.</span></h1>
+      <p class="sub">O es la razón por la que sigues perdiendo frente a quien se ve mejor que tú. Construimos el sistema operativo de marca que deja tu negocio listo para vender.</p>
+      <div class="cta">
+        <a class="btn solid lg" href="diagnostico.html">Hacer diagnóstico gratis <span class="ar">→</span></a>
+        <a class="btn lg" href="#prueba">Ver la prueba</a>
+      </div>
+    </div>
+    <div class="pass">
+      <div class="ph">
+        <span class="lbl">Pase de marca</span>
+        <svg class="mk" viewBox="0 0 100 100" fill="none"><path d="M22 16 L22 84 L58 50 Z" stroke="#F2F5F9" stroke-width="9" stroke-linejoin="round"></path><path d="M54 20 L84 50 L54 80" stroke="#3B74F2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <div class="route">
+        <div class="pt"><div class="k">Origen</div><div class="v">Diagnóstico</div></div>
+        <div class="arw">→</div>
+        <div class="pt"><div class="k">Escala</div><div class="v">Sistema</div></div>
+        <div class="arw">→</div>
+        <div class="pt"><div class="k">Destino</div><div class="v">Operación</div></div>
+      </div>
+      <div class="strip">
+        <div class="cell"><div class="k">Capas</div><div class="v">3</div></div>
+        <div class="cell"><div class="k">Bloques</div><div class="v">18</div></div>
+        <div class="cell"><div class="k">Diagnóstico</div><div class="v">$0</div></div>
+        <div class="cell"><div class="k">Pilotos</div><div class="v">4</div></div>
+      </div>
+      <div class="foot">
+        <div class="bars"></div>
+        <a class="btn solid" href="#contacto">Aborda tu marca <span class="ar">→</span></a>
+      </div>
+    </div>
+  </div>
+</header>
 
-<script src="data/seed.js"></script>
-<script src="app/config.js"></script>
-<script src="app/supabase.js"></script>
-<script src="app/util.js"></script>
-<script src="app/store.js"></script>
-<script src="app/auth.js"></script>
-<script src="app/client.js"></script>
-<script src="app/free.js"></script>
-<script src="app/staff.js"></script>
-<script src="app/portal.js"></script>
+<!-- 01 · PROBLEMA -->
+<section class="band" id="problema">
+  <div class="wrap">
+    <div class="stamp reveal"><span class="ix">01</span>El sistema faltante</div>
+    <p class="slede">La mayoría de las PyMEs no tienen un problema de calidad. Tienen un problema de <b>claridad</b>: nadie entiende, en tres segundos, por qué debería pagarte a ti. Un logo no lo resuelve. Un <b>sistema</b> sí.</p>
+    <div class="prob reveal">
+      <div class="col bad">
+        <div class="ch">Sin sistema de marca</div>
+        <ul>
+          <li><span class="m">✕</span><span>Compites por precio porque nada te diferencia.</span></li>
+          <li><span class="m">✕</span><span>Explicas mucho y cierras poco.</span></li>
+          <li><span class="m">✕</span><span>Tu material de ventas improvisa cada vez.</span></li>
+          <li><span class="m">✕</span><span>Inviertes en pauta que no convierte.</span></li>
+        </ul>
+      </div>
+      <div class="col good">
+        <div class="ch">Con Don Ventas</div>
+        <ul>
+          <li><span class="m">→</span><span>Una propuesta de valor que se entiende y se recuerda.</span></li>
+          <li><span class="m">→</span><span>Mensajes que cierran, no que solo informan.</span></li>
+          <li><span class="m">→</span><span>Un kit de ventas listo para usar.</span></li>
+          <li><span class="m">→</span><span>Pauta alineada a la marca — y al cierre.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- 02 · SISTEMA (3 capas) -->
+<section class="band" id="sistema">
+  <div class="wrap">
+    <div class="stamp reveal"><span class="ix">02</span>El sistema · 3 capas</div>
+    <p class="slede">No entregamos un manual: un <b>sistema operativo de marca</b> en tres capas que deja el negocio funcionando y vendiendo. Se contrata una capa o encadenadas — y validas cada fase antes de avanzar.</p>
+    <div class="route-wrap reveal">
+      <div class="capas">
+        <div class="capa">
+          <span class="node"></span>
+          <div class="cn">Capa 1</div>
+          <h3>Fundación</h3>
+          <p>Estrategia, arquetipo y voz. El porqué te eligen a ti, decidido antes de tocar la estética.</p>
+          <div class="pr">desde $12K</div>
+        </div>
+        <div class="capa lit">
+          <span class="node"></span>
+          <div class="cn">Capa 2 · núcleo</div>
+          <h3>Sistema de marca</h3>
+          <p>Logo, color, tipografía y todas las aplicaciones — en niveles Starter, Growth o Pro según la madurez de tu marca.</p>
+          <div class="pr">desde $18K</div>
+        </div>
+        <div class="capa">
+          <span class="node"></span>
+          <div class="cn">Capa 3</div>
+          <h3>Activación &amp; operación</h3>
+          <p>Web, contenido y generadores que dejan el negocio vendiendo. En el retainer no pagas por construcción: pagas porque tu marca <b>trabaja y genera valor</b> cada mes — lo ves medido en tu portal.</p>
+          <div class="pr">packs + retainer</div>
+        </div>
+      </div>
+      <div class="capnote">El diagnóstico es gratis y ancla la propuesta. El precio sigue a la capa × tu segmento.</div>
+    </div>
+
+    <div class="reveal" style="margin-top:64px">
+      <div class="eyebrow" style="margin-bottom:16px">Cómo trabajamos · Ruta Don Ventas</div>
+      <p class="slede" style="margin-top:0">Un proceso con <b>checkpoint antes de cada avance</b>: validas cada fase, nada se construye sin tu sí. Ves el progreso en <a href="https://app.donventas.mx" style="color:var(--accent)">tu portal</a> en vivo.</p>
+      <div class="proc">
+        <div class="st"><div class="no">01</div><h4>Diagnóstico</h4><p>30–60 min. Te entregamos 3 hallazgos accionables. Sin costo ni compromiso.</p><div class="wh">Esta semana</div></div>
+        <div class="st"><div class="no">02</div><h4>Fundación</h4><p>Estrategia, arquetipo y voz. Validas la dirección antes de tocar el diseño.</p><div class="wh">Semana 1–2</div></div>
+        <div class="st"><div class="no">03</div><h4>Sistema</h4><p>Construimos tu identidad bloque por bloque y la apruebas por partes.</p><div class="wh">Semana 2–6</div></div>
+        <div class="st"><div class="no">04</div><h4>Activación</h4><p>Web, contenido y gestión mensual. Crecemos juntos con un plan continuo.</p><div class="wh">Mes 2 en adelante</div></div>
+      </div>
+      <div class="procnote">Cada fase cierra con tu validación y queda registrada en tu portal en vivo; al terminar dejas una <b>reseña verificada</b>. El precio sigue al alcance, no al reloj.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- 03 · PRUEBA REAL -->
+<section class="band" id="prueba">
+  <div class="wrap">
+    <div class="stamp reveal"><span class="ix">03</span>Prueba real</div>
+    <p class="slede">No prometemos números que no podamos probar. Cuatro negocios ya confiaron su marca a Don Ventas como <b>casos piloto</b> — te mostramos trabajo, no promesas infladas.</p>
+    <div class="gal reveal">
+      <div class="shot"><img src="portafolio/snaps/04-sicaru.webp" alt="Sicarú — joyería"><div class="meta"><div class="k">Joyería · revenue-share</div><div class="n">Sicarú</div><div class="d">Sistema de 18 bloques + fotografía y empaque.</div></div></div>
+      <div class="shot"><img src="portafolio/snaps/01-tamanova.webp" alt="Tamanova — hospitalidad" style="object-position:left center"><div class="meta"><div class="k">Hospitalidad · Mérida</div><div class="n">Tamanova</div><div class="d">Kit de bienvenida, señalética y merch de equipo.</div></div></div>
+      <div class="shot"><img src="portafolio/snaps/01-pafi.webp" alt="Pafi — viajes"><div class="meta"><div class="k">Viajes · contenido</div><div class="n">Pafi</div><div class="d">Blog editorial, redes y sistema de marca.</div></div></div>
+      <div class="shot"><img src="portafolio/snaps/02-qf.webp" alt="QuickFinance — finanzas"><div class="meta"><div class="k">Finanzas · datos</div><div class="n">QuickFinance</div><div class="d">Sistema + generadores y portal de datos.</div></div></div>
+    </div>
+    <p class="galnote"><b>4 casos piloto activos · sistema de 18 bloques · diagnóstico $0.</b> Los resultados de venta los publicaremos cuando sean reales, no antes.</p>
+    <!-- Voces verificadas · feed publicado desde el portal (testimonios.json). Oculto hasta que haya reseñas reales. -->
+    <div class="voces-wrap reveal" id="voces" hidden>
+      <div class="voces-h"><span class="eyebrow">Voces verificadas</span><span class="voces-note">Publicadas con el consentimiento del cliente desde su portal Don Ventas.</span></div>
+      <div class="voces" id="vocesGrid"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- 04 · QUIÉN ESTÁ DETRÁS -->
+<section class="band" id="quien">
+  <div class="wrap">
+    <div class="stamp reveal"><span class="ix">04</span>Quién está detrás</div>
+    <div class="who reveal">
+      <div class="por">
+        <img class="por-img" src="fundador.jpg" alt="Arturo Villagómez, fundador de Don Ventas">
+        <span class="cap">Arturo Villagómez · fundador</span>
+      </div>
+      <div class="txt">
+        <svg class="eldon" viewBox="0 0 120 120" aria-hidden="true"><rect x="44" y="44" width="32" height="4.4" rx="2.2" fill="#F2F5F9"></rect><circle cx="53" cy="63" r="3.6" fill="#F2F5F9"></circle><circle cx="70" cy="63" r="9" fill="none" stroke="#3B74F2" stroke-width="3.4"></circle><path d="M79 67 Q83 77 78 84" fill="none" stroke="#3B74F2" stroke-width="2" stroke-linecap="round"></path></svg>
+        <p class="q">"Tu marca no es estética. Es la razón por la que alguien elige pagarte <b>a ti</b>."</p>
+        <div class="by">
+          <svg class="mk" viewBox="0 0 100 100" fill="none"><path d="M22 16 L22 84 L58 50 Z" stroke="#F2F5F9" stroke-width="9" stroke-linejoin="round"></path><path d="M54 20 L84 50 L54 80" stroke="#3B74F2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <div>
+            <div class="nm">Don Ventas</div>
+            <div class="rl">Branding estratégico · CDMX &amp; Mérida</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="galnote" style="margin-top:22px">Personas reales atendiendo tu negocio, no una plantilla. Riguroso en el método, cercano en el trato — así trabaja <b>El Don</b>, nuestro anfitrión de marca.</p>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- 05 · SPEC SHEET / PRECIOS -->
+<section class="band" id="precios">
+  <div class="wrap">
+    <div class="stamp reveal"><span class="ix">05</span>Ficha de precios</div>
+    <p class="slede">El precio sigue al <b>alcance y a la capa</b>, con tu segmento como multiplicador. Un sistema completo ya no se cobra como un logotipo con guía.</p>
+    <div class="spec reveal">
+      <div class="row head"><span>Capa / servicio</span><span>Rango · MXN</span><span>Qué incluye</span></div>
+      <div class="row"><div class="svc">F0 · Diagnóstico<small>lead magnet</small></div><div class="amt">Gratis</div><div class="lg">Análisis de marca + 3 hallazgos accionables. Sin él no aceptamos el proyecto.</div></div>
+      <div class="row"><div class="svc">Capa 1 · Fundación</div><div class="amt">$12K – $35K</div><div class="lg">Estrategia, arquetipo, voz y modelo de negocio.<br><a class="qcta" href="#contacto">Cotizar esta capa →</a></div></div>
+      <div class="row hot"><div class="svc">Capa 2 · Sistema<small>Starter / Growth / Pro</small></div><div class="amt">$18K – $120K</div><div class="lg">De ~6 bloques (Starter) al sistema completo de 18 + mascota y decks (Pro).<br><a class="qcta" href="#contacto">Cotizar esta capa →</a></div></div>
+      <div class="row"><div class="svc">Capa 3 · Activación</div><div class="amt">$15K – $180K</div><div class="lg">Packs de generadores · web / producto funcional · contenido.<br><a class="qcta" href="#contacto">Cotizar esta capa →</a></div></div>
+      <div class="row"><div class="svc">Capa 3 · Retainer</div><div class="amt">$8K – $50K / mes</div><div class="lg">Gestión, mejoras y contenido — con el <b>valor y el impacto</b> que produce tu marca, medidos en tu portal.</div></div>
+    </div>
+    <div class="nivwrap reveal">
+      <div class="eyebrow">Niveles de la Capa 2 · Sistema de marca</div>
+      <div class="niveles">
+        <div class="niv">
+          <h4>Starter</h4>
+          <div class="np">$18K – $30K</div>
+          <p>Núcleo esencial · ~6 bloques. Logo, color, tipografía y lo indispensable para arrancar con criterio.</p>
+        </div>
+        <div class="niv hot">
+          <h4>Growth <span class="badge">más pedido</span></h4>
+          <div class="np">$35K – $60K</div>
+          <p>~12 bloques + aplicaciones. El sistema utilizable de punta a punta.</p>
+        </div>
+        <div class="niv">
+          <h4>Pro</h4>
+          <div class="np">$70K – $120K</div>
+          <p>18 bloques + mascota + decks por audiencia. El sistema completo, como los pilotos.</p>
+        </div>
+      </div>
+    </div>
+    <div class="specnote">Multiplicador por segmento: escala del negocio × urgencia. Revenue-share disponible para alto ticket.</div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final" id="contacto">
+  <svg class="eldon" viewBox="0 0 120 120" aria-hidden="true"><rect x="44" y="44" width="32" height="4.4" rx="2.2" fill="#F2F5F9"></rect><circle cx="53" cy="63" r="3.6" fill="#F2F5F9"></circle><circle cx="70" cy="63" r="9" fill="none" stroke="#3B74F2" stroke-width="3.4"></circle><path d="M79 67 Q83 77 78 84" fill="none" stroke="#3B74F2" stroke-width="2" stroke-linecap="round"></path></svg>
+  <div class="in wrap">
+    <div class="eyebrow reveal" style="justify-content:center">Cupo limitado · diagnóstico gratis</div>
+    <h2 class="reveal d1" style="margin-top:20px">Hagamos que tu<br>marca <span class="bl">venda.</span></h2>
+    <p class="reveal d2">Trabajamos con pocos negocios a la vez para cuidar la calidad. Empieza por tu <b style="color:var(--fg)">diagnóstico de marca gratis</b> (5 min): te decimos tu punto de partida con un paquete a la medida y, si hay cupo, agendamos tu llamada.</p>
+    <div class="diag reveal d2" id="diag">
+      <div class="diag-h">Mini-diagnóstico · 30 segundos</div>
+      <div class="diag-q" data-q="etapa"><span class="diag-l">¿En qué etapa está tu marca?</span><div class="chips"><button type="button" class="chip" data-v="nueva">Apenas arranco</button><button type="button" class="chip" data-v="sinid">Ya opero, sin identidad clara</button><button type="button" class="chip" data-v="rebrand">Necesito rebranding</button></div></div>
+      <div class="diag-q" data-q="necesidad"><span class="diag-l">¿Qué necesitas más urgente?</span><div class="chips"><button type="button" class="chip" data-v="logo">Logo e identidad</button><button type="button" class="chip" data-v="web">Una web que venda</button><button type="button" class="chip" data-v="sistema">El sistema completo</button><button type="button" class="chip" data-v="contenido">Contenido y redes</button></div></div>
+      <div class="diag-q" data-q="ventas"><span class="diag-l">¿Cómo van tus ventas hoy?</span><div class="chips"><button type="button" class="chip" data-v="no">Aún no vendo</button><button type="button" class="chip" data-v="crecer">Vendo y quiero crecer</button><button type="button" class="chip" data-v="desfase">Vendo, pero mi marca no acompaña</button></div></div>
+      <div class="diag-res" id="diagRes"><div class="diag-res-l">Tu punto de partida sugerido</div><div class="diag-res-t" id="diagResT"></div><div class="diag-res-d" id="diagResD"></div><div class="diag-res-note">Es un adelanto. El diagnóstico completo lo afina y te da tu paquete a la medida 👇</div></div>
+    </div>
+    <div class="wl reveal d3" style="text-align:center">
+      <a class="btn solid lg" href="diagnostico.html" style="justify-content:center;width:100%;max-width:440px;margin:0 auto">Hacer mi diagnóstico gratis <span class="ar">→</span></a>
+      <div class="hint">5 minutos · sin costo · agendamos según cupo. ¿Prefieres escribirnos? <a href="mailto:arturo.villagomez@donventas.mx">arturo.villagomez@donventas.mx</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- COORDINATE FOOTER -->
+<footer class="foot">
+  <div class="in wrap">
+    <div class="l">
+      <svg class="eldon" viewBox="0 0 120 120" aria-hidden="true"><rect x="44" y="44" width="32" height="4.4" rx="2.2" fill="#F2F5F9"></rect><circle cx="53" cy="63" r="3.6" fill="#F2F5F9"></circle><circle cx="70" cy="63" r="9" fill="none" stroke="#3B74F2" stroke-width="3.4"></circle><path d="M79 67 Q83 77 78 84" fill="none" stroke="#3B74F2" stroke-width="2" stroke-linecap="round"></path></svg>
+      <span>Don Ventas · branding que vende</span>
+    </div>
+    <div class="coord">
+      <span><b>CDMX</b> 19.43°N</span>
+      <span><b>Mérida</b> 20.97°N</span>
+      <a href="https://app.donventas.mx">Portal de clientes ↗</a>
+      <span>arturo.villagomez@donventas.mx</span>
+      <span class="heart">♥</span>
+    </div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lbx" id="lbx" aria-hidden="true">
+  <button class="x" type="button">Cerrar ✕</button>
+  <figure><img alt=""><figcaption></figcaption></figure>
+</div>
+
+<!-- ══ Banner de cookies (lógica en app.js → window.dvCookie) ══ -->
+<div id="dv-cookie" role="dialog" aria-label="Aviso de cookies">
+  <div class="tx">
+    <b>Usamos cookies para entender el sitio</b>
+    <p>Medimos de forma anónima cómo se usa donventas.mx para mejorarlo. Puedes aceptar o rechazar.
+      Más info en nuestra <a href="15_LEGAL/Politica de Cookies.html" target="_blank" rel="noopener">Política de Cookies</a>.</p>
+  </div>
+  <div class="btns">
+    <button type="button" class="reject" onclick="dvCookie(false)">Rechazar</button>
+    <button type="button" class="accept" onclick="dvCookie(true)">Aceptar</button>
+  </div>
+</div>
+
+<!-- Scripts del sitio (app.js primero; luego el insights de Vercel usa window.va) -->
+<script defer src="app.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+
 </body>
 </html>
