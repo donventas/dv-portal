@@ -5,7 +5,7 @@
 window.DV_CFG = {
   /* Payment Link de Stripe para apartar el lugar / anticipo de arranque.
      Vacío ('') → el CTA avisa que falta configurarlo (no rompe el portal).   */
-  STRIPE_RESERVA_LINK: '',
+  STRIPE_RESERVA_LINK: 'https://buy.stripe.com/bJe9ASfHu0gdff58KY8g000',
   /* Contacto directo alterno al pago (WhatsApp / correo). Vacío = se oculta.  */
   CONTACTO_LINK: '',
 
