@@ -1,0 +1,136 @@
+/* Don Ventas — shared styles for brand-system block pages
+   Dark premium system · Schibsted Grotesk + Space Mono · two switchable directions. */
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Mono:wght@400;700&display=swap');
+
+:root,
+:root[data-theme="negro-azul"],
+:root[data-theme="negro-naranja"]{
+  --bg:#0E1117;            /* negro frío */
+  --panel:#161B23;
+  --panel-2:#1D232D;
+  --paper:#EEF1F6;
+  --fg:#EEF1F6;
+  --fg-soft:#99A2B0;
+  --fg-faint:#6C7585;
+  --line:rgba(238,241,246,.13);
+  --line-2:rgba(238,241,246,.07);
+  --accent:#3B74F2;        /* azul — acento único */
+  --accent-2:#6E97F6;
+  --on-accent:#0E1117;
+  --accent-name:"Azul";
+}
+
+:root{
+  --display:'Schibsted Grotesk',system-ui,sans-serif;
+  --body:'Schibsted Grotesk',system-ui,sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+  --maxw:1200px; --gut:clamp(20px,5vw,60px);
+  --radius:14px;
+}
+
+/* ── Ajustes del sistema (v1.1) · aditivos, no alteran bloques existentes ── */
+:root{
+  /* Datos en AZUL ÚNICO (R1) — series y estados sin semáforo verde/rojo */
+  --data-1:#3B74F2;   /* azul base · serie principal */
+  --data-2:#6E97F6;   /* azul claro */
+  --data-3:#9DB8F9;
+  --data-4:#2A5DD0;   /* azul profundo */
+  --data-5:#C4D5FC;   /* azul tenue */
+  --data-strong:#3B74F2;         /* dato protagonista / al alza */
+  --data-mute:#6C7585;           /* dato secundario / a la baja — slate, no rojo */
+  --data-grid:rgba(238,241,246,.08);
+
+  /* Registro AUDAZ (R4) — escala display grande para contundencia */
+  --fs-mega:clamp(72px,13vw,190px);
+  --fs-audaz:clamp(44px,7vw,96px);
+  --tracking-mega:-.045em;
+
+  /* Mitad CÁLIDA (R3) — superficie editorial tibia + itálica de voz.
+     Uso puntual (citas, testimonios, pie de foto); nunca como fondo de área grande. */
+  --paper-calido:#F3EFE9;
+  --ink-calido:#2A2622;
+}
+.audaz{font-family:var(--display);font-weight:800;font-size:var(--fs-audaz);letter-spacing:var(--tracking-mega);line-height:.98}
+.mega{font-family:var(--display);font-weight:900;font-size:var(--fs-mega);letter-spacing:var(--tracking-mega);line-height:.9}
+.calido{font-style:italic;font-weight:400}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--fg);background:var(--bg);
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  transition:background .45s ease,color .45s ease}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
+img{max-width:100%;display:block}
+::selection{background:var(--accent);color:var(--on-accent)}
+
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.025em;color:var(--fg);margin:0;line-height:1.05}
+h1{font-weight:800;font-size:clamp(34px,5vw,58px);letter-spacing:-.035em}
+h2{font-size:clamp(24px,3vw,34px);font-weight:700}
+h3{font-size:20px;font-weight:600}
+p{text-wrap:pretty}
+
+/* page header */
+.top{padding:60px 0 36px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);display:inline-flex;align-items:center;gap:11px}
+.eyebrow::before{content:"";width:24px;height:2px;background:var(--accent)}
+.top h1{margin:18px 0 0}
+.sub{color:var(--fg-soft);font-size:clamp(17px,2vw,21px);max-width:62ch;margin:18px 0 0}
+
+/* sello · validado y cerrado */
+.seal{display:inline-flex;align-items:center;gap:10px;width:max-content;
+  background:var(--fg);border-radius:999px;padding:6px 16px 6px 6px;
+  box-shadow:0 6px 20px -8px rgba(0,0,0,.5)}
+.seal .chk{width:28px;height:28px;border-radius:50%;background:#16A862;
+  display:grid;place-items:center;flex:none}
+.seal .chk svg{width:15px;height:15px;display:block}
+.seal .tx{display:flex;flex-direction:column;gap:1px;line-height:1.12;text-align:left}
+.seal .tx b{font-family:var(--display);font-size:12.5px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--bg)}
+.seal .tx i{font-family:var(--mono);font-size:9.5px;font-style:normal;
+  letter-spacing:.03em;color:#6E7480}
+.top .seal{margin:0}
+.seal--fixed{position:absolute;top:18px;right:18px;bottom:auto;z-index:200;margin:0}
+@media print{.seal--fixed{position:absolute}}
+
+/* sections */
+section{padding:54px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+.lead{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--fg-faint);margin:0 0 8px;display:flex;align-items:center;gap:10px}
+.lead b{color:var(--accent);font-weight:400}
+.sec-intro{color:var(--fg-soft);font-size:15.5px;max-width:72ch;margin:10px 0 28px}
+
+/* grid helpers */
+.grid{display:grid;gap:16px}
+.c2{grid-template-columns:repeat(2,1fr)}.c3{grid-template-columns:repeat(3,1fr)}
+.c4{grid-template-columns:repeat(4,1fr)}.c5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:900px){.c4,.c5{grid-template-columns:repeat(2,1fr)}.c3{grid-template-columns:1fr}}
+@media(max-width:560px){.c2,.c4,.c5{grid-template-columns:1fr}}
+
+/* logo tiles */
+.tile{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  display:flex;flex-direction:column;background:var(--panel)}
+.stage{flex:1;display:grid;place-items:center;padding:32px;min-height:160px}
+.stage.light{background:var(--paper)}
+.stage.dark{background:#0B0A08}
+.stage.accent{background:var(--accent)}
+.stage svg,.stage img{max-width:100%;max-height:100%}
+.cap{border-top:1px solid var(--line);padding:12px 16px;display:flex;
+  justify-content:space-between;align-items:center;gap:8px;background:var(--panel)}
+.cap b{font-family:var(--display);font-weight:600;font-size:13px;color:var(--fg)}
+.cap span{font-family:var(--mono);font-size:10px;color:var(--fg-faint);text-transform:uppercase;letter-spacing:.08em}
+
+/* note / files */
+.note{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:24px 28px;font-size:14.5px;color:var(--fg-soft);line-height:1.7}
+.note b{color:var(--fg)}
+.files{font-family:var(--mono);font-size:12px;color:var(--fg-soft);line-height:2;margin-top:10px}
+.files i{color:var(--accent);font-style:normal}
+.mono{font-family:var(--mono)}
+
+/* download buttons */
+.dl{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--fg);text-decoration:none;
+  border:1px solid var(--line);border-radius:999px;padding:7px 14px;transition:all .2s ease;cursor:pointer}
+.dl:hover{border-color:var(--accent);color:var(--accent)}
+.dl svg{width:13px;height:13px}

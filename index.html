@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don Ventas · Portal</title>
+<link rel="stylesheet" href="dv-shared/blocks.css">
+<link rel="stylesheet" href="app/portal.css">
+</head>
+<body>
+
+<!-- AUTH / ONBOARDING (lo llena DVAuth) -->
+<div id="auth"></div>
+
+<!-- APP SHELL -->
+<div id="app">
+  <div class="top" id="topBar"></div>
+  <aside class="side" id="side"></aside>
+  <main id="main"><div id="viewHost"></div></main>
+</div>
+
+<!-- modales + toast -->
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+<div class="demoBadge" id="modeBadge">Portal MVP · F2 · datos demo</div>
+<script>document.addEventListener('DOMContentLoaded',function(){try{var b=document.getElementById('modeBadge');if(b&&window.DVSupa&&DVSupa.LIVE())b.textContent='Portal MVP · F2 · EN VIVO';}catch(e){}});</script>
+
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0E1117"/><g transform="translate(18,22)"><rect x="0" y="0" width="20" height="56" rx="3" fill="#161B23" stroke="#3B74F2" stroke-width="1.6"/><path d="M4 8 L4 20 L10 14 Z" fill="#F2F5F9"/><path d="M9 9 L14 14 L9 19" stroke="#3B74F2" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="28" y="0" width="40" height="14" rx="3" fill="#3B74F2"/><rect x="28" y="20" width="40" height="13" rx="3" fill="none" stroke="#EEF1F6" stroke-width="1.6" opacity=".7"/><rect x="28" y="39" width="40" height="13" rx="3" fill="none" stroke="#EEF1F6" stroke-width="1.6" opacity=".45"/></g></svg>
+</template>
+
+<script src="data/seed.js"></script>
+<script src="app/config.js"></script>
+<script src="app/supabase.js"></script>
+<script src="app/util.js"></script>
+<script src="app/store.js"></script>
+<script src="app/auth.js"></script>
+<script src="app/client.js"></script>
+<script src="app/free.js"></script>
+<script src="app/staff.js"></script>
+<script src="app/portal.js"></script>
+</body>
+</html>
