@@ -30,7 +30,7 @@ window.DVAuth = (function () {
       '<h1>Entra a tu portal</h1>' +
       '<p class="lead">Tu marca, en vivo. Te enviamos un enlace mágico a tu correo — sin contraseñas.</p>' +
       '<div id="cli1"><label>Correo (corporativo o personal)</label>' +
-      '<input id="cliEmail" type="email" value="daniela@sicaru.mx" autocomplete="email">' +
+      '<input id="cliEmail" type="email" placeholder="tu@correo.com" autocomplete="email"' + (LIVE() ? '' : ' value="daniela@sicaru.mx"') + '>' +
       '<button class="btn solid full" onclick="DVAuth.sendLink()">Enviar enlace mágico →</button>' +
       (LIVE() ? '<div class="orsep">o</div>' + googleBtn('Continuar con Google') : '') +
       '<div class="suggest" id="cliSuggest"></div></div>' +
