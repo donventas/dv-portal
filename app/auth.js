@@ -1,7 +1,7 @@
 /* Don Ventas · Portal — Autenticación (magic-link demo), registro y diagnóstico F0 */
 window.DVAuth = (function () {
   const U = DVUtil, S = DVStore;
-  const LIVE = () => window.DVSupa && DVSupa.LIVE();
+  const LIVE = () => window.DVSupa && DVSupa.BACKEND();
   const F0Q = (window.DV_CFG && DV_CFG.F0Q) || [
     { q: '¿Tu marca ya vende o apenas arranca?', o: ['Vende y quiere crecer', 'Arranca', 'Reposiciona'] },
     { q: '¿Qué te duele más hoy?', o: ['Me eligen por precio', 'No me recuerdan', 'No sé comunicar valor'] },
@@ -84,7 +84,7 @@ window.DVAuth = (function () {
   }
   function quick(email) { U.el('cliEmail').value = email; sendLink(); }
   function google() {
-    if (!(window.DVSupa && DVSupa.LIVE())) { U.toast('Google solo funciona en modo EN VIVO'); return; }
+    if (!(window.DVSupa && DVSupa.BACKEND())) { U.toast('Google sólo funciona con un backend validado'); return; }
     DVSupa.signInWithGoogle().catch(err => { console.error(err); U.toast('No se pudo iniciar con Google'); });
   }
   function sendLink() {

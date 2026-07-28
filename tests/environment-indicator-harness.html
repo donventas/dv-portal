@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portal environment indicator harness</title>
+<link rel="stylesheet" href="../dv-shared/blocks.css">
+<link rel="stylesheet" href="../app/portal.css?v=30">
+</head>
+<body>
+<div id="environmentStatusMount"></div>
+<div id="environmentBlockedMount"></div>
+<div id="environmentGuardMount"></div>
+<div id="auth"><div class="acard"><h1>Superficie pre-auth de prueba</h1><p class="lead">Sin red, credenciales, backend ni seed.</p></div></div>
+<div id="app"><main><div id="viewHost">Superficie operativa de prueba</div></main></div>
+<script src="../app/environment-indicator.js"></script>
+<script>
+(function () {
+  var requested = new URLSearchParams(location.search).get('state') || 'VALIDATING';
+  var allowed = ['VALIDATING','DEMO','SANDBOX','LIVE','BLOCKED'];
+  var state = allowed.indexOf(requested) >= 0 ? requested : 'BLOCKED';
+  var diagnostic = state === 'BLOCKED' ? {code:'ENV_CONFIG_INVALID',correlationId:'harness-opaque-30'} : null;
+  window.DVEnv = {
+    subscribe: function (listener) { listener({state:state,fingerprint:'harness-'+state,diagnostic:diagnostic}); return function () {}; },
+    revalidate: function () { window.DVEnvironmentIndicator.render({state:'VALIDATING',fingerprint:null,diagnostic:null}); }
+  };
+  DVEnvironmentIndicator.start({scripts:[]});
+  if (new URLSearchParams(location.search).get('guard') === 'CONFIRM_SANDBOX') {
+    window.__harnessExecuted = 0;
+    DVEnvironmentIndicator.handleGuardOutcome({
+      outcome:'CONFIRM_SANDBOX',
+      authorized:false,
+      diagnostic:{code:'WRITE_SANDBOX_CONFIRMATION_REQUIRED',correlationId:'guard-opaque-30'}
+    }, {
+      confirm:function () {
+        window.__harnessExecuted += 1;
+        return {outcome:'ALLOW',authorized:true,value:true};
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

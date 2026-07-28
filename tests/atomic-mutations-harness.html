@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Portal atomic mutations harness</title>
+  <link rel="stylesheet" href="../dv-shared/blocks.css">
+  <link rel="stylesheet" href="../app/portal.css?v=33">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-y:auto}
+    body{width:min(22rem,100%);max-width:100%;margin:0;padding:14px}
+    .harness,.harness>*{min-width:0;max-width:100%}
+    .harness{display:grid;gap:16px}
+    .harness-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+    .harness-actions .btn{width:100%;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+    .harness-status{max-width:100%;white-space:normal;overflow-wrap:anywhere;word-break:break-word}
+  </style>
+</head>
+<body>
+  <main class="harness">
+    <div><div class="eyebrow">Issue #33 · determinista</div><h1>Mutaciones atómicas</h1></div>
+    <div class="panel">
+      <p id="mutationStatus" class="harness-status" role="status" aria-live="polite">Listo · sin operación pendiente.</p>
+      <p>Estado local: <strong id="localState">previo</strong></p>
+      <p>Ejecuciones: <strong id="executionCount">0</strong> · commits: <strong id="commitCount">0</strong></p>
+      <div class="harness-actions">
+        <button class="btn solid" id="startSuccess">Éxito diferido</button>
+        <button class="btn" id="resolveSuccess">Resolver backend</button>
+        <button class="btn" id="syncFailure">Throw seguro</button>
+        <button class="btn" id="asyncFailure">Rejection segura</button>
+        <button class="btn" id="staleResult">Resultado stale</button>
+        <button class="btn" id="resetHarness">Restaurar</button>
+      </div>
+    </div>
+  </main>
+  <script src="../app/atomic-mutations.js"></script>
+  <script>
+  (function () {
+    var fingerprint = 'fp-1', session = 'session-1', deferred = null, executions = 0, commits = 0;
+    var status = document.getElementById('mutationStatus'), local = document.getElementById('localState');
+    function paint(text) { status.textContent = text; document.getElementById('executionCount').textContent = executions; document.getElementById('commitCount').textContent = commits; }
+    function operation(key, execute) {
+      paint('Pendiente · esperando confirmación del backend.');
+      return DVAtomicMutations.run({
+        key:key, fingerprint:fingerprint, sessionIdentity:session,
+        getFingerprint:function(){return fingerprint}, getSessionIdentity:function(){return session},
+        execute:function(){executions++;return execute()},
+        commit:function(value){commits++;local.textContent=value;},
+        success:function(){paint('Éxito confirmado · commit local aplicado una vez.')},
+        failure:function(){paint('No se guardó · estado previo preservado · puedes reintentar.')}
+      }).then(function(r){ if(r.status==='STALE') paint('Resultado obsoleto ignorado · sin commit local.'); return r; });
+    }
+    document.getElementById('startSuccess').onclick = function () {
+      deferred = {}; deferred.promise = new Promise(function(res,rej){deferred.resolve=res;deferred.reject=rej});
+      operation('success', function(){return deferred.promise});
+    };
+    document.getElementById('resolveSuccess').onclick = function(){if(deferred)deferred.resolve('confirmado')};
+    document.getElementById('syncFailure').onclick = function(){operation('sync-fail',function(){throw new Error('raw hidden')})};
+    document.getElementById('asyncFailure').onclick = function(){operation('async-fail',function(){return Promise.reject(new Error('raw hidden'))})};
+    document.getElementById('staleResult').onclick = function(){
+      deferred = {}; deferred.promise = new Promise(function(res){deferred.resolve=res});
+      operation('stale',function(){return deferred.promise}); fingerprint='fp-2'; deferred.resolve('obsoleto');
+    };
+    document.getElementById('resetHarness').onclick = function(){fingerprint='fp-1';session='session-1';deferred=null;executions=0;commits=0;local.textContent='previo';paint('Listo · sin operación pendiente.')};
+  })();
+  </script>
+</body>
+</html>
