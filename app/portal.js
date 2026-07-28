@@ -12,7 +12,7 @@ window.DVPortal = (function () {
     route = defaultRoute();
     buildShell();
     go(route);
-    try { const v = localStorage.getItem('dvportal-view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
+    try { const v = DVEnv.storage.getItem('view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
   }
   function hasRoute(v) { return mod().nav().some(n => n.route === v); }
 
@@ -52,7 +52,7 @@ window.DVPortal = (function () {
     mod().render(v, U.el('viewHost'));
     markNav();
     const main = U.el('main'); if (main) main.scrollTop = 0;
-    try { if (v !== 'bloque') localStorage.setItem('dvportal-view-' + S.session().actor, v); } catch (e) { }
+    try { if (v !== 'bloque') DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('view-' + S.session().actor, v)); } catch (e) { }
   }
 
   function role(r) {
@@ -61,7 +61,7 @@ window.DVPortal = (function () {
     if (!hasRoute(route)) route = defaultRoute();
     go(route);
   }
-  function logout() { if (window.DVSupa && DVSupa.LIVE()) { try { DVSupa.signOut(); } catch (e) { } } S.logout(); U.el('app').classList.remove('on'); U.el('side').innerHTML = ''; U.el('topBar').innerHTML = ''; U.el('auth').style.display = 'grid'; DVAuth.render(); }
+  function logout() { if (window.DVSupa && DVSupa.BACKEND()) { try { DVSupa.signOut(); } catch (e) { } } S.logout(); U.el('app').classList.remove('on'); U.el('side').innerHTML = ''; U.el('topBar').innerHTML = ''; U.el('auth').style.display = 'grid'; DVAuth.render(); }
 
   /* ── glosario ── */
   const GLOSS_C = {
@@ -144,8 +144,8 @@ window.DVPortal = (function () {
     return '<div class="modal on" onclick="if(event.target===this)DVPortal.closeModal()"><div class="mbox"><h3>' + title + '</h3><p>' + desc + '</p>' + body + '<div class="mrow">' + actions + '</div></div></div>';
   }
   function closeModal() { U.el('modalHost').innerHTML = ''; }
-  function doComment() { const t = (U.el('commentText').value || '').trim(); closeModal(); DVClient.sendComment(t); go('bloque'); }
-  function doRound() { const d = (U.el('rDeliv').value || '').trim(), n = (U.el('rNote').value || '').trim(); closeModal(); DVStaff.saveRound(d, n); }
+  async function doComment() { const t = (U.el('commentText').value || '').trim(); if (await DVClient.sendComment(t)) { closeModal(); go('bloque'); } }
+  async function doRound() { const d = (U.el('rDeliv').value || '').trim(), n = (U.el('rNote').value || '').trim(); if (await DVStaff.saveRound(d, n)) closeModal(); }
 
   document.addEventListener('click', e => {
     if (!(e.target.closest && e.target.closest('.popwrap'))) U.qsa('.pop').forEach(p => p.classList.remove('pin'));
@@ -156,13 +156,17 @@ window.DVPortal = (function () {
 
 /* arranque */
 (function () {
-  const LIVE = window.DVSupa && DVSupa.LIVE();
-  if (LIVE) {
+  const BACKEND = window.DVSupa && DVSupa.BACKEND();
+  if (BACKEND) {
     // EN VIVO: la sesión se deriva de Supabase Auth (no de localStorage).
     U_boot();
     return;
   }
-  // DEMO: sesión desde localStorage sobre datos semilla.
+  if (!window.DVEnv || !DVEnv.isDemo()) {
+    U.el('auth').innerHTML = '<div class="acard"><h1>Portal bloqueado</h1><p class="lead">No pudimos verificar el ambiente del Portal.</p></div>';
+    return;
+  }
+  // DEMO: sesión desde storage aislado sobre datos semilla.
   DVStore.loadSession();
   const s = DVStore.session();
   if (s && DVStore.me()) { DVPortal.boot(); }

@@ -3,8 +3,8 @@ window.DVStaff = (function () {
   const U = DVUtil, S = DVStore;
   let curBlock = null, iterN = 0, comments = [], chat = [], hasPreview = false;
   let _open = _loadOpen(), _route = 'cuentas', _cFocus = 'activas', _actSel = null;
-  function _loadOpen() { try { return JSON.parse(localStorage.getItem('dvportal-open') || '{}'); } catch (e) { return {}; } }
-  function _saveOpen() { try { localStorage.setItem('dvportal-open', JSON.stringify(_open)); } catch (e) { } }
+  function _loadOpen() { try { return JSON.parse(DVEnv.storage.getItem('open-staff') || '{}'); } catch (e) { return {}; } }
+  function _saveOpen() { try { DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('open-staff', JSON.stringify(_open))); } catch (e) { } }
   function activeSkill() { const all = S.skills(); return all.find(s => /brand system/i.test(s.n)) || all[0] || { n: 'Brand System Builder', v: '—' }; }
   function donOpen() { const sk = activeSkill(); return 'Soy El Don, tu copiloto de marca. Trabajo con los rieles cargados — Manual de Marca, tokens del sistema y la skill «' + sk.n + ' v' + sk.v + '» de este bloque. Platícame qué generamos o ajustamos y lo verás en el preview; me quedo dentro de la marca.'; }
   function donReply(userText) {
@@ -288,7 +288,7 @@ window.DVStaff = (function () {
   }
   function iterar() { iterN++; const n = U.el('iterN'); if (n) n.textContent = iterN; U.toast('Preview actualizado en vivo · iteración ' + iterN); }
   function validar() { const b = U.el('prodBtn'); if (b) b.disabled = false; const v = U.el('valBtn'); if (v) v.textContent = 'Validado ✓'; const nt = U.el('valNote'); if (nt) nt.textContent = 'Validado internamente ✓ · ya puedes solicitar producción.'; U.toast('Marcado como validado internamente'); }
-  function solicitar() { S.requestScope(curBlock); renderRounds(); U.toast('Solicitud enviada · pasa por checkpoint del cliente'); const b = S.block(curBlock); U.qsa('.vsub')[0].innerHTML = U.statusPill(b.status); }
+  async function solicitar() { U.toast('Enviando solicitud…'); const r = await S.requestScope(curBlock); if (r.status !== 'SUCCEEDED') return U.toast('No se envió la solicitud · intenta de nuevo'); renderRounds(); U.toast('Solicitud enviada · pasa por checkpoint del cliente'); const b = S.block(curBlock); U.qsa('.vsub')[0].innerHTML = U.statusPill(b.status); }
   function compartir() {
     const rp = U.el('reviewPanel'); rp.style.display = 'block';
     rp.innerHTML = '<div class="row spread"><h3>Revisión del equipo</h3><span class="mono" style="font-size:11px;color:var(--fg-faint)">dentro del portal</span></div>' +
@@ -299,7 +299,7 @@ window.DVStaff = (function () {
   }
   function renderThread() { U.el('thread').innerHTML = comments.map(c => '<div class="cmt"><b>' + U.esc(c.who) + '</b><span class="tm">ahora</span><p>' + U.esc(c.t) + '</p></div>').join(''); }
   function addComment() { const i = U.el('cmtInput'); const t = (i.value || '').trim(); if (!t) return U.toast('Escribe un comentario'); comments.push({ who: (S.me() || {}).name ? S.me().name.split(' ')[0] : 'Equipo', t }); i.value = ''; renderThread(); i.focus(); }
-  function saveRound(deliv, note) { S.addRound(curBlock, { title: 'Ronda registrada', deliverable: deliv || 'entregable sin título', feedback: note || '—', result: 'propuesto' }); renderRounds(); const b = S.block(curBlock); U.qsa('.vsub')[0].innerHTML = U.statusPill(b.status); U.toast('Ronda registrada · el cliente ya la ve'); }
+  async function saveRound(deliv, note) { U.toast('Registrando ronda…'); const r = await S.addRound(curBlock, { title: 'Ronda registrada', deliverable: deliv || 'entregable sin título', feedback: note || '—', result: 'propuesto' }); if (r.status !== 'SUCCEEDED') { U.toast('No se registró la ronda · intenta de nuevo'); return false; } renderRounds(); const b = S.block(curBlock); U.qsa('.vsub')[0].innerHTML = U.statusPill(b.status); U.toast('Ronda registrada · el cliente ya la ve'); return true; }
 
   function renderBitacora(host) {
     const accs = S.historyAccounts();
@@ -359,14 +359,14 @@ window.DVStaff = (function () {
       '<p class="hint">El contenido de las skills (el <b>secreto industrial</b>) no es visible para el staff: su Claude las <b>invoca</b> desde el portal, no las lee. El admin publica mejoras y se <b>heredan a todos</b>; el historial permite <b>revertir</b> si una versión salió peor.' +
       (admin ? ' Las mejoras que la skill propone sola desde el feedback viven en <b>Mejoras · backlog</b>.' : '') + '</p>';
   }
-  function publish(id) {
+  async function publish(id) {
     const note = window.prompt('Nota de la nueva versión (qué mejora):', '');
     if (note === null) return;
-    S.publishSkill(id, note); U.toast('Versión publicada · heredada a todo el staff'); DVPortal.go('skills');
+    U.toast('Publicando versión…'); const r = await S.publishSkill(id, note); if (r.status !== 'SUCCEEDED') return U.toast('No se publicó la versión · intenta de nuevo'); U.toast('Versión publicada · heredada a todo el staff'); DVPortal.go('skills');
   }
-  function revert(id, v) {
+  async function revert(id, v) {
     if (!window.confirm('¿Revertir a la versión v' + v + '? Se hereda a todo el staff.')) return;
-    S.revertSkill(id, v); U.toast('Revertida a v' + v + ' · heredada al staff'); DVPortal.go('skills');
+    U.toast('Revirtiendo versión…'); const r = await S.revertSkill(id, v); if (r.status !== 'SUCCEEDED') return U.toast('No se revirtió la versión · intenta de nuevo'); U.toast('Revertida a v' + v + ' · heredada al staff'); DVPortal.go('skills');
   }
 
   function evidenceHTML(ev) {
@@ -536,12 +536,12 @@ window.DVStaff = (function () {
   function cancelActivate() { _actSel = null; DVPortal.go('waitlist'); }
   function setActKind(k) { if (_actSel) { _actSel.kind = k; DVPortal.go('waitlist'); } }
   function setActAnalyst(id) { if (_actSel) { _actSel.analyst = id; DVPortal.go('waitlist'); } }
-  function confirmActivate(id) {
+  async function confirmActivate(id) {
     if (!_actSel) return;
     if (!_actSel.analyst) return U.toast('Elige un analista responsable');
     const an = S.analystStats().find(a => a.id === _actSel.analyst), kind = _actSel.kind, name = S.account(id).name;
     const willAsk = an && an.atBase && !an.founder;
-    S.activate(id, an.first, kind); _actSel = null;
+    U.toast('Activando cuenta…'); const r = await S.activate(id, an.first, kind); if (r.status !== 'SUCCEEDED') return U.toast('No se activó la cuenta · intenta de nuevo'); _actSel = null;
     U.toast(name + ' activado como ' + kindLabel(kind).toLowerCase() + (willAsk ? ' · enviado a ' + an.first + ' para aceptación' : ' · asignado a ' + an.first));
     _cFocus = 'activas'; DVPortal.go('cuentas');
   }
@@ -552,7 +552,7 @@ window.DVStaff = (function () {
       '<div class="list">' + S.staff().map(s => '<div class="li"><div class="g"><b>' + U.esc(s.name) + '</b><small>' + U.esc(s.email) + '</small></div><span class="tag ' + (s.role === 'admin' ? 'blue' : '') + '">' + s.role + '</span></div>').join('') + '</div>' +
       '<div class="inviteform"><input id="staffEmail" type="email" placeholder="correo@disenador.mx"><button class="btn solid" onclick="DVStaff.inviteStaff()">Invitar al equipo →</button></div>';
   }
-  function inviteStaff() { const i = U.el('staffEmail'); const e = (i.value || '').trim(); if (!e) return U.toast('Escribe un correo'); S.inviteStaff(e); i.value = ''; U.toast('Invitación de equipo enviada a ' + e); }
+  async function inviteStaff() { const i = U.el('staffEmail'); const e = (i.value || '').trim(); if (!e) return U.toast('Escribe un correo'); U.toast('Enviando invitación…'); const r = await S.inviteStaff(e); if (r.status !== 'SUCCEEDED') return U.toast('No se envió la invitación · intenta de nuevo'); i.value = ''; U.toast('Invitación de equipo enviada a ' + e); }
 
   const SECT_L = { tablero: 'Tablero', bitacora: 'Bitácora', previews: 'Previews', generadores: 'Generadores' };
   function renderAccesos(host) {
@@ -583,7 +583,7 @@ window.DVStaff = (function () {
     }).join('') + '<div class="csec" style="padding:12px 2px 4px;color:var(--fg-faint)">El cliente solo ve las secciones de las capas activadas · nunca operación ni estrategia interna del despacho.</div></div>';
   }
   function toggleCapa(accId, name) { S.toggleCapa(accId, name); DVPortal.go('accesos'); U.toast('Capas de ' + S.account(accId).name + ' actualizadas'); }
-  function assign(id, name) { S.assign(id, name); U.toast('Cuenta ' + S.account(id).name + ' asignada a ' + name); }
+  async function assign(id, name) { U.toast('Asignando cuenta…'); const r = await S.assign(id, name); if (r.status !== 'SUCCEEDED') return U.toast('No se asignó la cuenta · intenta de nuevo'); U.toast('Cuenta ' + S.account(id).name + ' asignada a ' + name); }
   function changeKind(id, k) { S.setAccountKind(id, k); DVPortal.go('accesos'); U.toast(S.account(id).name + ' reclasificada como ' + kindLabel(k).toLowerCase()); }
 
   function renderFacturacion(host) {
@@ -596,7 +596,7 @@ window.DVStaff = (function () {
       '<div class="list">' + all.map(b => { const a = S.account(b.account_id); const cap = { fundacion: 'Fundación', sistema: 'Sistema', activacion: 'Activación' }[b.layer] || b.layer; return '<div class="li"><div class="g"><b>' + U.esc(a.name + ' · ' + b.concept) + '</b><small>capa: ' + U.esc(cap) + '</small></div>' + kindTag(a.kind) + '<span class="amt">' + U.mxn(b.amount) + '</span><span class="tag ' + (b.status === 'pagado' ? 'hi' : 'mid') + '">' + b.status + '</span>' +
         (b.status !== 'pagado' ? '<button class="btn solid sm" onclick="DVStaff.validatePay(\'' + b.id + '\')">Validar pago</button>' : '') + '</div>'; }).join('') + '</div>';
   }
-  function validatePay(id) { S.validatePayment(id); U.toast('Pago validado · marca de agua retirada y descargas habilitadas'); }
+  async function validatePay(id) { U.toast('Validando pago…'); const r = await S.validatePayment(id); if (r.status !== 'SUCCEEDED') return U.toast('No se validó el pago · intenta de nuevo'); U.toast('Pago validado · marca de agua retirada y descargas habilitadas'); }
 
   function renderUtilidad(host) {
     _curView = 'utilidad';

@@ -1,0 +1,21 @@
+{
+  "name": "dv-portal",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "scripts": {
+    "test:unit": "node --test tests/environment.test.js tests/write-guard.test.js tests/atomic-mutations.test.js tests/environment-indicator.test.js",
+    "test:integration": "node --test tests/product-foundation.test.js",
+    "test:browser": "playwright test",
+    "test": "npm run test:unit && npm run test:integration",
+    "verify:paths": "node scripts/verify.mjs paths",
+    "verify:bundle": "node scripts/verify.mjs bundle",
+    "verify:secrets": "node scripts/verify.mjs secrets",
+    "verify:all": "npm run verify:paths && npm run verify:bundle && npm run verify:secrets && npm test && npm run test:browser"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.54.1"
+  }
+}

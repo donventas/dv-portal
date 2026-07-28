@@ -6,21 +6,34 @@
    El estado muta en memoria (demo) y persiste solo la sesión en localStorage.  */
 window.DVStore = (function () {
   const S = window.DV_SEED;
-  const LIVE = () => window.DVSupa && DVSupa.LIVE();
+  const LIVE = () => window.DVSupa && DVSupa.BACKEND();
+  const STORAGE = window.DVEnv && DVEnv.storage;
   const listeners = [];
   let session = null; // { userId, role, accountId, memberRole, actor:'cliente'|'staff' }
 
   /* ── sesión ── */
   function loadSession() {
-    try { const raw = localStorage.getItem('dvportal-session'); if (raw) session = JSON.parse(raw); } catch (e) { }
+    try {
+      const raw = STORAGE && STORAGE.getItem('session');
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (DVEnv.validateSession(saved).ok) session = saved.value;
+        else STORAGE.removeItem('session');
+      }
+    } catch (e) { }
     return session;
   }
   function saveSession() {
-    try { session ? localStorage.setItem('dvportal-session', JSON.stringify(session)) : localStorage.removeItem('dvportal-session'); } catch (e) { }
+    try {
+      if (!STORAGE) return;
+      session
+        ? STORAGE.setItem('session', JSON.stringify({ environmentFingerprint: DVEnv.fingerprint(), value: session }))
+        : STORAGE.removeItem('session');
+    } catch (e) { }
   }
   function userByEmail(email) { return S.users.find(u => u.email.toLowerCase() === String(email).toLowerCase()); }
   function loginAs(user) {
-    session = { userId: user.id, role: user.role, accountId: user.account_id, memberRole: user.member_role, actor: user.role === 'cliente' ? 'cliente' : 'staff' };
+    session = { userId: user.id, role: user.role, accountId: user.account_id, memberRole: user.member_role, actor: user.role === 'cliente' ? 'cliente' : 'staff', environmentFingerprint: DVEnv.fingerprint() };
     saveSession(); emit();
   }
   function setRole(role) { // demo: cambia rol dentro del mismo actor
@@ -37,7 +50,7 @@ window.DVStore = (function () {
   function isFree() { return session && session.actor === 'freemium'; }
 
   /* ── freemium (huérfano / sin plan · D-07) ── */
-  function loginFree(profile) { session = { actor: 'freemium', email: (profile && profile.email) || '', profile: profile || {} }; saveSession(); emit(); }
+  function loginFree(profile) { session = { actor: 'freemium', email: (profile && profile.email) || '', profile: profile || {}, environmentFingerprint: DVEnv.fingerprint() }; saveSession(); emit(); }
   function freeProfile() { return session && session.actor === 'freemium' ? session.profile : null; }
   function updateFreeProfile(patch) { if (session && session.actor === 'freemium') { session.profile = Object.assign({}, session.profile, patch); saveSession(); emit(); } }
 
@@ -83,10 +96,10 @@ window.DVStore = (function () {
 
   /* ── Chat con El Don · persiste por bloque (F2 Parte B) ── */
   let _chats = null, _iters = null;
-  function _loadChats() { if (_chats) return; try { _chats = JSON.parse(localStorage.getItem('dvportal-chats') || '{}'); } catch (e) { _chats = {}; } }
-  function _saveChats() { try { localStorage.setItem('dvportal-chats', JSON.stringify(_chats)); } catch (e) { } }
-  function _loadIters() { if (_iters) return; try { _iters = JSON.parse(localStorage.getItem('dvportal-iters') || '{}'); } catch (e) { _iters = {}; } }
-  function _saveIters() { try { localStorage.setItem('dvportal-iters', JSON.stringify(_iters)); } catch (e) { } }
+  function _loadChats() { if (_chats) return; try { _chats = JSON.parse(STORAGE.getItem('chats') || '{}'); } catch (e) { _chats = {}; } }
+  function _saveChats() { try { STORAGE.setItem('chats', JSON.stringify(_chats)); } catch (e) { } }
+  function _loadIters() { if (_iters) return; try { _iters = JSON.parse(STORAGE.getItem('iters') || '{}'); } catch (e) { _iters = {}; } }
+  function _saveIters() { try { STORAGE.setItem('iters', JSON.stringify(_iters)); } catch (e) { } }
   function chatOf(blockId) { _loadChats(); return (_chats[blockId] || []).slice(); }
   function saveChat(blockId, arr) { _loadChats(); _chats[blockId] = arr; _saveChats(); }
   function iterOf(blockId) { _loadIters(); return _iters[blockId] || 0; }
@@ -119,8 +132,8 @@ window.DVStore = (function () {
   function staff() { return S.users.filter(u => u.role === 'analista' || u.role === 'admin'); }
   /* ── skill (motor) · versión + historial persistente (F2 Parte C) ── */
   let _skillMeta = null;
-  function _loadSkillMeta() { if (_skillMeta) return; try { _skillMeta = JSON.parse(localStorage.getItem('dvportal-skills') || '{}'); } catch (e) { _skillMeta = {}; } }
-  function _saveSkillMeta() { try { localStorage.setItem('dvportal-skills', JSON.stringify(_skillMeta)); } catch (e) { } }
+  function _loadSkillMeta() { if (_skillMeta) return; try { _skillMeta = JSON.parse(STORAGE.getItem('skills') || '{}'); } catch (e) { _skillMeta = {}; } }
+  function _saveSkillMeta() { try { STORAGE.setItem('skills', JSON.stringify(_skillMeta)); } catch (e) { } }
   function skills() {
     _loadSkillMeta();
     return S.skills.map(s => {
@@ -161,8 +174,8 @@ window.DVStore = (function () {
     return { skillId: id, changes: changes.length ? changes : [_AJUSTE_LEVER], evidence: improv, n: improv.length, approvals: sig.filter(s => s.result === 'aprobado').length, total: sig.length, targetV: _bumpVersion(_curV(id)), signature: improv.map(s => s.rid).sort().join(',') };
   }
   let _backlog = null;
-  function _loadBacklog() { if (_backlog) return; try { _backlog = JSON.parse(localStorage.getItem('dvportal-backlog') || '{"items":[],"dismissed":{}}'); } catch (e) { _backlog = { items: [], dismissed: {} }; } }
-  function _saveBacklog() { try { localStorage.setItem('dvportal-backlog', JSON.stringify(_backlog)); } catch (e) { } }
+  function _loadBacklog() { if (_backlog) return; try { _backlog = JSON.parse(STORAGE.getItem('backlog') || '{"items":[],"dismissed":{}}'); } catch (e) { _backlog = { items: [], dismissed: {} }; } }
+  function _saveBacklog() { try { STORAGE.setItem('backlog', JSON.stringify(_backlog)); } catch (e) { } }
   function backlog() { _loadBacklog(); return _backlog.items.slice(); }
   function proposalState(id) {
     _loadBacklog(); const p = skillProposal(id); if (!p) return { status: 'none' };
@@ -209,8 +222,8 @@ window.DVStore = (function () {
   let _period = null;
   function periodMonths() { const out = []; const now = new Date(); for (let i = 0; i < 6; i++) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); out.push({ i, ts: new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59).getTime(), label: d.toLocaleDateString('es-MX', { month: 'short', year: 'numeric' }) }); } return out; }
   function _anchorTs(anchor) { const m = periodMonths(); return (m[anchor] || m[0]).ts; }
-  function getPeriod() { if (!_period) { try { _period = JSON.parse(localStorage.getItem('dvportal-period') || 'null'); } catch (e) { } _period = _period || { base: 'mensual', span: 'trimestral', anchor: 0 }; if (['trimestral', 'semestral', 'anual'].indexOf(_period.span) < 0) _period.span = 'trimestral'; } return _period; }
-  function setPeriod(patch) { _period = Object.assign(getPeriod(), patch); try { localStorage.setItem('dvportal-period', JSON.stringify(_period)); } catch (e) { } emit(); }
+  function getPeriod() { if (!_period) { try { _period = JSON.parse(STORAGE.getItem('period') || 'null'); } catch (e) { } _period = _period || { base: 'mensual', span: 'trimestral', anchor: 0 }; if (['trimestral', 'semestral', 'anual'].indexOf(_period.span) < 0) _period.span = 'trimestral'; } return _period; }
+  function setPeriod(patch) { _period = Object.assign(getPeriod(), patch); try { STORAGE.setItem('period', JSON.stringify(_period)); } catch (e) { } emit(); }
   function periodLabel() { const p = getPeriod(), mo = (periodMonths()[p.anchor] || periodMonths()[0]).label; return p.base === 'mensual' ? ('mensual · ' + mo) : ('acum. ' + p.span + ' · a ' + mo); }
   function monthsActiveOf(acc, atTs) { const a = typeof acc === 'string' ? account(acc) : acc; if (!a || !a.created_at) return 0; return Math.max(0, Math.round(((atTs || Date.now()) - Date.parse(a.created_at)) / (30 * 864e5))); }
   function _pf(a) { const p = getPeriod(), at = _anchorTs(p.anchor); if (Date.parse(a.created_at || 0) > at) return 0; if (p.base === 'mensual') return 1; return Math.min(PERIOD_MONTHS[p.span] || 3, Math.max(1, monthsActiveOf(a, at))); }
@@ -233,22 +246,22 @@ window.DVStore = (function () {
      tarifa por hora se prorratea sobre HORAS CONTRATADAS (no sobre activas): así el
      cliente solo carga las horas que se le trabajaron y la capacidad no usada queda
      como «gasto de operación», no se le echa al cliente. Todo solo-admin. */
-  function _laborOv() { try { return JSON.parse(localStorage.getItem('dvportal-labor') || '{}'); } catch (e) { return {}; } }
+  function _laborOv() { try { return JSON.parse(STORAGE.getItem('labor') || '{}'); } catch (e) { return {}; } }
   function teamCost() {
     const ov = _laborOv();
     return (S.team_cost || []).map(t => { const o = ov[t.user_id] || {}; const u = S.users.find(x => x.id === t.user_id);
       const salary = o.salary != null ? o.salary : t.monthly_salary, hours = o.hours != null ? o.hours : t.contracted_hours;
       return { user_id: t.user_id, name: u ? u.name : t.user_id, role: u ? u.role : '', salary, hours, hourly: hours > 0 ? salary / hours : 0 }; });
   }
-  function setTeamCost(userId, patch) { const ov = _laborOv(); ov[userId] = Object.assign({}, ov[userId], patch); try { localStorage.setItem('dvportal-labor', JSON.stringify(ov)); } catch (e) { } emit(); }
+  function setTeamCost(userId, patch) { const ov = _laborOv(); ov[userId] = Object.assign({}, ov[userId], patch); try { STORAGE.setItem('labor', JSON.stringify(ov)); } catch (e) { } emit(); }
   function _analystIdOf(accId) { const a = S.assignments.find(x => x.account_id === accId); return a ? a.analyst_id : null; }
   function _hourlyOf(userId) { const t = teamCost().find(x => x.user_id === userId); return t ? t.hourly : 0; }
 
   /* session time tracking · acumulado por cuenta en localStorage (segundos) */
   let _work = null, _wtAcct = null, _wtT0 = null, _visWired = false;
-  function _loadWork() { if (_work) return; try { _work = JSON.parse(localStorage.getItem('dvportal-worktime') || '{}'); } catch (e) { _work = {}; } }
-  function _saveWork() { try { localStorage.setItem('dvportal-worktime', JSON.stringify(_work)); } catch (e) { } }
-  function _addSeconds(accId, sec) { if (!accId || !(sec > 0)) return; _loadWork(); _work[accId] = (_work[accId] || 0) + sec; _saveWork(); }
+  function _loadWork() { if (_work) return; try { _work = JSON.parse(STORAGE.getItem('worktime') || '{}'); } catch (e) { _work = {}; } }
+  function _saveWork() { try { STORAGE.setItem('worktime', JSON.stringify(_work)); } catch (e) { } }
+  function _addSeconds(accId, sec) { if (!accId || !(sec > 0)) return; return DVWriteGuard.run('work.track', 'work-session', { resourceId: accId }, () => { _loadWork(); _work[accId] = (_work[accId] || 0) + sec; _saveWork(); }); }
   function _flush() { if (_wtAcct && _wtT0) { _addSeconds(_wtAcct, (Date.now() - _wtT0) / 1000); _wtT0 = Date.now(); } }
   function startWork(accId) { if (!(session && session.actor === 'staff')) return; if (!_visWired) { _visWired = true; document.addEventListener('visibilitychange', () => { if (document.hidden) { _flush(); _wtT0 = null; } else if (_wtAcct) { _wtT0 = Date.now(); } }); window.addEventListener('beforeunload', _flush); } if (_wtAcct === accId && _wtT0) return; _flush(); _wtAcct = accId; _wtT0 = document.hidden ? null : Date.now(); }
   function stopWork() { _flush(); _wtAcct = null; _wtT0 = null; }
@@ -322,9 +335,9 @@ window.DVStore = (function () {
      admin salvo lo que el cliente ve (su impacto + volumen a valor de lista). */
 
   /* ── catálogo à-la-carte · valor de lista (editable por admin) ── */
-  function _catOv() { try { return JSON.parse(localStorage.getItem('dvportal-catalog') || '{}'); } catch (e) { return {}; } }
+  function _catOv() { try { return JSON.parse(STORAGE.getItem('catalog') || '{}'); } catch (e) { return {}; } }
   function catalog() { const ov = _catOv(); return (S.catalog || []).map(c => Object.assign({}, c, { price: ov[c.code] != null ? ov[c.code] : c.price })); }
-  function setCatalogPrice(code, price) { const ov = _catOv(); ov[code] = price; try { localStorage.setItem('dvportal-catalog', JSON.stringify(ov)); } catch (e) { } emit(); }
+  function setCatalogPrice(code, price) { const ov = _catOv(); ov[code] = price; try { STORAGE.setItem('catalog', JSON.stringify(ov)); } catch (e) { } emit(); }
 
   /* ── Medidor A · valor de aplicación ── */
   function _appItemsOf(accId) { const l = (S.application_log || []).find(x => x.account_id === accId); return l ? l.items : null; }
@@ -361,8 +374,8 @@ window.DVStore = (function () {
   const DEFAULT_UMBRAL = (window.DV_CFG && DV_CFG.CAPA3 && DV_CFG.CAPA3.umbralDefault) || 40000;
   const DEFAULT_BONO_PCT = (window.DV_CFG && DV_CFG.CAPA3 && DV_CFG.CAPA3.bonoPct) || 8;
   const DEFAULT_COMISION_PCT = (window.DV_CFG && DV_CFG.CAPA3 && DV_CFG.CAPA3.comisionPct) || 10;
-  function incentiveCfg() { let c = null; try { c = JSON.parse(localStorage.getItem('dvportal-incentive') || 'null'); } catch (e) { } c = c || {}; return { bonoPct: c.bonoPct != null ? c.bonoPct : DEFAULT_BONO_PCT, umbral: c.umbral || {} }; }
-  function setIncentiveCfg(patch) { const c = Object.assign(incentiveCfg(), patch); try { localStorage.setItem('dvportal-incentive', JSON.stringify(c)); } catch (e) { } emit(); }
+  function incentiveCfg() { let c = null; try { c = JSON.parse(STORAGE.getItem('incentive') || 'null'); } catch (e) { } c = c || {}; return { bonoPct: c.bonoPct != null ? c.bonoPct : DEFAULT_BONO_PCT, umbral: c.umbral || {} }; }
+  function setIncentiveCfg(patch) { const c = Object.assign(incentiveCfg(), patch); try { STORAGE.setItem('incentive', JSON.stringify(c)); } catch (e) { } emit(); }
   function setUmbral(userId, val) { const c = incentiveCfg(); const u = Object.assign({}, c.umbral); u[userId] = val; setIncentiveCfg({ umbral: u }); }
   function _collRatio(accId) { const inv = S.invoices.filter(i => i.account_id === accId); const all = inv.reduce((s, i) => s + i.amount, 0); if (!all) return 1; return inv.filter(i => i.status === 'pagado').reduce((s, i) => s + i.amount, 0) / all; }
   function incentiveModel() {
@@ -400,52 +413,103 @@ window.DVStore = (function () {
   }
 
   /* ── mutaciones (demo, en memoria) ── */
-  function approve(blockId) { const b = block(blockId); if (b) { b.status = 'cerrado'; b.prog = b.progress = 100; } if (LIVE()) DVSupa.write.approve(blockId); emit(); }
+  function _identity() { return session && session.environmentFingerprint || null; }
+  function _atomic(key, backend, commit) {
+    if (!LIVE()) {
+      const value = commit();
+      return Promise.resolve({ status: 'SUCCEEDED', committed: true, value });
+    }
+    const fingerprint = DVEnv.fingerprint(), sessionIdentity = _identity();
+    return DVAtomicMutations.run({
+      key, fingerprint, sessionIdentity,
+      getFingerprint: () => DVEnv.fingerprint(),
+      getSessionIdentity: _identity,
+      execute: backend,
+      commit: canonical => { commit(canonical); }
+    });
+  }
+  function approve(blockId) {
+    const b = block(blockId); if (!b) return Promise.resolve({ status: 'FAILED', committed: false });
+    return _atomic('approve:' + blockId, () => DVSupa.write.approve(blockId), () => {
+      b.status = 'cerrado'; b.prog = b.progress = 100; emit();
+    });
+  }
   function addRound(blockId, patch) {
     const b = block(blockId); const seqN = roundsOf(blockId).length + 1;
     const p = Object.assign({ title: '', deliverable: '', feedback: '', result: 'propuesto', author: (me() || {}).name || 'Equipo' }, patch);
-    S.rounds.push(Object.assign({ id: blockId + '-R' + seqN, block_id: blockId, seq: 'R' + seqN, created_at: new Date().toISOString() }, p));
-    if (b && b.status === 'en_curso') b.status = 'en_revision';
-    if (LIVE()) DVSupa.write.addRound(blockId, seqN, { title: p.title, deliverable: p.deliverable, feedback: p.feedback, result: p.result, author: p.author });
-    emit();
+    const row = Object.assign({ id: blockId + '-R' + seqN, block_id: blockId, seq: 'R' + seqN, created_at: new Date().toISOString() }, p);
+    return _atomic('round:' + blockId, () => DVSupa.write.addRound(blockId, seqN, p), canonical => {
+      S.rounds.push(Object.assign({}, row, canonical && canonical.id ? canonical : {}));
+      if (b && b.status === 'en_curso') b.status = 'en_revision';
+      emit();
+    });
   }
-  function requestScope(blockId) { addRound(blockId, { title: 'Solicitud de producción', deliverable: 'iteración validada', feedback: 'validado internamente' }); const b = block(blockId); if (b) b.status = 'en_revision'; emit(); }
-  function invite(accId, email) { S.users.push({ id: 'u-inv-' + Date.now(), account_id: accId, email, name: '(invitación enviada)', role: 'cliente', member_role: 'miembro', pending: true, invited_at: new Date().toISOString() }); if (LIVE()) DVSupa.write.invite(accId, email); emit(); }
-  function resendInvite(userId) { const u = S.users.find(x => x.id === userId); if (u && u.pending) { u.invited_at = new Date().toISOString(); if (LIVE()) DVSupa.write.invite(u.account_id, u.email); emit(); } return u; }
+  function requestScope(blockId) { return addRound(blockId, { title: 'Solicitud de producción', deliverable: 'iteración validada', feedback: 'validado internamente' }); }
+  function invite(accId, email) {
+    const draft = { id: 'u-inv-' + Date.now(), account_id: accId, email, name: '(invitación enviada)', role: 'cliente', member_role: 'miembro', pending: true, invited_at: new Date().toISOString() };
+    return _atomic('invite:' + accId + ':' + email, () => DVSupa.write.invite(accId, email), canonical => {
+      S.users.push(Object.assign({}, draft, canonical && canonical.id ? canonical : {})); emit();
+    });
+  }
+  function resendInvite(userId) {
+    const u = S.users.find(x => x.id === userId); if (!(u && u.pending)) return Promise.resolve({ status: 'FAILED', committed: false });
+    return _atomic('resend:' + userId, () => DVSupa.write.invite(u.account_id, u.email), () => { u.invited_at = new Date().toISOString(); emit(); });
+  }
   function removeMember(userId) { const u = S.users.find(x => x.id === userId); if (u && u.member_role !== 'owner') { S.users = S.users.filter(x => x.id !== userId); emit(); return true; } return false; }
   function requestInvoice(invoiceId) { const i = S.invoices.find(x => x.id === invoiceId); if (i) { i.cfdi_requested = true; i.cfdi_requested_at = new Date().toISOString(); emit(); } return i; }
-  function inviteStaff(email) { S.users.push({ id: 'u-staff-' + Date.now(), account_id: null, email, name: '(invitación enviada)', role: 'analista', member_role: null, pending: true }); if (LIVE()) DVSupa.write.inviteStaff(email); emit(); }
-  function assign(accId, analystName) { const u = S.users.find(x => x.name.split(' ')[0] === analystName); const a = S.assignments.find(x => x.account_id === accId); if (u && a) { const auto = _canAuto(u.id); a.analyst_id = u.id; a.assigned_at = new Date().toISOString(); a.status = auto ? 'aceptada' : 'pendiente'; _logAssign(accId, u.id, auto ? 'aceptada' : 'asignada (pend. aceptación)', auto ? (isFounder(u.id) ? 'fundador · recibe' : 'dentro de base') : 'sobre base · requiere aceptación del analista'); } if (LIVE() && u) DVSupa.write.assign(accId, u.id); emit(); }
-  function validatePayment(invoiceId) { const i = S.invoices.find(x => x.id === invoiceId); if (i) { i.status = 'pagado'; i.paid_at = new Date().toISOString(); S.assets.filter(a => accIdOfInvoiceBlock(a) === i.account_id).forEach(a => a.locked = false); if (LIVE()) DVSupa.write.validatePayment(invoiceId, i.account_id); } emit(); }
+  function inviteStaff(email) {
+    const draft = { id: 'u-staff-' + Date.now(), account_id: null, email, name: '(invitación enviada)', role: 'analista', member_role: null, pending: true };
+    return _atomic('staff-invite:' + email, () => DVSupa.write.inviteStaff(email), canonical => { S.users.push(Object.assign({}, draft, canonical && canonical.id ? canonical : {})); emit(); });
+  }
+  function assign(accId, analystName) {
+    const u = S.users.find(x => x.name.split(' ')[0] === analystName), a = S.assignments.find(x => x.account_id === accId);
+    if (!(u && a)) return Promise.resolve({ status: 'FAILED', committed: false });
+    return _atomic('assign:' + accId, () => DVSupa.write.assign(accId, u.id), () => {
+      const auto = _canAuto(u.id); a.analyst_id = u.id; a.assigned_at = new Date().toISOString(); a.status = auto ? 'aceptada' : 'pendiente';
+      _logAssign(accId, u.id, auto ? 'aceptada' : 'asignada (pend. aceptación)', auto ? (isFounder(u.id) ? 'fundador · recibe' : 'dentro de base') : 'sobre base · requiere aceptación del analista'); emit();
+    });
+  }
+  function validatePayment(invoiceId) {
+    const i = S.invoices.find(x => x.id === invoiceId); if (!i) return Promise.resolve({ status: 'FAILED', committed: false });
+    return _atomic('payment:' + invoiceId, () => DVSupa.write.validatePayment(invoiceId, i.account_id), canonical => {
+      i.status = 'pagado'; i.paid_at = canonical && canonical.paid_at || new Date().toISOString();
+      S.assets.filter(a => accIdOfInvoiceBlock(a) === i.account_id).forEach(a => a.locked = false); emit();
+    });
+  }
   function accIdOfInvoiceBlock(a) { const b = block(a.block_id); return accIdOfBlock(b); }
   function publishSkill(id, note) {
     const s = S.skills.find(x => x.id === id); if (!s) return;
     _loadSkillMeta();
     const cur = _skillMeta[id] || { v: s.v, note: '', history: [] };
+    const nextV = _bumpVersion(cur.v);
+    return _atomic('skill:' + id, () => DVSupa.write.publishSkill(id, nextV), () => {
     // snapshot the version being replaced into history
     cur.history = cur.history || [];
     cur.history.unshift({ v: cur.v, note: cur.note || 'versión base', at: new Date().toISOString(), kind: 'publicada' });
-    cur.v = _bumpVersion(cur.v);
+    cur.v = nextV;
     cur.note = (note || '').trim() || 'mejora sin nota';
     _skillMeta[id] = cur; _saveSkillMeta();
     s.v = cur.v;
-    if (LIVE()) DVSupa.write.publishSkill(id, cur.v);
     emit();
+    });
   }
   function revertSkill(id, version) {
     const s = S.skills.find(x => x.id === id); if (!s) return;
     _loadSkillMeta();
     const cur = _skillMeta[id]; if (!cur) return;
     const target = (cur.history || []).find(h => h.v === version); if (!target) return;
+    return _atomic('skill:' + id, () => DVSupa.write.publishSkill(id, target.v), () => {
     cur.history.unshift({ v: cur.v, note: cur.note, at: new Date().toISOString(), kind: 'reemplazada por reversión' });
     cur.v = target.v; cur.note = 'revertida a v' + target.v + (target.note ? ' · ' + target.note : '');
     _skillMeta[id] = cur; _saveSkillMeta();
     s.v = cur.v;
-    if (LIVE()) DVSupa.write.publishSkill(id, cur.v);
     emit();
+    });
   }
   function activate(accId, analystName, kind) {
-    const a = account(accId); if (!a) return;
+    const a = account(accId); if (!a) return Promise.resolve({ status: 'FAILED', committed: false });
+    const actor = me(), analyst = S.users.find(x => x.name.split(' ')[0] === analystName);
+    return _atomic('activate:' + accId, () => DVSupa.write.activate(accId, analyst ? analyst.id : (actor ? actor.id : null)), () => {
     a.status = 'activo'; a.queue_position = null; a.pkg = 'Fundación'; a.kind = kind || a.kind || 'cliente';
     const b = { id: 'br-' + accId.slice(4), account_id: accId, name: a.name, layer: 'marca', enabled: true }; S.brands.push(b);
     const p = { id: 'pr-' + accId.slice(4), brand_id: b.id, title: 'Sistema de marca ' + a.name }; S.projects.push(p);
@@ -454,15 +518,16 @@ window.DVStore = (function () {
     const u = me(); if (u) { const tgt = u.role === 'admin' ? (S.users.find(x => x.name.split(' ')[0] === analystName) || u) : u; const auto = _canAuto(tgt.id); S.assignments.push({ id: 'as-' + Date.now(), analyst_id: tgt.id, account_id: accId, assigned_by: 'u-arturo', assigned_at: new Date().toISOString(), status: auto ? 'aceptada' : 'pendiente' }); _logAssign(accId, tgt.id, auto ? 'aceptada' : 'asignada (pend. aceptación)', auto ? (isFounder(tgt.id) ? 'fundador · recibe' : 'dentro de base · activación') : 'sobre base · requiere aceptación del analista'); }
     S.rounds.push({ id: p.id + '-F1-R1', block_id: p.id + '-F1', seq: 'R1', title: 'Kickoff · arranque de Fundación', deliverable: 'agenda de arranque', feedback: '—', result: 'propuesto', created_at: '2026-07-13T12:00:00', author: (u || {}).name || 'Equipo' });
     S.users.push({ id: 'u-' + accId.slice(4) + '-owner', account_id: accId, email: 'owner@' + a.name.toLowerCase().replace(/[^a-z]/g, '') + '.mx', name: 'Owner ' + a.name, role: 'cliente', member_role: 'owner' });
-    if (LIVE()) { const u = me(); const an = S.users.find(x => x.name.split(' ')[0] === analystName); DVSupa.write.activate(accId, an ? an.id : (u ? u.id : null)); }
     emit();
+    });
   }
   function register(name, segment, fit) {
     const id = 'acc-' + name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12) + '-' + String(Date.now()).slice(-4);
     const pos = S.accounts.filter(a => a.status === 'waitlist').length + 1;
-    S.accounts.push({ id, name, segment, status: 'waitlist', queue_position: pos, pkg: null, fit: fit || 'medio', diag: 'hecho', created_at: new Date().toISOString() });
-    if (LIVE()) DVSupa.write.register(name, segment, fit || 'medio', pos);
-    emit(); return id;
+    const draft = { id, name, segment, status: 'waitlist', queue_position: pos, pkg: null, fit: fit || 'medio', diag: 'hecho', created_at: new Date().toISOString() };
+    return _atomic('register:' + id, () => DVSupa.write.register(name, segment, fit || 'medio', pos), canonical => {
+      const row = Object.assign({}, draft, canonical && canonical.id ? canonical : {}); S.accounts.push(row); emit(); return row.id;
+    });
   }
 
   /* ══ Asignación por base mensual + desempeño (RRHH · legal) ═════════════════
@@ -476,8 +541,8 @@ window.DVStore = (function () {
      terminación con respaldo. */
   const DEFAULT_BASE = 3, REASSIGN_MS = 8 * 3600 * 1000, HR_V = 2;
   function isFounder(uid) { return uid === 'u-arturo'; }
-  function _hr() { let h; try { h = JSON.parse(localStorage.getItem('dvportal-hr') || 'null'); } catch (e) { } if (!h || h.v !== HR_V) { h = JSON.parse(JSON.stringify(S.hr || { base: {}, perf: {}, events: [], log: [], reQueue: [] })); h.v = HR_V; _saveHr(h); } h.base = h.base || {}; h.perf = h.perf || {}; h.events = h.events || []; h.log = h.log || []; h.reQueue = h.reQueue || []; return h; }
-  function _saveHr(h) { try { localStorage.setItem('dvportal-hr', JSON.stringify(h)); } catch (e) { } }
+  function _hr() { let h; try { h = JSON.parse(STORAGE.getItem('hr') || 'null'); } catch (e) { } if (!h || h.v !== HR_V) { h = JSON.parse(JSON.stringify(S.hr || { base: {}, perf: {}, events: [], log: [], reQueue: [] })); h.v = HR_V; _saveHr(h); } h.base = h.base || {}; h.perf = h.perf || {}; h.events = h.events || []; h.log = h.log || []; h.reQueue = h.reQueue || []; return h; }
+  function _saveHr(h) { try { STORAGE.setItem('hr', JSON.stringify(h)); } catch (e) { } }
   function _mkKey(ts) { const d = ts ? new Date(ts) : new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
   function curMonthKey() { return _mkKey(); }
   function monthLabel(k) { const p = k.split('-'); return ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'][(+p[1]) - 1] + ' ' + p[0]; }
@@ -543,8 +608,8 @@ window.DVStore = (function () {
      Con consentimiento, la reseña es publicable a la landing 48 h después. Alimenta
      el rating del analista, del despacho, y el detalle del proyecto finalizado. */
   const REVIEW_GATE_MS = 48 * 3600 * 1000, RV_V = 2;
-  function _rv() { let d; try { d = JSON.parse(localStorage.getItem('dvportal-reviews') || 'null'); } catch (e) { } if (!d || d.v !== RV_V) { d = { v: RV_V, list: JSON.parse(JSON.stringify(S.reviews || [])) }; _saveRv(d); } d.list = d.list || []; return d; }
-  function _saveRv(d) { try { localStorage.setItem('dvportal-reviews', JSON.stringify(d)); } catch (e) { } }
+  function _rv() { let d; try { d = JSON.parse(STORAGE.getItem('reviews') || 'null'); } catch (e) { } if (!d || d.v !== RV_V) { d = { v: RV_V, list: JSON.parse(JSON.stringify(S.reviews || [])) }; _saveRv(d); } d.list = d.list || []; return d; }
+  function _saveRv(d) { try { STORAGE.setItem('reviews', JSON.stringify(d)); } catch (e) { } }
   function reviewStatus(r) { if (r.published) return 'publicado'; if (!r.consent) return 'sin_consentimiento'; return (Date.now() - Date.parse(r.submitted_at) >= REVIEW_GATE_MS) ? 'listo' : 'en_espera'; }
   function reviews() { return _rv().list.slice().sort((a, b) => Date.parse(b.submitted_at) - Date.parse(a.submitted_at)); }
   function reviewsOf(accId) { return _rv().list.filter(r => r.account_id === accId).sort((a, b) => Date.parse(b.submitted_at) - Date.parse(a.submitted_at)); }
@@ -593,7 +658,7 @@ window.DVStore = (function () {
   function on(fn) { listeners.push(fn); }
   function emit() { listeners.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); }
 
-  return {
+  const api = {
     loadSession, session: () => session, userByEmail, loginAs, setRole, logout, me, isAdmin, isAnalyst, isOwner, isFree,
     loginFree, freeProfile, updateFreeProfile,
     accounts, waitlist, finished, historyAccounts, analystsLoad, setAccountKind, accountCapas, toggleCapa, account, brandOf, projectOf, access, analystName, blocksOf, block, roundsOf, allRounds,
@@ -608,4 +673,37 @@ window.DVStore = (function () {
     perfHistory, perfSummary, hrEvents, addHrEvent, removeHrEvent, assignmentLog, userName, analystStats,
     reviews, reviewsOf, reviewFor, reviewById, reviewStatus, addReview, publishTestimonial, unpublishTestimonial, retractReview, grantReviewConsent, publishedFeed, ratingAvgOf, analystRating, firmRating, pendingSurvey, ltvOf
   };
+  const guardedMutations = {
+    loginAs: ['session.login', 'session'], setRole: ['session.role', 'session'], logout: ['session.logout', 'session'],
+    loginFree: ['session.login', 'session'], updateFreeProfile: ['session.profile', 'profile'],
+    setAccountKind: ['account.kind', 'account'], toggleCapa: ['account.layers', 'account'],
+    saveChat: ['chat.save', 'chat'], bumpIter: ['iteration.bump', 'iteration'],
+    approveProposal: ['skill.proposal.approve', 'skill-proposal'], dismissProposal: ['skill.proposal.dismiss', 'skill-proposal'],
+    shipBacklog: ['skill.backlog.publish', 'skill'], setPeriod: ['period.update', 'period'],
+    setTeamCost: ['labor.update', 'labor'], startWork: ['work.track', 'work-session'], stopWork: ['work.track', 'work-session'],
+    setCatalogPrice: ['catalog.update', 'catalog'], setIncentiveCfg: ['incentive.update', 'incentive'],
+    setUmbral: ['incentive.update', 'incentive'], markReferralPaid: ['referral.pay', 'referral'],
+    addReferral: ['referral.create', 'referral'], approve: ['block.approve', 'block'],
+    addRound: ['round.create', 'round'], requestScope: ['scope.request', 'block'],
+    invite: ['member.invite', 'invitation'], inviteStaff: ['staff.invite', 'invitation'],
+    resendInvite: ['member.resend', 'invitation'], removeMember: ['member.remove', 'member'],
+    requestInvoice: ['invoice.request', 'invoice'], assign: ['assignment.update', 'assignment'],
+    validatePayment: ['payment.validate', 'payment'], publishSkill: ['skill.publish', 'skill'],
+    revertSkill: ['skill.revert', 'skill'], activate: ['account.activate', 'account'],
+    register: ['account.register', 'account'],
+    acceptAssignment: ['assignment.accept', 'assignment'], rejectAssignment: ['assignment.reject', 'assignment'],
+    reassignNow: ['assignment.reassign', 'assignment'], sweepReassign: ['assignment.reassign', 'assignment'],
+    setBase: ['hr.base', 'staff'], addHrEvent: ['hr.event.add', 'staff-event'], removeHrEvent: ['hr.event.remove', 'staff-event'],
+    addReview: ['review.create', 'review'], publishTestimonial: ['review.publish', 'review'],
+    unpublishTestimonial: ['review.unpublish', 'review'], retractReview: ['review.retract', 'review'],
+    grantReviewConsent: ['review.consent', 'review']
+  };
+  Object.keys(guardedMutations).forEach(name => {
+    const original = api[name], policy = guardedMutations[name];
+    api[name] = function () {
+      const args = arguments;
+      return DVWriteGuard.run(policy[0], policy[1], { resourceId: args[0] == null ? null : String(args[0]) }, () => original.apply(null, args));
+    };
+  });
+  return api;
 })();

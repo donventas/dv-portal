@@ -5,8 +5,8 @@ window.DVClient = (function () {
 
   /* ── acordeón + kanban (mismo sistema que el staff, memoria propia del cliente) ── */
   let _open = _loadOpen();
-  function _loadOpen() { try { return JSON.parse(localStorage.getItem('dvportal-open-cli') || '{}'); } catch (e) { return {}; } }
-  function _saveOpen() { try { localStorage.setItem('dvportal-open-cli', JSON.stringify(_open)); } catch (e) { } }
+  function _loadOpen() { try { return JSON.parse(DVEnv.storage.getItem('open-client') || '{}'); } catch (e) { return {}; } }
+  function _saveOpen() { try { DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('open-client', JSON.stringify(_open))); } catch (e) { } }
   function _isOpen(key, def) { return _open[key] === undefined ? (def !== false) : _open[key]; }
   function accToggle(key, def) { _open[key] = !_isOpen(key, def); _saveOpen(); DVPortal.go(_route); }
   function accordion(key, def, titleHTML, countHTML, bodyHTML) {
@@ -303,18 +303,27 @@ window.DVClient = (function () {
   }
 
   /* actions */
-  function approve(id) { S.approve(id); U.toast('Checkpoint aprobado ✓ — el bloque se cierra'); window.DVPortal.go('tablero'); }
-  function comment() { window.DVPortal.modal('comment'); }
-  function sendComment(text) {
-    const b = S.block(curBlock);
-    if (b) S.addRound(b.id, { title: 'Ajustes solicitados', deliverable: 'checkpoint', feedback: text || 'Ajustes solicitados', result: 'ajustes' });
-    U.toast('Ajustes enviados — queda en la ronda');
+  async function approve(id) {
+    U.toast('Aprobando checkpoint…');
+    const r = await S.approve(id);
+    if (r.status !== 'SUCCEEDED') return U.toast('No se aprobó el checkpoint · intenta de nuevo');
+    U.toast('Checkpoint aprobado ✓ — el bloque se cierra'); window.DVPortal.go('tablero');
   }
-  function invite() {
+  function comment() { window.DVPortal.modal('comment'); }
+  async function sendComment(text) {
+    const b = S.block(curBlock);
+    const r = b && await S.addRound(b.id, { title: 'Ajustes solicitados', deliverable: 'checkpoint', feedback: text || 'Ajustes solicitados', result: 'ajustes' });
+    if (!r || r.status !== 'SUCCEEDED') { U.toast('No se enviaron los ajustes · intenta de nuevo'); return false; }
+    U.toast('Ajustes enviados — queda en la ronda'); return true;
+  }
+  async function invite() {
     const i = U.el('inviteEmail'); const e = (i.value || '').trim();
     if (!e) return U.toast('Escribe un correo');
     if (S.membersOf(S.session().accountId).length >= 5) return U.toast('Alcanzaste el límite de 5 miembros');
-    S.invite(S.session().accountId, e); i.value = ''; U.toast('Invitación enviada a ' + e);
+    U.toast('Enviando invitación…');
+    const r = await S.invite(S.session().accountId, e);
+    if (r.status !== 'SUCCEEDED') return U.toast('No se envió la invitación · intenta de nuevo');
+    i.value = ''; U.toast('Invitación enviada a ' + e);
   }
   function preview(id) { curBlock = id; window.DVPortal.modal('preview'); }
   function curBlockObj() { return S.block(curBlock); }
