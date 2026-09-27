@@ -219,3 +219,9 @@ test('54 prelaunch layout has explicit mobile reflow', () => {
   assert.match(css, /@media\(max-width:800px\)[\s\S]*?\.prelaunch-benefits\{grid-template-columns:1fr\}/);
   assert.match(css, /@media\(max-width:640px\)[\s\S]*?\.prelaunch-actions\{[^}]*flex-direction:column/);
 });
+test('55 only the editorial prelaunch removes the fixed BLOCKED banner', () => {
+  assert.match(css, /\.env-prelaunch-state #environmentStatusMount\{display:none\}/);
+  assert.doesNotMatch(css, /\.env-blocked-state #environmentStatusMount\{display:none\}/);
+  assert.match(indicatorSource, /Portal aún no habilitado/);
+  assert.match(indicatorSource, /Portal bloqueado: aún no habilitado/);
+});

@@ -46,7 +46,10 @@ input,select,textarea{font-family:inherit}
 .env-guard-modal{z-index:10001}
 
 /* ══ PRELANZAMIENTO · estado BLOCKED seguro con portada editorial ══ */
-.env-prelaunch-state #environmentBlockedMount{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+.env-prelaunch-state #environmentStatusMount{display:none}
+.env-prelaunch-state #environmentBlockedMount{inset:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+.env-prelaunch-state .env-prelaunch-screen::before{inset:0}
+.env-prelaunch-state .prelaunch-shell{min-height:100vh}
 .env-prelaunch-screen{min-height:100%;overflow-x:hidden;overflow-y:auto;background:var(--bg);color:var(--fg);position:relative}
 .env-prelaunch-screen::before{content:"";position:fixed;inset:var(--env-banner-h) 0 0;pointer-events:none;background:linear-gradient(rgba(238,241,246,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(238,241,246,.025) 1px,transparent 1px),radial-gradient(75% 60% at 84% 18%,rgba(59,116,242,.16),transparent 62%);background-size:72px 72px,72px 72px,auto}
 .prelaunch-shell{width:min(1180px,calc(100% - 48px));min-height:calc(100vh - var(--env-banner-h));margin:0 auto;display:flex;flex-direction:column;position:relative;z-index:1}
