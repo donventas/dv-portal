@@ -104,3 +104,20 @@ test('production boot has no direct seed script or active config template', () =
   assert.doesNotMatch(html, /<script src="data\/seed\.js"/);
   assert.doesNotMatch(html, /release-config\.example\.js/);
 });
+
+test('lead pipeline is admin-only and keeps anonymous inserts column-scoped', () => {
+  const sql = fs.readFileSync(path.join(__dirname, '..', 'supabase', 'migrations', '05_lead_pipeline.sql'), 'utf8');
+  assert.match(sql, /lead_admin_read[\s\S]+auth_dv\.is_admin\(\)/);
+  assert.match(sql, /lead_admin_update[\s\S]+auth_dv\.is_admin\(\)/);
+  assert.match(sql, /revoke insert on public\.lead from anon/);
+  assert.match(sql, /grant insert \(nombre, correo, negocio, whatsapp, reto, paquete, consent, origen, submission_key\)/);
+  assert.doesNotMatch(sql, /grant (?:all|select|update).*\bto anon/i);
+});
+
+test('lead notifications keep provider credentials in environment secrets', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'supabase', 'functions', 'lead-notifications', 'index.ts'), 'utf8');
+  assert.match(source, /Deno\.env\.get\('RESEND_API_KEY'\)/);
+  assert.match(source, /Deno\.env\.get\('LEAD_WEBHOOK_SECRET'\)/);
+  assert.match(source, /Idempotency-Key/);
+  assert.doesNotMatch(source, /re_[A-Za-z0-9]{10,}/);
+});

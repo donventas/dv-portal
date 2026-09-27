@@ -71,14 +71,14 @@ test('37 every backend mutation adapter invokes guarded execution', () => {
   ['auth.otp','auth.oauth','auth.signout','block.backend.approve','round.backend.create',
     'invitation.backend.create','staff.backend.invite','assignment.backend.upsert',
     'payment.backend.validate','skill.backend.publish','account.backend.register',
-    'account.backend.activate'].forEach(action => assert.match(source, new RegExp("guarded\\('" + action.replace('.', '\\.') + "'")));
+    'account.backend.activate','lead.backend.update'].forEach(action => assert.match(source, new RegExp("guarded\\('" + action.replace('.', '\\.') + "'")));
 });
 test('38 executable Store mutation inventory is centrally wrapped', () => {
   const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../app/store.js'), 'utf8');
   ['loginAs','setRole','logout','loginFree','updateFreeProfile','setAccountKind','toggleCapa',
     'saveChat','bumpIter','approveProposal','dismissProposal','shipBacklog','setPeriod',
     'setTeamCost','startWork','stopWork','setCatalogPrice','setIncentiveCfg','setUmbral',
-    'markReferralPaid','addReferral','approve','addRound','requestScope','invite','inviteStaff',
+    'markReferralPaid','addReferral','updateLead','approve','addRound','requestScope','invite','inviteStaff',
     'resendInvite','removeMember','requestInvoice','assign','validatePayment','publishSkill',
     'revertSkill','activate','register','acceptAssignment','rejectAssignment','reassignNow',
     'sweepReassign','setBase','addHrEvent','removeHrEvent','addReview','publishTestimonial',

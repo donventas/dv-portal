@@ -2,7 +2,7 @@
 window.DVStaff = (function () {
   const U = DVUtil, S = DVStore;
   let curBlock = null, iterN = 0, comments = [], chat = [], hasPreview = false;
-  let _open = _loadOpen(), _route = 'cuentas', _cFocus = 'activas', _actSel = null;
+  let _open = _loadOpen(), _route = 'cuentas', _cFocus = 'activas', _actSel = null, _leadStatus = 'todos', _leadQuery = '';
   function _loadOpen() { try { return JSON.parse(DVEnv.storage.getItem('open-staff') || '{}'); } catch (e) { return {}; } }
   function _saveOpen() { try { DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('open-staff', JSON.stringify(_open))); } catch (e) { } }
   function activeSkill() { const all = S.skills(); return all.find(s => /brand system/i.test(s.n)) || all[0] || { n: 'Brand System Builder', v: '—' }; }
@@ -37,6 +37,7 @@ window.DVStaff = (function () {
       admin && { route: 'utilidad', icon: '◑', label: 'Utilidad operativa' },
       admin && { route: 'valor', icon: '◮', label: 'Valor & capacidad' },
       admin && { group: 'Capa 3 · Valor & adquisición' },
+      admin && { route: 'prospectos', icon: '◉', label: 'Prospectos', badge: (S.leads().filter(l => (l.status || 'nuevo') === 'nuevo').length ? '<span class="b">' + S.leads().filter(l => (l.status || 'nuevo') === 'nuevo').length + '</span>' : '') },
       admin && { route: 'aplicacion', icon: '⬢', label: 'Valor de aplicación' },
       admin && { route: 'impacto', icon: '◍', label: 'Panel de impacto' },
       admin && { route: 'referidos', icon: '⇄', label: 'Referidos' }
@@ -62,7 +63,7 @@ window.DVStaff = (function () {
 
   function render(route, host) {
     _route = route;
-    const map = { cola: renderCola, bloque: renderBloque, bitacora: renderBitacora, skills: renderSkills, mejoras: renderMejoras, waitlist: renderWaitlist, capacidad: renderCapacidad, desempeno: renderDesempeno, resenas: renderResenas, equipo: renderEquipo, accesos: renderAccesos, facturacion: renderFacturacion, utilidad: renderUtilidad, valor: renderValor, aplicacion: renderAplicacion, impacto: renderImpacto, referidos: renderReferidos };
+    const map = { cola: renderCola, bloque: renderBloque, bitacora: renderBitacora, skills: renderSkills, mejoras: renderMejoras, waitlist: renderWaitlist, capacidad: renderCapacidad, desempeno: renderDesempeno, resenas: renderResenas, equipo: renderEquipo, accesos: renderAccesos, facturacion: renderFacturacion, utilidad: renderUtilidad, valor: renderValor, prospectos: renderProspectos, aplicacion: renderAplicacion, impacto: renderImpacto, referidos: renderReferidos };
     if (S.isAdmin()) S.sweepReassign();
     // session time tracking: cuenta el tiempo solo mientras el bloque de un cliente está abierto
     if (route === 'bloque' && curBlock) { const acc = S.accIdOfBlock(S.block(curBlock)); if (acc) S.startWork(acc); else S.stopWork(); } else S.stopWork();
@@ -712,6 +713,70 @@ window.DVStaff = (function () {
   function setBonoPct(val) { const n = parseFloat(val); if (isNaN(n)) return; S.setIncentiveCfg({ bonoPct: n }); U.toast('Bono % actualizado'); DVPortal.go('aplicacion'); }
   function setUmbral(userId, val) { const n = parseFloat(val); if (isNaN(n)) return; S.setUmbral(userId, n); U.toast('Umbral actualizado'); DVPortal.go('aplicacion'); }
 
+  /* ── Adquisición · prospectos capturados por las dos rutas comerciales ── */
+  const LEAD_STAGES = [
+    ['nuevo', 'Nuevo'], ['contactado', 'Contactado'], ['calificado', 'Calificado'],
+    ['propuesta', 'Propuesta'], ['ganado', 'Ganado'], ['nutrir', 'Nutrir'], ['perdido', 'Perdido']
+  ];
+  function leadStageLabel(value) { const found = LEAD_STAGES.find(x => x[0] === value); return found ? found[1] : 'Nuevo'; }
+  function leadStageOptions(value) { return LEAD_STAGES.map(x => '<option value="' + x[0] + '"' + ((value || 'nuevo') === x[0] ? ' selected' : '') + '>' + x[1] + '</option>').join(''); }
+  function leadDateInput(value) {
+    if (!value) return '';
+    const d = new Date(value); if (isNaN(d.getTime())) return '';
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16);
+  }
+  function leadRoute(lead) {
+    const origin = String(lead.origen || '').toLowerCase();
+    if (origin.indexOf('branding') >= 0) return 'Branding';
+    if (origin.indexOf('contenido') >= 0) return 'Contenido';
+    return 'Sin ruta';
+  }
+  function leadDelivery(lead) {
+    if (lead.notification_error) return '<span class="tag warn" title="' + U.esc(lead.notification_error) + '">Correo pendiente</span>';
+    if (lead.acknowledgement_sent_at && lead.internal_alert_sent_at) return '<span class="tag hi">Correos enviados</span>';
+    return '<span class="tag locked">Sin notificar</span>';
+  }
+  function leadCard(lead) {
+    const id = U.esc(lead.id), phone = String(lead.whatsapp || '').replace(/\D/g, '');
+    const emailHref = 'mailto:' + encodeURIComponent(lead.correo || '');
+    const phoneLink = phone ? '<a class="btn sm ghost" target="_blank" rel="noopener" href="https://wa.me/' + phone + '">WhatsApp</a>' : '';
+    return '<article class="leadcard"><header><div><div class="leadmeta"><span class="tag blue">' + leadRoute(lead) + '</span>' + leadDelivery(lead) + '<span>' + (lead.created_at ? U.ago(lead.created_at) : 'fecha no disponible') + '</span></div>' +
+      '<h3>' + U.esc(lead.negocio || 'Negocio sin nombre') + '</h3><p>' + U.esc(lead.nombre || 'Contacto sin nombre') + ' · <a href="' + emailHref + '">' + U.esc(lead.correo || '') + '</a></p></div>' +
+      '<label class="leadstage">Etapa<select onchange="DVStaff.updateLeadStatus(\'' + id + '\',this.value)">' + leadStageOptions(lead.status) + '</select></label></header>' +
+      '<div class="leadsummary"><div><span>Recomendación</span><b>' + U.esc(lead.paquete || 'Sin recomendación') + '</b></div><div><span>Origen</span><b>' + U.esc(lead.origen || 'directo') + '</b></div></div>' +
+      '<details><summary>Ver diagnóstico y seguimiento</summary><div class="leaddetail"><div class="leadbrief"><span>Contexto capturado</span><p>' + U.esc(lead.reto || 'Sin contexto adicional') + '</p></div>' +
+      '<div class="leadfollow"><label>Próxima acción<input id="lead-next-' + id + '" type="datetime-local" value="' + leadDateInput(lead.next_action_at) + '"></label>' +
+      '<label>Notas<textarea id="lead-notes-' + id + '" placeholder="Acuerdos, objeciones y siguiente paso…">' + U.esc(lead.notes || '') + '</textarea></label>' +
+      '<div class="leadactions"><a class="btn sm" href="' + emailHref + '">Enviar correo</a>' + phoneLink + '<button class="btn solid sm" onclick="DVStaff.saveLeadFollowup(\'' + id + '\')">Guardar seguimiento</button></div></div></div></details></article>';
+  }
+  function renderProspectos(host) {
+    _curView = 'prospectos';
+    const all = S.leads(), query = _leadQuery.toLowerCase().trim();
+    const filtered = all.filter(lead => (_leadStatus === 'todos' || (lead.status || 'nuevo') === _leadStatus) && (!query || [lead.nombre, lead.negocio, lead.correo, lead.paquete, lead.reto].join(' ').toLowerCase().indexOf(query) >= 0));
+    const active = all.filter(l => ['calificado', 'propuesta'].indexOf(l.status) >= 0).length;
+    const won = all.filter(l => l.status === 'ganado').length;
+    const filters = [['todos', 'Todos']].concat(LEAD_STAGES).map(x => '<button class="' + (_leadStatus === x[0] ? 'on' : '') + '" onclick="DVStaff.setLeadFilter(\'' + x[0] + '\')">' + x[1] + '</button>').join('');
+    host.innerHTML = '<div class="eyebrow">Adquisición · solo admin</div><h2 class="vh">Prospectos</h2>' +
+      '<p class="vsub">Cada diagnóstico entra aquí con su ruta, recomendación y contexto. El objetivo es que ningún contacto se pierda y que cada conversación tenga una siguiente acción concreta.</p>' +
+      '<div class="kpis">' + kpi(all.length, 'Diagnósticos') + kpi(all.filter(l => (l.status || 'nuevo') === 'nuevo').length, 'Nuevos') + kpi(active, 'Calificados / propuesta') + kpi(won, 'Ganados') + '</div>' +
+      '<div class="leadtools"><div class="leadfilters">' + filters + '</div><label class="leadsearch">Buscar<input value="' + U.esc(_leadQuery) + '" placeholder="Nombre, negocio o correo" onchange="DVStaff.setLeadQuery(this.value)"></label></div>' +
+      '<div class="leadlist">' + (filtered.length ? filtered.map(leadCard).join('') : '<div class="panel leadempty"><h3>Sin prospectos en esta vista</h3><p class="d">Cuando alguien complete el diagnóstico, aparecerá aquí automáticamente.</p></div>') + '</div>';
+  }
+  function setLeadFilter(status) { _leadStatus = status; DVPortal.go('prospectos'); }
+  function setLeadQuery(value) { _leadQuery = value || ''; DVPortal.go('prospectos'); }
+  async function updateLeadStatus(id, status) {
+    U.toast('Guardando etapa…'); const r = await S.updateLead(id, { status });
+    if (r.status !== 'SUCCEEDED') return U.toast('No se actualizó la etapa · intenta de nuevo');
+    U.toast('Prospecto · ' + leadStageLabel(status)); DVPortal.go('prospectos');
+  }
+  async function saveLeadFollowup(id) {
+    const note = U.el('lead-notes-' + id), next = U.el('lead-next-' + id);
+    const patch = { notes: note ? note.value.trim() : '', next_action_at: next && next.value ? new Date(next.value).toISOString() : null };
+    U.toast('Guardando seguimiento…'); const r = await S.updateLead(id, patch);
+    if (r.status !== 'SUCCEEDED') return U.toast('No se guardó · intenta de nuevo');
+    U.toast('Seguimiento guardado'); DVPortal.go('prospectos');
+  }
+
   /* ── Medidor B · Panel de impacto (objetivo → métricas base→ahora) + ahorro operativo ── */
   function _fmtMetric(v, unit) {
     if (unit === '$') return U.mxn(v);
@@ -794,5 +859,5 @@ window.DVStaff = (function () {
   function marcarReferido(id) { if (!window.confirm('¿Marcar la comisión como pagada? (post-cobro)')) return; S.markReferralPaid(id); U.toast('Comisión liquidada'); DVPortal.go('referidos'); }
   function copiarLink(link) { try { navigator.clipboard.writeText('https://' + link); U.toast('Link copiado: ' + link); } catch (e) { U.toast(link); } }
 
-  return { nav, ctxLabel, render, open, send, iterar, validar, solicitar, compartir, addComment, saveRound, publish, revert, aprobarMejora, descartarMejora, publicarBacklog, exportarFeed, accToggle, focusCuentas, beginActivate, cancelActivate, setActKind, setActAnalyst, confirmActivate, toggleCapa, inviteStaff, assign, changeKind, expandAll, collapseAll, setBase, reasignarAhora, aceptar, rechazar, nuevoEvento, quitarEvento, expediente, publicarTestimonio, retirarTestimonio, validatePay, setLabor, setPeriod, setPeriodSpan, setPeriodAnchor, renderAplicacion, setCatPrice, setBonoPct, setUmbral, crearReferido, marcarReferido, copiarLink };
+  return { nav, ctxLabel, render, open, send, iterar, validar, solicitar, compartir, addComment, saveRound, publish, revert, aprobarMejora, descartarMejora, publicarBacklog, exportarFeed, accToggle, focusCuentas, beginActivate, cancelActivate, setActKind, setActAnalyst, confirmActivate, toggleCapa, inviteStaff, assign, changeKind, expandAll, collapseAll, setBase, reasignarAhora, aceptar, rechazar, nuevoEvento, quitarEvento, expediente, publicarTestimonio, retirarTestimonio, validatePay, setLabor, setPeriod, setPeriodSpan, setPeriodAnchor, renderProspectos, setLeadFilter, setLeadQuery, updateLeadStatus, saveLeadFollowup, renderAplicacion, setCatPrice, setBonoPct, setUmbral, crearReferido, marcarReferido, copiarLink };
 })();

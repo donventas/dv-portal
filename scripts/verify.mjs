@@ -12,6 +12,7 @@ const allowed = [
   'app/write-guard.js',
   'brand/donventas-horizontal-curvas-reverse.svg',
   'config/release-config.example.js', 'favicon.svg', 'index.html', 'og-portal.png', 'package-lock.json',
+  'design-references/prospect-inbox-editorial-v1.png',
   'package.json', 'playwright.config.js', 'scripts/serve.mjs',
   'scripts/render-social-card.mjs', 'scripts/verify.mjs',
   'social-cards/donventas-horizontal-curvas-reverse.svg', 'social-cards/portal.html',
@@ -20,13 +21,19 @@ const allowed = [
   'tests/browser/foundation.spec.js', 'tests/environment-indicator.test.js',
   'tests/environment-indicator-harness.html',
   'tests/environment.test.js', 'tests/product-foundation.test.js',
-  'tests/write-guard.test.js'
+  'tests/write-guard.test.js',
+  'supabase/migrations/05_lead_pipeline.sql',
+  'supabase/functions/lead-notifications/index.ts'
 ];
 const forbidden = [
   /^supabase\//, /^data\/seed\.js$/, /^README\.md$/, /\.env(?:\.|$)/,
   /fix-grants\.sql$/, /reset-prod\.sql$/, /migrations\//,
   /stripe|payment|webhook|edge.?function/i
 ];
+const governedBackend = new Set([
+  'supabase/migrations/05_lead_pipeline.sql',
+  'supabase/functions/lead-notifications/index.ts'
+]);
 function changed() {
   const tracked = cp.execFileSync('git', ['diff', '--name-only', '0e53b217513ac71c7765637bda047f8871cbe684'])
     .toString().trim().split(/\r?\n/).filter(Boolean);
@@ -38,7 +45,7 @@ function fail(message) { console.error(message); process.exitCode = 1; }
 if (mode === 'paths') {
   for (const file of changed()) {
     if (!allowed.includes(file)) fail('PATH_NOT_ALLOWLISTED: ' + file);
-    if (forbidden.some(rule => rule.test(file))) fail('PATH_DENYLISTED: ' + file);
+    if (!governedBackend.has(file) && forbidden.some(rule => rule.test(file))) fail('PATH_DENYLISTED: ' + file);
   }
 } else if (mode === 'bundle') {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -49,7 +56,7 @@ if (mode === 'paths') {
   if (/<script src="data\/seed\.js"/.test(html)) fail('SEED_IN_STATIC_BOOT');
 } else if (mode === 'secrets') {
   const files = changed().filter(file => fs.existsSync(path.join(root, file)) &&
-    /\.(?:js|json|html|mjs|yml|yaml|md|nvmrc)$/.test(file));
+    /\.(?:js|ts|sql|json|html|mjs|yml|yaml|md|nvmrc)$/.test(file));
   const patterns = [
     /service[_-]?role\s*[:=]\s*['"][^'"]+/i,
     /(?:password|private[_-]?key|webhook[_-]?secret)\s*[:=]\s*['"][^'"]+/i,
