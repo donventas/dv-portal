@@ -64,6 +64,7 @@ window.DVStore = (function () {
   }
   function accounts() { const ids = scopedAccountIds(); return S.accounts.filter(a => ids.indexOf(a.id) >= 0 && a.status === 'activo'); }
   function waitlist() { return isAdmin() ? S.accounts.filter(a => a.status === 'waitlist').sort((a, b) => a.queue_position - b.queue_position) : []; }
+  function leads() { return isAdmin() ? (S.leads || []).slice().sort((a, b) => Date.parse(b.created_at || 0) - Date.parse(a.created_at || 0)) : []; }
   function finished() { const ids = scopedAccountIds(); return S.accounts.filter(a => ids.indexOf(a.id) >= 0 && a.status === 'finalizado').sort((a, b) => Date.parse(b.finished_at || 0) - Date.parse(a.finished_at || 0)); }
   function historyAccounts() { const ids = scopedAccountIds(); return S.accounts.filter(a => ids.indexOf(a.id) >= 0 && (a.status === 'activo' || a.status === 'finalizado')); }
   function analystsLoad() { return staff().map(u => { const load = activeLoadOf(u.id), base = baseOf(u.id); return { id: u.id, name: u.name, first: u.name.split(' ')[0], role: u.role, load, tope: base, base, monthCount: load, atBase: load >= base, founder: isFounder(u.id), pending: pendingCountOf(u.id) }; }).sort((a, b) => (a.load / a.base) - (b.load / b.base)); }
@@ -445,6 +446,15 @@ window.DVStore = (function () {
     });
   }
   function requestScope(blockId) { return addRound(blockId, { title: 'Solicitud de producción', deliverable: 'iteración validada', feedback: 'validado internamente' }); }
+  function updateLead(leadId, patch) {
+    const lead = (S.leads || []).find(x => x.id === leadId);
+    if (!isAdmin() || !lead) return Promise.resolve({ status: 'FAILED', committed: false });
+    const safe = {};
+    ['status', 'next_action_at', 'notes', 'owner_id'].forEach(k => { if (Object.prototype.hasOwnProperty.call(patch || {}, k)) safe[k] = patch[k]; });
+    return _atomic('lead:' + leadId, () => DVSupa.write.updateLead(leadId, safe), canonical => {
+      Object.assign(lead, safe, canonical && canonical.id ? canonical : {}); emit();
+    });
+  }
   function invite(accId, email) {
     const draft = { id: 'u-inv-' + Date.now(), account_id: accId, email, name: '(invitación enviada)', role: 'cliente', member_role: 'miembro', pending: true, invited_at: new Date().toISOString() };
     return _atomic('invite:' + accId + ':' + email, () => DVSupa.write.invite(accId, email), canonical => {
@@ -661,13 +671,13 @@ window.DVStore = (function () {
   const api = {
     loadSession, session: () => session, userByEmail, loginAs, setRole, logout, me, isAdmin, isAnalyst, isOwner, isFree,
     loginFree, freeProfile, updateFreeProfile,
-    accounts, waitlist, finished, historyAccounts, analystsLoad, setAccountKind, accountCapas, toggleCapa, account, brandOf, projectOf, access, analystName, blocksOf, block, roundsOf, allRounds,
+    accounts, waitlist, leads, finished, historyAccounts, analystsLoad, setAccountKind, accountCapas, toggleCapa, account, brandOf, projectOf, access, analystName, blocksOf, block, roundsOf, allRounds,
     previewOf, assetsOf, assetsAllOf, invoicesOf, balance, membersOf, resendInvite, removeMember, requestInvoice, queue, acctNameOfBlock, accIdOfBlock, staff, skills, skillHistory, billingAll, capacity, CAPAS: S.CAPAS,
     margin, claudeUsage, operating, laborModel, teamCost, setTeamCost, activeHoursOf, startWork, stopWork, valueModel, getPeriod, setPeriod, periodLabel, periodMonths, monthsActiveOf,
     catalog, setCatalogPrice, appLinesOf, appMonthlyValue, appPieces, applicationValue, impactOf, impactModel, savingsOf, incentiveCfg, setIncentiveCfg, setUmbral, incentiveModel, referrals, referralStats, markReferralPaid, addReferral, referralByCode,
     chatOf, saveChat, iterOf, bumpIter,
     skillSignals, skillProposal, proposalState, pendingMejoras, backlog, approveProposal, dismissProposal, shipBacklog,
-    approve, addRound, requestScope, invite, inviteStaff, assign, validatePayment, publishSkill, revertSkill, activate, register, on,
+    approve, addRound, requestScope, updateLead, invite, inviteStaff, assign, validatePayment, publishSkill, revertSkill, activate, register, on,
     baseOf, setBase, activeLoadOf, pendingCountOf, curMonthKey, monthLabel, isFounder,
     pendingAssignments, acceptAssignment, rejectAssignment, reassignQueue, reassignNow, sweepReassign,
     perfHistory, perfSummary, hrEvents, addHrEvent, removeHrEvent, assignmentLog, userName, analystStats,
@@ -683,7 +693,7 @@ window.DVStore = (function () {
     setTeamCost: ['labor.update', 'labor'], startWork: ['work.track', 'work-session'], stopWork: ['work.track', 'work-session'],
     setCatalogPrice: ['catalog.update', 'catalog'], setIncentiveCfg: ['incentive.update', 'incentive'],
     setUmbral: ['incentive.update', 'incentive'], markReferralPaid: ['referral.pay', 'referral'],
-    addReferral: ['referral.create', 'referral'], approve: ['block.approve', 'block'],
+    addReferral: ['referral.create', 'referral'], updateLead: ['lead.update', 'lead'], approve: ['block.approve', 'block'],
     addRound: ['round.create', 'round'], requestScope: ['scope.request', 'block'],
     invite: ['member.invite', 'invitation'], inviteStaff: ['staff.invite', 'invitation'],
     resendInvite: ['member.resend', 'invitation'], removeMember: ['member.remove', 'member'],

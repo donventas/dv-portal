@@ -648,3 +648,29 @@ main{overflow:auto;padding:30px 34px 70px}
 .swi::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;transition:transform .16s}
 .swi.on::after{transform:translateX(19px)}
 .swi.lock{opacity:.5;cursor:default}
+
+/* ══ PROSPECTOS · pipeline comercial (solo admin) ══ */
+.leadtools{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:22px 0 14px}
+.leadfilters{display:flex;flex-wrap:wrap;gap:7px}
+.leadfilters button{min-height:38px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--fg-soft);font-family:var(--mono);font-size:10.5px;cursor:pointer}
+.leadfilters button:hover,.leadfilters button.on{border-color:var(--accent);color:var(--fg);background:rgba(59,116,242,.09)}
+.leadsearch{display:flex;flex-direction:column;gap:7px;color:var(--fg-faint);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;min-width:min(300px,100%)}
+.leadsearch input,.leadstage select,.leadfollow input,.leadfollow textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);font:inherit;padding:10px 12px}
+.leadsearch input:focus,.leadstage select:focus,.leadfollow input:focus,.leadfollow textarea:focus{outline:2px solid rgba(59,116,242,.42);outline-offset:1px;border-color:var(--accent)}
+.leadlist{display:flex;flex-direction:column;gap:12px}
+.leadcard{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
+.leadcard>header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:18px 20px}
+.leadcard h3{margin:8px 0 4px;font-size:19px;letter-spacing:-.02em}.leadcard header p{margin:0;color:var(--fg-soft);font-size:13px}.leadcard header a{color:var(--accent-2)}
+.leadmeta{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-family:var(--mono);font-size:10px;color:var(--fg-faint)}
+.leadstage{display:flex;flex-direction:column;gap:6px;min-width:150px;color:var(--fg-faint);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.leadstage select{min-height:42px;padding:8px 10px;text-transform:none;letter-spacing:normal;font-family:var(--sans)}
+.leadsummary{display:grid;grid-template-columns:1.3fr 1fr;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.leadsummary>div{padding:13px 20px;border-right:1px solid var(--line-2)}.leadsummary>div:last-child{border-right:0}
+.leadsummary span,.leadbrief>span{display:block;margin-bottom:5px;color:var(--fg-faint);font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.07em}.leadsummary b{font-size:12px;font-weight:500;color:var(--fg-soft)}
+.leadcard details summary{padding:13px 20px;cursor:pointer;color:var(--fg-soft);font-size:12px;list-style-position:inside}.leadcard details summary:hover{color:var(--fg)}
+.leaddetail{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;padding:0 20px 20px}
+.leadbrief{border:1px solid var(--line-2);border-radius:10px;background:var(--bg);padding:15px}.leadbrief p{white-space:pre-wrap;color:var(--fg-soft);font-size:12.5px;line-height:1.55;margin:0}
+.leadfollow{display:flex;flex-direction:column;gap:12px}.leadfollow label{display:flex;flex-direction:column;gap:6px;color:var(--fg-faint);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em}.leadfollow input,.leadfollow textarea{text-transform:none;letter-spacing:normal;font-family:var(--sans);font-size:13px}.leadfollow textarea{min-height:86px;resize:vertical}
+.leadactions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}.leadempty{text-align:center;padding:36px 22px}.leadempty h3{margin:0 0 8px}
+@media(max-width:760px){.leadtools{align-items:stretch;flex-direction:column}.leadsearch{min-width:0}.leadcard>header{flex-direction:column}.leadstage{width:100%}.leadsummary,.leaddetail{grid-template-columns:1fr}.leadsummary>div{border-right:0;border-bottom:1px solid var(--line-2)}.leadsummary>div:last-child{border-bottom:0}.leadactions{justify-content:stretch}.leadactions .btn{flex:1;min-height:44px}}
+@media(max-width:420px){.leadcard>header,.leadcard details summary,.leaddetail,.leadsummary>div{padding-left:14px;padding-right:14px}.leadfilters{display:grid;grid-template-columns:1fr 1fr;width:100%}.leadfilters button{width:100%}}

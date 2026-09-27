@@ -116,3 +116,29 @@ test('SANDBOX confirmation is 0 before confirmation and 1 after it', async ({ pa
   await page.locator('#envGuardConfirm').click();
   expect(await page.evaluate(() => window.__harnessExecuted)).toBe(1);
 });
+
+test('admin prospect inbox is responsive and persists guarded follow-up state', async ({ browser }) => {
+  const state = await safePage(browser, { width: 390, height: 844 });
+  await state.page.waitForFunction(() => window.DVStore && window.DVPortal && window.DVStaff);
+  await state.page.evaluate(() => {
+    window.DV_SEED.leads = [{
+      id: 'lead-demo-1', nombre: 'Cliente Demo', correo: 'cliente@example.com',
+      negocio: 'Marca de prueba', whatsapp: '', reto: 'Quiere atraer pedidos calificados.',
+      paquete: 'Contenido Esencial · $8,000–$12,000 MXN', origen: 'landing-contenido-prueba',
+      status: 'nuevo', created_at: new Date().toISOString(), notes: '', next_action_at: null
+    }];
+    const admin = window.DV_SEED.users.find(user => user.role === 'admin');
+    window.DVStore.loginAs(admin); window.DVPortal.boot(); window.DVPortal.go('prospectos');
+  });
+  await expect(state.page.locator('h2.vh')).toHaveText('Prospectos');
+  await expect(state.page.locator('.leadcard')).toContainText('Marca de prueba');
+  await expect(state.page.locator('.leadcard')).toContainText('Contenido Esencial');
+  await state.page.locator('.leadcard details').click();
+  await state.page.locator('#lead-notes-lead-demo-1').fill('Enviar propuesta el jueves.');
+  await state.page.getByRole('button', { name: 'Guardar seguimiento' }).click();
+  await expect.poll(() => state.page.evaluate(() => window.DV_SEED.leads[0].notes)).toBe('Enviar propuesta el jueves.');
+  expect(await state.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  expect(state.forbidden).toEqual([]);
+  expect(state.consoleProblems).toEqual([]);
+  await state.context.close();
+});

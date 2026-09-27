@@ -182,7 +182,7 @@
     'session.login','session.role','session.logout','session.profile','ui.preference',
     'account.kind','account.layers','chat.save','iteration.bump','skill.proposal.approve',
     'skill.proposal.dismiss','skill.backlog.publish','period.update','labor.update',
-    'work.track','catalog.update','incentive.update','referral.create','referral.pay',
+    'work.track','catalog.update','incentive.update','referral.create','referral.pay','lead.update',
     'block.approve','round.create','scope.request','member.invite','staff.invite',
     'member.resend','member.remove','invoice.request','assignment.update','payment.validate',
     'skill.publish','skill.revert','account.activate','account.register',
@@ -200,7 +200,7 @@
     'auth.otp': 1, 'auth.oauth': 1, 'auth.signout': 1, 'block.backend.approve': 1,
     'round.backend.create': 1, 'invitation.backend.create': 1, 'staff.backend.invite': 1,
     'assignment.backend.upsert': 1, 'payment.backend.validate': 1, 'skill.backend.publish': 1,
-    'account.backend.register': 1, 'account.backend.activate': 1
+    'account.backend.register': 1, 'account.backend.activate': 1, 'lead.backend.update': 1
   };
   Object.keys(backend).forEach(function (action) {
     policies[action] = {

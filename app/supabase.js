@@ -94,9 +94,10 @@ window.DVSupa = (function () {
       return data || [];
     };
     const [account, app_user, assignment, package_access, brand, project,
-           block, round, preview, asset, invoice, skill] = await Promise.all([
+           block, round, preview, asset, invoice, skill, lead] = await Promise.all([
       T('account'), T('app_user'), T('assignment'), T('package_access'), T('brand'),
-      T('project'), T('block'), T('round'), T('preview'), T('asset'), T('invoice'), T('skill')
+      T('project'), T('block'), T('round'), T('preview'), T('asset'), T('invoice'), T('skill'),
+      T('lead')
     ]);
 
     const users = app_user.map(u => ({
@@ -115,7 +116,7 @@ window.DVSupa = (function () {
     const nextSeed = {
       accounts: account, users, assignments: assignment, package_access,
       brands: brand, projects: project, blocks: block, rounds,
-      previews: preview, assets: asset, invoices: invoice, skills: skill, CAPAS
+      previews: preview, assets: asset, invoices: invoice, skills: skill, leads: lead, CAPAS
     };
     Object.keys(window.DV_SEED).forEach(k => delete window.DV_SEED[k]);
     Object.assign(window.DV_SEED, nextSeed);
@@ -177,6 +178,11 @@ window.DVSupa = (function () {
     activate(accId, analystId) {
       return guarded('account.backend.activate', 'account', { resourceId: accId, requiresAuth: true, destructive: true, externallyVisible: true }, async () =>
         checked(await (await _c()).rpc('activate_account', { p_account: accId, p_analyst: analystId })));
+    },
+
+    updateLead(leadId, patch) {
+      return guarded('lead.backend.update', 'lead', { resourceId: leadId, requiresAuth: true }, async () =>
+        checked(await (await _c()).from('lead').update(patch).eq('id', leadId).select().maybeSingle()));
     }
   };
 
