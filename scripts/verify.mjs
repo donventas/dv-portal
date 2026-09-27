@@ -10,6 +10,7 @@ const allowed = [
   'app/environment.js', 'app/portal.css', 'app/portal.js',
   'app/release-config.js', 'app/staff.js', 'app/store.js', 'app/supabase.js',
   'app/write-guard.js',
+  'brand/donventas-horizontal-curvas-reverse.svg',
   'config/release-config.example.js', 'index.html', 'package-lock.json',
   'package.json', 'playwright.config.js', 'scripts/serve.mjs',
   'scripts/verify.mjs', 'tests/atomic-mutations.test.js',

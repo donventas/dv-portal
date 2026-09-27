@@ -225,3 +225,8 @@ test('55 only the editorial prelaunch removes the fixed BLOCKED banner', () => {
   assert.match(indicatorSource, /Portal aún no habilitado/);
   assert.match(indicatorSource, /Portal bloqueado: aún no habilitado/);
 });
+test('56 prelaunch consumes the canonical reverse lockup without redrawing it', () => {
+  const prelaunch = indicatorSource.slice(indicatorSource.indexOf('function renderPrelaunch'), indicatorSource.indexOf('function renderSafetyBlocked'));
+  assert.match(prelaunch, /brand\/donventas-horizontal-curvas-reverse\.svg/);
+  assert.doesNotMatch(prelaunch, /<svg viewBox=/);
+});

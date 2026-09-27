@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
-  '.css': 'text/css; charset=utf-8', '.png': 'image/png' };
+  '.css': 'text/css; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml' };
 http.createServer((request, response) => {
   const raw = decodeURIComponent(new URL(request.url, 'http://127.0.0.1').pathname);
   const target = path.resolve(root, '.' + (raw === '/' ? '/index.html' : raw));
