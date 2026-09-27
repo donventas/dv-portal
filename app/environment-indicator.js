@@ -100,7 +100,47 @@
       element.setAttribute('aria-hidden', enabled ? 'false' : 'true');
     });
   }
-  function renderBlocked(model) {
+  function blockedActions(model) {
+    document.getElementById('envRetry').addEventListener('click', function () { window.DVEnv.revalidate(); });
+    document.getElementById('envCopy').addEventListener('click', function () {
+      var value = model.diagnostic.correlationId || 'no-disponible';
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value);
+      this.textContent = 'Referencia copiada';
+    });
+    document.getElementById('envBlockedTitle').focus();
+  }
+  function renderPrelaunch(model) {
+    document.title = 'Próximamente · Portal Don Ventas';
+    block.innerHTML =
+      '<main class="env-prelaunch-screen" role="main" aria-labelledby="envBlockedTitle">' +
+      '<div class="prelaunch-shell">' +
+      '<header class="prelaunch-head"><a class="prelaunch-brand" href="https://www.donventas.mx/" aria-label="Don Ventas, volver al sitio">' +
+      '<svg viewBox="0 0 38 38" aria-hidden="true"><path d="M5 7.5 16.5 19 5 30.5V23l4-4-4-4z" fill="currentColor"/><path d="m14 7.5 11.5 11.5L14 30.5V23l4-4-4-4z" fill="#3B74F2"/></svg>' +
+      '<span>DON <i>VENTAS</i></span></a><span class="prelaunch-state">Portal de clientes</span></header>' +
+      '<section class="prelaunch-hero"><div class="prelaunch-copy">' +
+      '<p class="prelaunch-kicker">Portal Don Ventas</p><h1 id="envBlockedTitle" tabindex="-1">Próximamente</h1>' +
+      '<h2>La memoria de tu marca,<br><em>lista para trabajar.</em></h2>' +
+      '<p class="prelaunch-lead">Un espacio privado que reunirá el contexto de tu negocio, las decisiones, los entregables y los aprendizajes de cada etapa. Así, cada nueva pieza empezará con lo que ya sabemos y avanzará con más consistencia.</p>' +
+      '<div class="prelaunch-actions"><a class="prelaunch-primary" href="https://www.donventas.mx/#contacto">Recibe tu diagnóstico <span aria-hidden="true">→</span></a>' +
+      '<a class="prelaunch-secondary" href="https://www.donventas.mx/">Conoce Don Ventas</a></div></div>' +
+      '<div class="prelaunch-compass" aria-hidden="true"><span>ENTENDER</span><i></i><span>CREAR</span><i></i><span>APRENDER</span></div></section>' +
+      '<section class="prelaunch-benefits" aria-label="Beneficios del futuro portal">' +
+      '<article><span>01</span><h3>Tu contexto, unido</h3><p>Negocio, audiencia, voz y marca disponibles para no empezar de cero.</p></article>' +
+      '<article><span>02</span><h3>Decisiones visibles</h3><p>Avances, versiones y entregables en un recorrido claro para tu equipo.</p></article>' +
+      '<article><span>03</span><h3>Mejor con cada ciclo</h3><p>Lo aprendido se conserva para producir contenido cada vez más consistente.</p></article></section>' +
+      '<aside class="prelaunch-safety" aria-label="Estado técnico del portal"><div><strong>Portal bloqueado · aún no habilitado</strong>' +
+      '<p>No se cargaron datos, sesión ni servicios externos.</p></div>' +
+      '<details><summary>Estado técnico</summary><dl><div><dt>Código</dt><dd><code>' + esc(model.diagnostic.code || 'ENV_CONFIG_MISSING') + '</code></dd></div>' +
+      '<div><dt>Referencia</dt><dd><code id="envCorrelation">' + esc(model.diagnostic.correlationId || 'no-disponible') + '</code></dd></div></dl>' +
+      '<div class="env-actions"><button type="button" id="envRetry">Reintentar validación</button><button type="button" id="envCopy">Copiar referencia</button></div></details></aside>' +
+      '<footer class="prelaunch-foot"><span>DON VENTAS · ENTENDER, ENCONTRAR, ELEGIR</span><span>CDMX · MÉRIDA</span></footer>' +
+      '</div></main>';
+    document.body.classList.add('env-blocked-state', 'env-prelaunch-state');
+    setOperational(false);
+    blockedActions(model);
+  }
+  function renderSafetyBlocked(model) {
+    document.title = 'Portal bloqueado · Don Ventas';
     block.innerHTML =
       '<section class="env-blocked-screen" role="alertdialog" aria-modal="true" aria-labelledby="envBlockedTitle">' +
       '<div class="env-blocked-card"><div class="env-blocked-symbol" aria-hidden="true">!</div>' +
@@ -114,17 +154,16 @@
       '<p class="env-safe-note">No se cargaron datos, sesión ni servicios externos.</p></div></section>';
     document.body.classList.add('env-blocked-state');
     setOperational(false);
-    document.getElementById('envRetry').addEventListener('click', function () { window.DVEnv.revalidate(); });
-    document.getElementById('envCopy').addEventListener('click', function () {
-      var value = model.diagnostic.correlationId || 'no-disponible';
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value);
-      this.textContent = 'Referencia copiada';
-    });
-    document.getElementById('envBlockedTitle').focus();
+    blockedActions(model);
+  }
+  function renderBlocked(model) {
+    if (model.diagnostic.code === 'ENV_CONFIG_MISSING') renderPrelaunch(model);
+    else renderSafetyBlocked(model);
   }
   function clearBlocked() {
-    document.body.classList.remove('env-blocked-state');
+    document.body.classList.remove('env-blocked-state', 'env-prelaunch-state');
     block.innerHTML = '';
+    document.title = 'Don Ventas · Portal';
   }
   function render(snapshot) {
     ensureMounts();

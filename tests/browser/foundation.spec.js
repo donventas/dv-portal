@@ -75,7 +75,16 @@ test('missing configuration is BLOCKED with no backend or app navigation', async
   await page.goto('/');
   await page.waitForFunction(() => window.DVEnv && DVEnv.state() === 'BLOCKED');
   await expect(page.locator('#environmentBlockedMount')).toContainText('bloqueado');
+  await expect(page.locator('h1')).toHaveText('Próximamente');
   expect(await page.locator('#side').isVisible()).toBeFalsy();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  const scrollState = await page.locator('#environmentBlockedMount').evaluate(element => {
+    const before = element.scrollTop;
+    element.scrollTop = element.scrollHeight;
+    return { before, after: element.scrollTop, scrollHeight: element.scrollHeight, clientHeight: element.clientHeight };
+  });
+  expect(scrollState.scrollHeight).toBeGreaterThan(scrollState.clientHeight);
+  expect(scrollState.after).toBeGreaterThan(scrollState.before);
   expect(forbidden).toEqual([]);
   await context.close();
 });

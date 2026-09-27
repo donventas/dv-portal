@@ -200,3 +200,22 @@ test('50 responsive reflow does not hide the persistent indicator', () => {
   const responsive = css.slice(css.indexOf('@media(max-width:800px)'), css.indexOf('@media(max-width:640px)'));
   assert.doesNotMatch(responsive, /\.env-indicator[^}]*display:none|visibility:hidden/);
 });
+test('51 missing production config renders the approved editorial prelaunch', () => {
+  assert.match(indicatorSource, /model\.diagnostic\.code === 'ENV_CONFIG_MISSING'/);
+  assert.match(indicatorSource, /Próximamente/);
+  assert.match(indicatorSource, /La memoria de tu marca/);
+});
+test('52 the prelaunch remains fail closed and exposes no auth form', () => {
+  const prelaunch = indicatorSource.slice(indicatorSource.indexOf('function renderPrelaunch'), indicatorSource.indexOf('function renderSafetyBlocked'));
+  assert.match(prelaunch, /setOperational\(false\)/);
+  assert.match(prelaunch, /No se cargaron datos, sesión ni servicios externos/);
+  assert.doesNotMatch(prelaunch, /input|sendLink|signIn/);
+});
+test('53 unexpected BLOCKED diagnostics keep the safety-first screen', () => {
+  assert.match(indicatorSource, /else renderSafetyBlocked\(model\)/);
+  assert.match(indicatorSource, /Portal bloqueado/);
+});
+test('54 prelaunch layout has explicit mobile reflow', () => {
+  assert.match(css, /@media\(max-width:800px\)[\s\S]*?\.prelaunch-benefits\{grid-template-columns:1fr\}/);
+  assert.match(css, /@media\(max-width:640px\)[\s\S]*?\.prelaunch-actions\{[^}]*flex-direction:column/);
+});
