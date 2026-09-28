@@ -17,6 +17,11 @@ alcance por rol) y de la *Matriz de accesos y permisos* (`14_PORTAL/`).
 4. **`migrations/04_rpc.sql`** — RPC `activate_account()` (multi-fila, atómica,
    solo admin): saca de waitlist, crea brand+project+bloque F1+package_access+
    asignación+ronda de kickoff+owner. La invoca `DVSupa.write.activate()`.
+5. **`migrations/05_lead_pipeline.sql`** — convierte `lead` en bandeja comercial,
+   limita las columnas públicas y añade estado, seguimiento y notificaciones.
+6. **`migrations/06_lead_anon_insert_policy.sql`** — autoriza por RLS únicamente
+   el alta pública de leads válidos; exige consentimiento y datos de contacto,
+   sin exigir sitio web ni conceder lectura anónima.
 
 ## Cablear el front (YA HECHO — solo faltan las llaves)
 El front ya está preparado para conmutar demo↔vivo sin tocar la UI:
@@ -35,7 +40,7 @@ El front ya está preparado para conmutar demo↔vivo sin tocar la UI:
   de Supabase.
 
 ### Activar (una sola vez)
-1. Corre las 4 migraciones (SQL Editor).
+1. Corre las 6 migraciones (SQL Editor).
 2. Supabase → **Authentication → Providers → Email**: activa **magic link**; agrega la
    URL del portal a **Redirect URLs**.
 3. Rellena en `portal/app/supabase.js` → `DV_SUPA.URL` y `DV_SUPA.ANON`
