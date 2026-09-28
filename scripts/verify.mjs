@@ -21,8 +21,10 @@ const allowed = [
   'tests/browser/foundation.spec.js', 'tests/environment-indicator.test.js',
   'tests/environment-indicator-harness.html',
   'tests/environment.test.js', 'tests/product-foundation.test.js',
-  'tests/write-guard.test.js',
+  'tests/write-guard.test.js', 'tests/lead-pipeline.test.js',
+  'supabase/README.md',
   'supabase/migrations/05_lead_pipeline.sql',
+  'supabase/migrations/06_lead_anon_insert_policy.sql',
   'supabase/functions/lead-notifications/index.ts'
 ];
 const forbidden = [
@@ -31,7 +33,9 @@ const forbidden = [
   /stripe|payment|webhook|edge.?function/i
 ];
 const governedBackend = new Set([
+  'supabase/README.md',
   'supabase/migrations/05_lead_pipeline.sql',
+  'supabase/migrations/06_lead_anon_insert_policy.sql',
   'supabase/functions/lead-notifications/index.ts'
 ]);
 function changed() {
