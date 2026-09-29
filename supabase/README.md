@@ -70,6 +70,18 @@ activa con sus capas. Es el **embudo**, no un error.
 - **SQL Editor** de Supabase (corre como owner → bypassa RLS, ideal para el seed), o
 - **CLI**: `supabase db push` / `psql "$DATABASE_URL" -f 01_schema.sql` (idem 02, 03).
 
+### Correo al prospecto
+La función `lead-notifications` usa secretos de entorno; no los agregues al repositorio.
+Además de `RESEND_API_KEY`, `LEAD_WEBHOOK_SECRET`, `LEAD_ALERT_EMAIL` y
+`LEAD_EMAIL_FROM`, admite:
+
+- `MARKETING_UNSUBSCRIBE_EMAIL`: buzón que recibe las solicitudes de baja;
+- `BUSINESS_POSTAL_ADDRESS`: domicilio postal que aparece en el pie del correo.
+
+El acuse del diagnóstico es transaccional, pero incluye de forma preventiva el domicilio,
+un enlace de baja y el encabezado `List-Unsubscribe`. Cualquier campaña comercial futura
+debe reutilizar esos controles y excluir previamente a quienes hayan solicitado la baja.
+
 ## Mapa store.js → RLS (traducción)
 
 | store.js | Postgres |

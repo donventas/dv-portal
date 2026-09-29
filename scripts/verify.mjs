@@ -5,14 +5,21 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
-  '.gitignore', '.nvmrc', '.github/workflows/portal-ci.yml', 'app/auth.js',
+  '.gitignore', '.nvmrc', '.github/workflows/portal-ci.yml', 'app/auth.js', 'app/free.js',
   'app/atomic-mutations.js', 'app/client.js', 'app/environment-indicator.js',
   'app/environment.js', 'app/portal.css', 'app/portal.js',
   'app/release-config.js', 'app/staff.js', 'app/store.js', 'app/supabase.js',
   'app/write-guard.js',
+  'assets/fonts/fonts.css',
+  'assets/fonts/LICENSE-Schibsted-Grotesk.txt',
+  'assets/fonts/LICENSE-Space-Mono.txt',
+  'assets/fonts/schibsted-grotesk-latin-italic.woff2',
+  'assets/fonts/schibsted-grotesk-latin-normal.woff2',
+  'assets/fonts/space-mono-latin-400.woff2',
+  'assets/fonts/space-mono-latin-700.woff2',
   'brand/donventas-horizontal-curvas-reverse.svg',
   'config/release-config.example.js', 'favicon.svg', 'index.html', 'og-portal.png', 'package-lock.json',
-  'design-references/prospect-inbox-editorial-v1.png',
+  'design-references/prospect-inbox-editorial-v1.png', 'dv-shared/blocks.css',
   'package.json', 'playwright.config.js', 'scripts/serve.mjs',
   'scripts/render-social-card.mjs', 'scripts/verify.mjs',
   'social-cards/donventas-horizontal-curvas-reverse.svg', 'social-cards/portal.html',

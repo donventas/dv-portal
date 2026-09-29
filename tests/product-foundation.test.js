@@ -105,6 +105,20 @@ test('production boot has no direct seed script or active config template', () =
   assert.doesNotMatch(html, /release-config\.example\.js/);
 });
 
+test('public brand signup requires an adult attestation before collecting onboarding data', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'app', 'auth.js'), 'utf8');
+  assert.match(source, /id="newAge" type="checkbox"/);
+  assert.match(source, /al menos 18 años/);
+  assert.match(source, /if \(!age \|\| !age\.checked\)/);
+});
+
+test('the active Stripe reservation discloses that it does not auto-renew beside the payment action', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'app', 'free.js'), 'utf8');
+  assert.match(source, /class="renewal-terms"/);
+  assert.match(source, /Pago único/);
+  assert.match(source, /no se renueva automáticamente/);
+});
+
 test('lead pipeline is admin-only and keeps anonymous inserts column-scoped', () => {
   const sql = fs.readFileSync(path.join(__dirname, '..', 'supabase', 'migrations', '05_lead_pipeline.sql'), 'utf8');
   assert.match(sql, /lead_admin_read[\s\S]+auth_dv\.is_admin\(\)/);
@@ -120,4 +134,12 @@ test('lead notifications keep provider credentials in environment secrets', () =
   assert.match(source, /Deno\.env\.get\('LEAD_WEBHOOK_SECRET'\)/);
   assert.match(source, /Idempotency-Key/);
   assert.doesNotMatch(source, /re_[A-Za-z0-9]{10,}/);
+});
+
+test('customer-facing email includes postal identity and a one-step marketing opt-out', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'supabase', 'functions', 'lead-notifications', 'index.ts'), 'utf8');
+  assert.match(source, /BUSINESS_POSTAL_ADDRESS/);
+  assert.match(source, /MARKETING_UNSUBSCRIBE_EMAIL/);
+  assert.match(source, /List-Unsubscribe/);
+  assert.match(source, /solicita la baja aquí/);
 });

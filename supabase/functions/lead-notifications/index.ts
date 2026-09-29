@@ -21,6 +21,8 @@ const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
 const WEBHOOK_SECRET = Deno.env.get('LEAD_WEBHOOK_SECRET') || '';
 const ALERT_EMAIL = Deno.env.get('LEAD_ALERT_EMAIL') || 'arturo.villagomez@donventas.mx';
 const EMAIL_FROM = Deno.env.get('LEAD_EMAIL_FROM') || 'Don Ventas <arturo.villagomez@donventas.mx>';
+const UNSUBSCRIBE_EMAIL = Deno.env.get('MARKETING_UNSUBSCRIBE_EMAIL') || 'arturo.villagomez@donventas.mx';
+const POSTAL_ADDRESS = Deno.env.get('BUSINESS_POSTAL_ADDRESS') || 'Carlos Pereyra 66, Viaducto Piedad, C.P. 08200, Iztacalco, Ciudad de México, México';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
@@ -28,7 +30,9 @@ const esc = (value: unknown) => String(value || '')
   .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
   .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 
-async function sendEmail(input: { to: string; subject: string; html: string; key: string }) {
+async function sendEmail(input: { to: string; subject: string; html: string; key: string; headers?: Record<string, string> }) {
+  const body: Record<string, unknown> = { from: EMAIL_FROM, to: [input.to], subject: input.subject, html: input.html };
+  if (input.headers) body.headers = input.headers;
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -36,7 +40,7 @@ async function sendEmail(input: { to: string; subject: string; html: string; key
       'Content-Type': 'application/json',
       'Idempotency-Key': input.key
     },
-    body: JSON.stringify({ from: EMAIL_FROM, to: [input.to], subject: input.subject, html: input.html })
+    body: JSON.stringify(body)
   });
   if (!response.ok) throw new Error(`RESEND_${response.status}`);
 }
@@ -56,7 +60,8 @@ async function updateDelivery(id: string, patch: Record<string, unknown>) {
 }
 
 function acknowledgement(lead: Lead) {
-  return `<!doctype html><html lang="es"><body style="margin:0;background:#0b1017;color:#f4f6fa;font-family:Arial,sans-serif"><div style="max-width:620px;margin:auto;padding:48px 28px"><p style="color:#72a0ff;font-size:12px;letter-spacing:.12em;text-transform:uppercase">Don Ventas · diagnóstico</p><h1 style="font-size:34px;line-height:1.05">Recibimos tus respuestas, ${esc(lead.nombre)}.</h1><p style="color:#c5cad3;font-size:17px;line-height:1.65">Vamos a revisar las oportunidades de <b style="color:#fff">${esc(lead.negocio)}</b> y cómo el contenido o el sistema de marca pueden ayudarle a atraer clientes, no solo atención.</p><div style="margin:30px 0;padding:20px;border:1px solid #293242;border-radius:12px"><b>Siguiente paso</b><p style="color:#c5cad3;line-height:1.6">Si existe encaje, recibirás un diagnóstico en PDF con prioridades, alcance recomendado y una propuesta clara. Tiempo estimado: 3–5 días hábiles.</p></div><p style="color:#8f98a8;font-size:13px">Don Ventas · contenido, marca y sistemas que ayudan a vender.</p></div></body></html>`;
+  const unsubscribeHref = `mailto:${esc(UNSUBSCRIBE_EMAIL)}?subject=No%20recibir%20comunicaciones%20comerciales`;
+  return `<!doctype html><html lang="es"><body style="margin:0;background:#0b1017;color:#f4f6fa;font-family:Arial,sans-serif"><div style="max-width:620px;margin:auto;padding:48px 28px"><p style="color:#72a0ff;font-size:12px;letter-spacing:.12em;text-transform:uppercase">Don Ventas · diagnóstico</p><h1 style="font-size:34px;line-height:1.05">Recibimos tus respuestas, ${esc(lead.nombre)}.</h1><p style="color:#c5cad3;font-size:17px;line-height:1.65">Vamos a revisar las oportunidades de <b style="color:#fff">${esc(lead.negocio)}</b> y cómo el contenido o el sistema de marca pueden ayudarle a atraer clientes, no solo atención.</p><div style="margin:30px 0;padding:20px;border:1px solid #293242;border-radius:12px"><b>Siguiente paso</b><p style="color:#c5cad3;line-height:1.6">Si existe encaje, recibirás un diagnóstico en PDF con prioridades, alcance recomendado y una propuesta clara. Tiempo estimado: 3–5 días hábiles.</p></div><p style="color:#8f98a8;font-size:13px">Don Ventas · contenido, marca y sistemas que ayudan a vender.</p><div style="margin-top:34px;padding-top:18px;border-top:1px solid #293242;color:#8f98a8;font-size:11px;line-height:1.6"><p style="margin:0">Este correo confirma un diagnóstico que solicitaste. Si no deseas recibir comunicaciones comerciales futuras, <a style="color:#72a0ff" href="${unsubscribeHref}">solicita la baja aquí</a>.</p><p style="margin:8px 0 0">${esc(POSTAL_ADDRESS)}</p></div></div></body></html>`;
 }
 
 function internalAlert(lead: Lead) {
@@ -77,7 +82,13 @@ Deno.serve(async (request) => {
   }
 
   try {
-    await sendEmail({ to: lead.correo, subject: 'Recibimos tu diagnóstico · Don Ventas', html: acknowledgement(lead), key: `lead-ack/${lead.id}` });
+    await sendEmail({
+      to: lead.correo,
+      subject: 'Recibimos tu diagnóstico · Don Ventas',
+      html: acknowledgement(lead),
+      key: `lead-ack/${lead.id}`,
+      headers: { 'List-Unsubscribe': `<mailto:${UNSUBSCRIBE_EMAIL}?subject=No%20recibir%20comunicaciones%20comerciales>` }
+    });
     await updateDelivery(lead.id, { acknowledgement_sent_at: new Date().toISOString(), notification_error: null });
     await sendEmail({ to: ALERT_EMAIL, subject: `Nuevo diagnóstico · ${lead.negocio || lead.nombre}`, html: internalAlert(lead), key: `lead-alert/${lead.id}` });
     await updateDelivery(lead.id, { internal_alert_sent_at: new Date().toISOString(), notification_error: null });

@@ -54,6 +54,22 @@ test('desktop DEMO is synthetic, keyboard reachable and network silent', async (
   await state.context.close();
 });
 
+test('new-brand signup requires adult attestation before the diagnostic', async ({ browser }) => {
+  const state = await safePage(browser, { width: 390, height: 844 });
+  await state.page.getByRole('button', { name: 'Nueva marca' }).click();
+  await state.page.locator('#newName').fill('Marca de prueba');
+  await state.page.getByRole('button', { name: /Empezar diagnóstico F0/ }).click();
+  await expect(state.page.locator('#toast')).toContainText('al menos 18 años');
+  await expect(state.page.locator('#new1')).toBeVisible();
+  await state.page.locator('#newAge').check();
+  await state.page.getByRole('button', { name: /Empezar diagnóstico F0/ }).click();
+  await expect(state.page.locator('#new1')).toBeHidden();
+  await expect(state.page.locator('#new2')).toBeVisible();
+  expect(state.forbidden).toEqual([]);
+  expect(state.consoleProblems).toEqual([]);
+  await state.context.close();
+});
+
 test('320px and scale-two critical surfaces do not overflow', async ({ browser }) => {
   const state = await safePage(browser, { width: 320, height: 640 });
   expect(await state.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
