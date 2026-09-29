@@ -139,7 +139,8 @@ window.DVFree = (function () {
       '<div class="plangrid">' + cards + '</div>' +
       '<div class="ctabar solid"><div class="g"><b>Aparta tu lugar</b>' +
       '<p>Reservas tu arranque de Fundación con un anticipo seguro (Stripe). Al confirmarse, activamos tu cuenta y verás tu marca avanzar en vivo aquí mismo.</p></div>' +
-      '<div class="row"><button class="btn solid" onclick="DVFree.reservar()">Reservar mi lugar →</button>' + contacto + '</div></div>' +
+      '<div class="purchase-actions"><div class="row"><button class="btn solid" onclick="DVFree.reservar()">Reservar mi lugar →</button>' + contacto + '</div>' +
+      '<p class="renewal-terms"><b>Pago único.</b> Este anticipo no es una suscripción y no se renueva automáticamente. Stripe mostrará el importe final antes de confirmar.</p></div></div>' +
       '<p class="hint">Pago seguro con Stripe. El anticipo se abona a tu proyecto. Sin permanencia: si no seguimos, tu diagnóstico es tuyo de todos modos.</p>';
   }
 

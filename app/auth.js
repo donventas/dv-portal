@@ -46,6 +46,8 @@ window.DVAuth = (function () {
       '<p class="lead">Haz un <b>diagnóstico F0 gratis</b> (3 preguntas). Entras a la waitlist ordenada por <i>fit</i>; te activamos según capacidad.</p>' +
       '<div id="new1"><label>Nombre del negocio</label><input id="newName" placeholder="Ej. Café Nube">' +
       '<label>Sector</label><input id="newSeg" placeholder="Ej. Cafetería de especialidad">' +
+      '<label class="age-gate"><input id="newAge" type="checkbox">' +
+      '<span>Confirmo que tengo al menos 18 años y puedo solicitar servicios para este negocio.</span></label>' +
       '<button class="btn solid full" onclick="DVAuth.startF0()">Empezar diagnóstico F0 →</button></div>' +
       '<div id="new2" style="display:none"><div class="f0" id="f0box"></div>' +
       '<button class="btn solid full" id="f0submit" onclick="DVAuth.finishF0()" disabled>Ver mi resultado →</button></div>' +
@@ -111,6 +113,8 @@ window.DVAuth = (function () {
   function startF0() {
     const name = U.el('newName').value.trim();
     if (!name) { U.toast('Escribe el nombre del negocio'); return; }
+    const age = U.el('newAge');
+    if (!age || !age.checked) { U.toast('Confirma que tienes al menos 18 años para continuar'); return; }
     f0 = {}; U.el('new1').style.display = 'none'; U.el('new2').style.display = 'block';
     U.el('f0box').innerHTML = F0Q.map((it, i) =>
       '<div class="q"><p>' + (i + 1) + ' · ' + it.q + '</p><div class="opts">' +

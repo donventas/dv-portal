@@ -1,0 +1,32 @@
+/* Fuentes servidas por Don Ventas. Archivos bajo SIL Open Font License. */
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./schibsted-grotesk-latin-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./schibsted-grotesk-latin-italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./space-mono-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./space-mono-latin-700.woff2') format('woff2');
+}
