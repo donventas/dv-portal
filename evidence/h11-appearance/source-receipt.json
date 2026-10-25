@@ -58,5 +58,33 @@
   "bsbIntegrity": "PASS",
   "liveAVOSFreshness": "NOT_VERIFIED",
   "routeReused": "evidence/h1-chain/bsb-route.json",
-  "routeScope": "web/execute/protected-mark; unchanged governance and assets, authorized appearance adaptation"
+  "routeScope": "web/execute/protected-mark; unchanged governance and assets, authorized appearance adaptation",
+  "editorialAdaptation": {
+    "id": "PORTAL-H11-EDITORIAL-02",
+    "portalBaseCommit": "956dcc56630cea5fdaf6c154fb464d37e45ece2e",
+    "sourceCommit": "f8a764bb3b18b8575c5826c7646953d40031ff34",
+    "class": "PRESENTATION_REFINEMENT",
+    "ownerFeedback": "Mayor contraste y recuperar personalidad de marca; usar el merge del sistema de marca.",
+    "composition": "Apertura con folio, título/énfasis azul y nota tinta; superficie de formulario separada, navegación activa y bordes esenciales. Adaptación operativa, no reproducción del piloto completo.",
+    "sources": [
+      {
+        "path": "bloques/editorial-runtime.css",
+        "sha256": "dee985f63f59ff4b884370720823c98c589fdeb44f3b87206a1c3bde730dbe2e",
+        "bytes": 13195,
+        "use": "read-only reference; selectively adapted in app/appearance.css and app/hybrid-demo-ui.js"
+      },
+      {
+        "path": "09_DESIGN-SYSTEM/apariencia-v0.1/pilot.css",
+        "sha256": "114bc4272b91884dbb28845905e7e9ad73a0f98574e70df3a098bea17a53aa29",
+        "bytes": 14104,
+        "use": "read-only reference; selectively adapted in app/appearance.css and app/hybrid-demo-ui.js"
+      },
+      {
+        "path": "09_DESIGN-SYSTEM/apariencia-v0.1/operativo.html",
+        "sha256": "4bf9b77440b190b72a12bf737d473e364ae66374d01c87dac742d569294e51d6",
+        "bytes": 7785,
+        "use": "read-only reference; selectively adapted in app/appearance.css and app/hybrid-demo-ui.js"
+      }
+    ]
+  }
 }

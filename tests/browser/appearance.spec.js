@@ -29,7 +29,7 @@ test('selected options expose readable context on desktop and mobile in both the
   await theme(page,mode);
   for(const width of [390,1280]){
    await page.setViewportSize({width,height:900});
-   await page.locator('[name="q_needs_launch"]').scrollIntoViewIfNeeded();
+   await page.locator('[name="qnote_needs_launch"]').scrollIntoViewIfNeeded();
    await expect(page.locator('[name="qnote_needs_launch"]')).toBeVisible();
    await fits(page,'selected '+mode+'/'+width);await capture(page,'form-'+mode+'-'+width);
   }
@@ -120,11 +120,17 @@ test('representative text and control contrast meets thresholds in light and dar
    const rgb=s=>s.match(/[\d.]+/g).slice(0,3).map(Number);
    const lum=s=>rgb(s).map(c=>{c/=255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4}).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);
    const ratio=(a,b)=>{a=lum(a);b=lum(b);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)};
-   return ['#appearanceBar select','.hy-demo input[name="name"]','.hy-body .btn.solid'].map(selector=>{
-    const el=document.querySelector(selector);if(!el)return {selector,missing:true};const s=getComputedStyle(el);return {selector,color:s.color,background:s.backgroundColor,text:ratio(s.color,s.backgroundColor),border:ratio(s.borderTopColor,s.backgroundColor)};
+   return ['#appearanceBar select','.hy-demo input[name="name"]','.hy-body .btn.solid','.hy-opening h1','.hy-opening h1 em','.hy-lead','.hy-editorial-note p','.hy-editorial-note em','.hy-editorial-note small','.hy-editorial-note .hy-eyebrow','.hy-edition','.hy-number','.hy-question>p','.hy-choice span','.hy-demo nav .btn.solid','.hy-demo nav .btn:not(.solid)'].map(selector=>{
+    const el=document.querySelector(selector);if(!el)return {selector,missing:true};const s=getComputedStyle(el);
+    let parent=el,background=s.backgroundColor;while(parent && (background==='rgba(0, 0, 0, 0)'||background==='transparent')){parent=parent.parentElement;if(parent)background=getComputedStyle(parent).backgroundColor;}
+    return {selector,color:s.color,background,text:ratio(s.color,background),border:ratio(s.borderTopColor,background)};
    });
   });
-  for(const c of checks){expect(c.missing,JSON.stringify(c)).toBeFalsy();expect(c.text,JSON.stringify(c)).toBeGreaterThanOrEqual(4.5);if(!c.selector.includes('btn'))expect(c.border,JSON.stringify(c)).toBeGreaterThanOrEqual(3);}
+  for(const c of checks){expect(c.missing,JSON.stringify(c)).toBeFalsy();expect(c.text,JSON.stringify(c)).toBeGreaterThanOrEqual(4.5);if(c.selector==='#appearanceBar select'||c.selector.includes('input['))expect(c.border,JSON.stringify(c)).toBeGreaterThanOrEqual(3);}
+  const note=page.locator('.hy-editorial-note');
+  const textFits=await note.evaluate(el=>{const small=el.querySelector('small'),r=document.createRange();r.selectNodeContents(small);const text=r.getBoundingClientRect(),box=el.getBoundingClientRect();return text.bottom<=box.bottom&&text.right<=box.right;});
+  expect(textFits,'Editorial note text must fit its own surface').toBeTruthy();
+  if(process.env.H11_EDITORIAL_DETAIL)await note.screenshot({path:path.join(process.env.H11_EDITORIAL_DETAIL,'note-'+mode+'.png')});
  }
 });
 test('without JavaScript appearance follows the device and selector remains disabled',async({browser})=>{

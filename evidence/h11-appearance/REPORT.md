@@ -4,6 +4,39 @@ Fecha: 2026-10-25. Implementación local preparada para aceptación visual de Ar
 **No constituye cierre de aceptación humana, release alojado ni operación H1.2.**
 Los flujos operativos conservan su estado pendiente en el [backlog](../operational-backlog.md).
 
+## Revisión editorial 02 — contraste y personalidad
+
+Arturo señala que la primera integración `956dcc5` resulta demasiado uniforme y
+solicita mayor contraste y recuperar la personalidad tomando como referencia el
+merge del sistema de marca. No se acepta esa versión como cierre visual de H1.1.
+La revisión actual adapta el piloto operativo/editorial y la composición aprobada
+de Runtime PR #75, commit `f8a764b`, no solo sus tokens. Fuente leída y hashes en
+`source-receipt.json#editorialAdaptation`; Runtime conserva su checkout intacto.
+
+Adaptación `PORTAL-H11-EDITORIAL-02`: folio mono, título dominante con énfasis azul,
+una nota tinta con pregunta útil antes de la pieza, formulario en superficie propia,
+navegación activa de relleno sólido y selección con borde interior. En móvil la
+nota fluye debajo del título sin recortes ni ocultar el contenido. Papel/blanco
+separan estructura y trabajo; oscuro conserva la misma jerarquía. Textos secundarios
+y líneas usan los valores del contexto editorial de Runtime. No se cambian tokens
+importados ni geometría de activos; no se crean fotografías ni ilustraciones.
+
+Consumidores: cabecera/navegación y roles de texto globales del Portal; apertura y
+cinco etapas de la DEMO; acceso y administración incluidos en regresión. Las áreas
+de escritura conservan contenido y comportamiento. El nuevo aside no contiene
+marcas/iconos dependientes del adaptador de tema. Formularios sobre superficies de
+trabajo y un solo campo tinta expresivo, sin repetir el recurso en cada pregunta.
+
+Validación actual: `verify:all`, 256 Node y 17 navegador aprobados; 272 combinaciones
+de ruta/tema/ancho. Se amplía contraste a 16 parejas por tema (32 comprobaciones de
+texto, todas ≥4.5:1), incluidos nota tinta, título/énfasis, texto secundario, folio,
+opciones y navegación. Bordes de los dos controles representativos ≥3:1. No es
+certificación integral WCAG. Diez capturas regeneradas y revisadas individualmente
+y como familia. Revisión independiente de solo lectura cerrada sin bloqueantes.
+El aparente recorte de una línea de la nota en la captura general se descartó con
+captura cercana y comprobación de caja de texto. Se regeneró la evidencia móvil
+con el textarea contextual completo en pantalla. Aceptación humana pendiente.
+
 ## Mandato, fuente y límites
 
 Arturo declara disponible la variante clara y autoriza integrarla con selector
@@ -74,8 +107,9 @@ Suite `tests/browser/appearance.spec.js` sobre servidor loopback y datos sintét
 5. Reflujo de viewport 640×450, equivalente CSS de 1280×900 al 200 %; **no** se
    operó ni certificó zoom nativo del navegador. No se declara prueba de ampliación
    de toda la tipografía por cambiar un font-size heredado.
-6. Contraste computado de tres parejas representativas por tema: selector,
-   campo de nombre y botón primario; texto ≥4.5:1, borde esencial de campos ≥3:1.
+6. Contraste computado de 16 parejas representativas por tema: selector,
+   campo de nombre, botón primario y los nuevos contextos editoriales; texto ≥4.5:1,
+   borde esencial de los dos controles representativos ≥3:1.
    No es un barrido de todos los textos ni certificación integral WCAG.
 7. BLOCKED/prelanzamiento, almacenamiento denegado y fallback sin JavaScript.
 
