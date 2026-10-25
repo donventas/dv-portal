@@ -12,14 +12,14 @@ window.DVPortal = (function () {
     route = defaultRoute();
     buildShell();
     go(route);
-    try { const v = DVEnv.storage.getItem('view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
+    try { const v = S.getPreference('view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
   }
   function hasRoute(v) { return mod().nav().some(n => n.route === v); }
 
   function buildShell() {
     const s = S.session(), m = mod();
     const me = S.me() || {};
-    const roleSeg = s.actor === 'freemium' ? ''
+    const roleSeg = (!DVEnv.isDemo() || s.actor === 'freemium') ? ''
       : s.actor === 'cliente'
       ? '<span class="roleseg"><button id="rgA" class="' + (S.isOwner() ? 'on' : '') + '" onclick="DVPortal.role(\'owner\')">Owner</button><button id="rgB" class="' + (S.isOwner() ? '' : 'on') + '" onclick="DVPortal.role(\'miembro\')">Miembro</button></span>'
       : '<span class="roleseg"><button id="rgA" class="' + (S.isAdmin() ? '' : 'on') + '" onclick="DVPortal.role(\'analista\')">Analista</button><button id="rgB" class="' + (S.isAdmin() ? 'on' : '') + '" onclick="DVPortal.role(\'admin\')">Admin</button></span>';
@@ -50,18 +50,39 @@ window.DVPortal = (function () {
   function go(v) {
     route = v;
     mod().render(v, U.el('viewHost'));
+    applyCapabilities();
     markNav();
     const main = U.el('main'); if (main) main.scrollTop = 0;
-    try { if (v !== 'bloque') DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('view-' + S.session().actor, v)); } catch (e) { }
+    try { if (v !== 'bloque') DVWriteGuard.run('ui.preference', 'ui-state', {}, () => S.savePreference('view-' + S.session().actor, v)); } catch (e) { }
   }
 
+  function applyCapabilities() {
+    if (DVEnv.isDemo()) return;
+    document.querySelectorAll('[onclick],[onchange],[oninput]').forEach(el => {
+      const handlers = ['onclick','onchange','oninput'].map(a => el.getAttribute(a) || '').join(' ');
+      const matches = handlers.matchAll(/(DVClient|DVStaff|DVFree|DVAuth)\.(\w+)\(/g);
+      for (const match of matches) {
+        const target = window[match[1]];
+        if (target && target.demoOnly && target.demoOnly.includes(match[2])) {
+          el.disabled = true; el.setAttribute('aria-disabled','true'); el.title = 'Disponible solo en DEMO';
+        }
+      }
+    });
+  }
   function role(r) {
     S.setRole(r);
     buildShell();
     if (!hasRoute(route)) route = defaultRoute();
     go(route);
   }
-  function logout() { if (window.DVSupa && DVSupa.BACKEND()) { try { DVSupa.signOut(); } catch (e) { } } S.logout(); U.el('app').classList.remove('on'); U.el('side').innerHTML = ''; U.el('topBar').innerHTML = ''; U.el('auth').style.display = 'grid'; DVAuth.render(); }
+  async function logout() {
+    const signingOut = window.DVSupa && DVSupa.BACKEND() ? DVSupa.signOut() : null;
+    S.logout();
+    ['side','topBar','viewHost','modalHost'].forEach(id => { U.el(id).innerHTML = ''; });
+    U.el('app').classList.remove('on'); U.el('auth').style.display = 'grid'; DVAuth.render();
+    U.el('auth').inert = !!signingOut;
+    if (signingOut) { try { await signingOut; } catch (_) { U.toast('No se pudo confirmar el cierre remoto'); } finally { U.el('auth').inert = false; } }
+  }
 
   /* ── glosario ── */
   const GLOSS_C = {
@@ -107,7 +128,7 @@ window.DVPortal = (function () {
   const NOTI_F = [{ t: 'Tu diagnóstico está listo', d: 'Revísalo y da el siguiente paso', go: () => go('diagnostico') }, { t: 'Aparta tu lugar', d: 'Arranca con Fundación', go: () => go('contratar') }];
   function renderNoti() {
     const act = S.session().actor;
-    const list = act === 'cliente' ? NOTI_C : act === 'freemium' ? NOTI_F : NOTI_S;
+    const list = !DVEnv.isDemo() ? [] : act === 'cliente' ? NOTI_C : act === 'freemium' ? NOTI_F : NOTI_S;
     window.__noti = list;
     U.el('notiBody').innerHTML = list.map((n, i) => '<div class="noti" onclick="DVPortal.notiGo(' + i + ')" style="cursor:pointer"><b>' + n.t + '</b><p>' + n.d + '</p></div>').join('');
   }
@@ -151,7 +172,7 @@ window.DVPortal = (function () {
     if (!(e.target.closest && e.target.closest('.popwrap'))) U.qsa('.pop').forEach(p => p.classList.remove('pin'));
   });
 
-  return { boot, go, role, logout, renderGloss, renderNoti, notiGo, pin, modal, closeModal, doComment, doRound };
+  return { applyCapabilities, boot, go, role, logout, renderGloss, renderNoti, notiGo, pin, modal, closeModal, doComment, doRound };
 })();
 
 /* arranque */
@@ -178,14 +199,13 @@ window.DVPortal = (function () {
       if (uid) {
         await DVSupa.hydrate();
         const u = window.DV_SEED.users.find(x => x.id === uid);
-        if (u) { DVStore.loginAs(u); DVPortal.boot(); return; }
-        // huérfano (sin app_user / sin cuenta) → vista freemium (D-07)
-        let email = '';
-        try { email = (await DVSupa.authEmail()) || ''; } catch (e) { }
-        DVStore.loginFree({ email: email });
-        DVPortal.boot(); return;
+        if (u && !u.pending) { DVStore.loginAs(u); DVPortal.boot(); return; }
+        DVStore.logout();
+        DVAuth.render();
+        DVUtil.toast('No hay un perfil operativo autorizado para esta sesión');
+        return;
       }
-    } catch (e) { console.error('[portal] boot en vivo', e); if (window.DVUtil) DVUtil.toast('No se pudo cargar tu portal'); }
+    } catch (e) { console.error('[portal] BACKEND_BOOT_FAILED'); if (window.DVUtil) DVUtil.toast('No se pudo cargar tu portal'); }
     DVAuth.render();
   }
 })();

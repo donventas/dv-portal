@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-25",
+  "repository": "donventas/dv-portal",
+  "branch": "codex/portal-h1-hardening",
+  "base": "3b0cd48b3dc6657881a40289f6fca8c477612b45",
+  "committed": false,
+  "runtimeReference": "83cbc318ad1891789b07a9808c8be275ac26211e",
+  "runtimeObservedHead": "f01d471bc4aab1c6fdc9010d76d4ec188504919d",
+  "runtimeInitialStatus": "clean",
+  "runtimeFinalObservedStatus": "D  14_PORTAL/Auditoria-H0-2026-10-25.md\nD  14_PORTAL/H1.0-paquete-tecnico.md\nD  14_PORTAL/Primer-alcance-H1.md\nMM 14_PORTAL/README.md\nMM \"Don Ventas - Bit\\303\\241cora de Operaciones.html\"\nMM ESTADO.md\nD  _qa/portal-hibrido/H0-integracion.md\nD  _qa/portal-hibrido/h0-readonly.cjs\n?? 14_PORTAL/Auditoria-H0-2026-10-25.md\n?? 14_PORTAL/H1.0-paquete-tecnico.md\n?? 14_PORTAL/Primer-alcance-H1.md\n?? _qa/portal-hibrido/H0-integracion.md\n?? _qa/portal-hibrido/h0-readonly.cjs",
+  "coordinationOutsideRepository": "../RETOMAR.md",
+  "selfHashExcluded": true,
+  "files": [
+    {
+      "file": "app/atomic-mutations.js",
+      "sha256": "2343901d51a6d7aa1f90e7a11c03b54f075f2fbb7d359d349fa069917ff586e4"
+    },
+    {
+      "file": "app/auth.js",
+      "sha256": "90ef335732a0dc97a98754c1cd65f9d10af27ef2db1569b341e182d455aa0059"
+    },
+    {
+      "file": "app/client.js",
+      "sha256": "1b65f95079a9385503fcb6396aeb13cdbcf38c9376b62c2d728c2caf01fd7e5a"
+    },
+    {
+      "file": "app/environment-indicator.js",
+      "sha256": "7c3a98b9d12828ed3a0c5789a43daf1a7d72bebebb28f9fba95e684be25c3f7c"
+    },
+    {
+      "file": "app/free.js",
+      "sha256": "84e7c4bc17c02f02b7651c90a1862c8552c00104f509d36ff4a265aa57396fda"
+    },
+    {
+      "file": "app/portal.js",
+      "sha256": "c8bead8b526a474685d9d46a2cdb071f4b3a0b7225447a1bfd9bc84e8362b7c3"
+    },
+    {
+      "file": "app/staff.js",
+      "sha256": "260889c45a984bdbf0e6042ccb3632370985b2a11df713350df724dd88840d1a"
+    },
+    {
+      "file": "app/store.js",
+      "sha256": "832bbf878c6da6e243d0947db8a5fb00305c5c1e579359475dca2adb6a5c2155"
+    },
+    {
+      "file": "app/supabase.js",
+      "sha256": "af269e3189e37097fcede6191d1639816cf5fc1d9f8f80e5bd056636907d9197"
+    },
+    {
+      "file": "app/write-guard.js",
+      "sha256": "811b3d4115c39aae26211cf5e9964e95b2c4657c042a7a7c64bb74c5ef304ebf"
+    },
+    {
+      "file": "data/empty-state.js",
+      "sha256": "0284cf5ef238afff286e74b02b214280651e326b6bd4ed604e81f9ed09c48036"
+    },
+    {
+      "file": "data/seed.js",
+      "sha256": "7764455c7c1930ec90a311047d29c89161f9fd0f59e650eea5d6a9670b585920"
+    },
+    {
+      "file": "evidence/h1.0/README.md",
+      "sha256": "cbc18d713c2a5008a0c7c76344b5ddc9ded76ac860a4dd00d7aeb5d120a90ef6"
+    },
+    {
+      "file": "evidence/h1.0/browser.ndjson",
+      "sha256": "956936d62a7f434644fb42c0bf38115b2695bea0d273dd22251593e884ab3342"
+    },
+    {
+      "file": "evidence/h1.0/mutation-inventory.md",
+      "sha256": "8d84a91d0857328a797ea6a50580b79217d1bbbb19431bdfee4c8e3dfca135c2"
+    },
+    {
+      "file": "evidence/h1.0/tests-first.txt",
+      "sha256": "1c4c65ce3d3fcb482c10a5e0f33fc050a9deb65e04965a5879d9bfbfe532eb7c"
+    },
+    {
+      "file": "evidence/h1.0/tests.txt",
+      "sha256": "dc2ff7bcf5824c17406e68d544dc2762f313bc4c6fbeecb3a51e2586901a59a3"
+    },
+    {
+      "file": "evidence/h1.0/validation.txt",
+      "sha256": "2768193df281fedea2ee4531bd1b188b5c4b6c2743842d2e039798ad88c27d03"
+    },
+    {
+      "file": "index.html",
+      "sha256": "9e9ed3865629f2046fd28fbe912dc9a1a311a92be058bdc40edc852787ffda0a"
+    },
+    {
+      "file": "package.json",
+      "sha256": "aa668d64362ab53af88cae9ca93b1040570995b83c49c78f2f9154ae69896ee7"
+    },
+    {
+      "file": "scripts/verify.mjs",
+      "sha256": "97d7b0b7aa00263392db466d2b90632f2751d2d403ff997016132bb8994ca6f1"
+    },
+    {
+      "file": "supabase/README.md",
+      "sha256": "8befd2b290a680c8aa2d3c1d64a24b281ed8ca25f087239fddf53385a18f85f6"
+    },
+    {
+      "file": "supabase/proposals/h10-command-contract.sql",
+      "sha256": "fc163ac66c4987d4f4d1162af7c1fe6e4829d122efc9c0dc4c9a68a6fc20c024"
+    },
+    {
+      "file": "supabase/tests/h10-negative.sql",
+      "sha256": "37874fefa988e9c601bfcf9c140bbc280c8b2cd1c7cb764349dce1e0f451c252"
+    },
+    {
+      "file": "supabase/tests/run-h10-local.cjs",
+      "sha256": "011212caaac2aa3ae2d01ecac6d641bcf2fd8bc2fb268a4e5603d9e443d7a862"
+    },
+    {
+      "file": "tests/h10-browser.cjs",
+      "sha256": "d9ce15d2f999ff084737ffc885b363c07ec2cf85cf7f6d66e872d846cb4408c5"
+    },
+    {
+      "file": "tests/h10-hardening.test.js",
+      "sha256": "dcce5006858cde6f9f3fe40a608917cac26bc82503cd0f0d34e6f3bdbe4d6d66"
+    },
+    {
+      "file": "tests/write-guard.test.js",
+      "sha256": "6296c3eaa5b939890f7175910525da60b33de82a5179816d2d016909516ca2a4"
+    }
+  ],
+  "snapshotPhase": "validated-local-before-authorized-development-commit",
+  "logNormalization": "Trailing whitespace removed from tests-first.txt; test results unchanged."
+}

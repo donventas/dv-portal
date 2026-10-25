@@ -76,7 +76,7 @@ window.DVFree = (function () {
       '<div class="rails" style="margin-top:12px"><span class="rail">Mockup de web</span><span class="rail">Prototipo navegable</span><span class="rail">Extracto de ADN de marca</span></div></div>' +
       '<button class="btn solid" onclick="DVFree.pedirPreview()">Quiero mi preview →</button></div></div>';
   }
-  function pedirPreview() {
+  function pedirPreview() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const link = C().CONTACTO_LINK;
     if (link) { window.open(link, '_blank', 'noopener'); U.toast('Te contactamos para tu preview de valor'); }
     else U.toast('Listo — te contactamos para preparar tu preview de valor');
@@ -111,7 +111,7 @@ window.DVFree = (function () {
     const done = Object.keys(f0).length >= (C().F0Q || []).length;
     U.el('frSubmit').disabled = !done;
   }
-  function submit() {
+  function submit() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const biz = (U.el('frBiz').value || '').trim();
     const ref = (U.el('frRef') && U.el('frRef').value || '').trim().toLowerCase();
     const d = C().diag(f0);
@@ -143,15 +143,14 @@ window.DVFree = (function () {
       '<p class="hint">Pago seguro con Stripe. El anticipo se abona a tu proyecto. Sin permanencia: si no seguimos, tu diagnóstico es tuyo de todos modos.</p>';
   }
 
-  function reservar() {
-    const link = C().STRIPE_RESERVA_LINK;
-    if (link) { window.open(link, '_blank', 'noopener'); U.toast('Abriendo pago seguro (Stripe)…'); }
-    else U.toast('Falta configurar el Payment Link en app/config.js');
+  function reservar() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
+    U.toast('Simulación DEMO · no se abrió ningún pago');
   }
-  function contacto() {
+  function contacto() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const link = C().CONTACTO_LINK;
     if (link) window.open(link, '_blank', 'noopener');
   }
 
-  return { nav, ctxLabel, render, pick, submit, reservar, contacto, pedirPreview };
+  function resetTransient() { f0 = {}; }
+  return { demoOnly: ["pedirPreview", "submit", "reservar", "contacto"], resetTransient, nav, ctxLabel, render, pick, submit, reservar, contacto, pedirPreview };
 })();

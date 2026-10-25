@@ -30,7 +30,7 @@ window.DVAuth = (function () {
       '<h1>Entra a tu portal</h1>' +
       '<p class="lead">Tu marca, en vivo. Te enviamos un enlace mágico a tu correo — sin contraseñas.</p>' +
       '<div id="cli1"><label>Correo (corporativo o personal)</label>' +
-      '<input id="cliEmail" type="email" placeholder="tu@correo.com" autocomplete="email"' + (LIVE() ? '' : ' value="daniela@sicaru.mx"') + '>' +
+      '<input id="cliEmail" type="email" placeholder="tu@correo.com" autocomplete="email"' + (LIVE() ? '' : ' value="persona-1@demo.invalid"') + '>' +
       '<button class="btn solid full" onclick="DVAuth.sendLink()">Enviar enlace mágico →</button>' +
       (LIVE() ? '<div class="orsep">o</div>' + googleBtn('Continuar con Google') : '') +
       '<div class="suggest" id="cliSuggest"></div></div>' +
@@ -67,6 +67,8 @@ window.DVAuth = (function () {
       '</div>' +
       '</div>';
     renderSuggest();
+    if (window.DVPortal && DVPortal.applyCapabilities) DVPortal.applyCapabilities();
+    if (LIVE()) { U.el('tabNew').disabled = true; }
   }
 
   function renderSuggest() {
@@ -85,21 +87,23 @@ window.DVAuth = (function () {
   function quick(email) { U.el('cliEmail').value = email; sendLink(); }
   function google() {
     if (!(window.DVSupa && DVSupa.BACKEND())) { U.toast('Google sólo funciona con un backend validado'); return; }
-    DVSupa.signInWithGoogle().catch(err => { console.error(err); U.toast('No se pudo iniciar con Google'); });
+    DVSupa.signInWithGoogle().catch(err => { console.error('AUTH_REQUEST_FAILED'); U.toast('No se pudo iniciar con Google'); });
   }
-  function sendLink() {
+  async function sendLink() {
     const e = U.el('cliEmail').value.trim() || 'tu correo';
+    if (LIVE()) {
+      U.toast('Solicitando enlace…');
+      try { await DVSupa.signIn(e); } catch (_) { U.toast('No se pudo enviar el enlace'); return false; }
+      const btn = U.el('cli2demo'); if (btn) btn.style.display = 'none';
+    }
     U.el('cliEcho').textContent = e;
     U.el('cli1').style.display = 'none'; U.el('cli2').style.display = 'block';
-    if (LIVE()) {
-      const btn = U.el('cli2demo'); if (btn) btn.style.display = 'none';
-      DVSupa.signIn(e).then(() => U.toast('Enlace enviado a ' + e)).catch(err => { console.error(err); U.toast('No se pudo enviar el enlace'); });
-    }
+    return true;
   }
   function sendTeamLink() {
     const e = (U.el('teamEmail').value || '').trim();
     if (!e) { U.toast('Escribe tu correo'); return; }
-    DVSupa.signIn(e).then(() => U.toast('Enlace enviado a ' + e)).catch(err => { console.error(err); U.toast('No se pudo enviar el enlace'); });
+    DVSupa.signIn(e).then(() => U.toast('Enlace enviado a ' + e)).catch(err => { console.error('AUTH_REQUEST_FAILED'); U.toast('No se pudo enviar el enlace'); });
   }
   function enterClient() {
     const email = U.el('cliEmail').value.trim();
@@ -108,7 +112,7 @@ window.DVAuth = (function () {
   }
   function enterStaff(role) { S.loginAs(S.userByEmail(role === 'admin' ? 'arturo@donventas.mx' : 'luis@donventas.mx')); boot(); }
 
-  function startF0() {
+  function startF0() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const name = U.el('newName').value.trim();
     if (!name) { U.toast('Escribe el nombre del negocio'); return; }
     f0 = {}; U.el('new1').style.display = 'none'; U.el('new2').style.display = 'block';
@@ -122,7 +126,7 @@ window.DVAuth = (function () {
     btn.classList.add('on');
     U.el('f0submit').disabled = Object.keys(f0).length < F0Q.length;
   }
-  function finishF0() {
+  function finishF0() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const name = U.el('newName').value.trim();
     const seg = U.el('newSeg').value.trim() || 'Sin sector';
     const D = (window.DV_CFG && DV_CFG.diag) ? DV_CFG.diag(f0) : (function () {
@@ -141,12 +145,13 @@ window.DVAuth = (function () {
       '<button class="btn full" style="margin-top:10px" onclick="DVAuth.render()">← Volver al inicio</button>' +
       '<div class="note">Cuenta gratuita creada. Al apartar tu lugar, un admin activa tu cuenta y verás tu marca avanzar en vivo.</div>';
   }
-  function enterFree() {
+  function enterFree() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     S.loginFree(_lastF0 || { business: (U.el('newName') && U.el('newName').value) || '' });
     boot();
   }
 
   function boot() { window.DVPortal.boot(); }
 
-  return { render, tab, quick, sendLink, sendTeamLink, enterClient, enterStaff, startF0, pick, finishF0, enterFree, google };
+  function resetTransient() { f0 = {}; _lastF0 = null; }
+  return { demoOnly: ["startF0", "finishF0", "enterFree"], resetTransient, render, tab, quick, sendLink, sendTeamLink, enterClient, enterStaff, startF0, pick, finishF0, enterFree, google };
 })();

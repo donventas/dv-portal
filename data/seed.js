@@ -1,3 +1,4 @@
+if (!window.DVEnv || !DVEnv.isDemo()) throw new Error('FIXTURES_DEMO_ONLY');
 /* Don Ventas · Portal MVP — Etapa 0
    Datos semilla con la FORMA del schema real (PRD §09). Todo ficticio/demo.
    Al cablear Supabase, este módulo se reemplaza por consultas a las mismas tablas.
@@ -347,3 +348,8 @@ window.DV_SEED = (function () {
 
   return { accounts, users, assignments, hr, reviews, package_access, brands, projects, blocks, rounds, previews, assets, invoices, skills, claude_usage, team_cost, work_sessions, CAPAS, catalog, application_log, impact, savings, referrals };
 })();
+
+// Historical fixture IDs stay stable; primary account/user labels are explicitly synthetic.
+DV_SEED.accounts.forEach((a,i) => { a.name = 'Empresa sintética DEMO ' + (i+1); });
+DV_SEED.users.forEach((u,i) => { u.name = 'Persona sintética DEMO ' + (i+1); u.email = 'persona-' + (i+1) + '@demo.invalid'; });
+DV_SEED.brands.forEach((b,i) => { b.name = 'Marca sintética DEMO ' + (i+1); });

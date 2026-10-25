@@ -5,6 +5,23 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
+  // H1.0 explicitly authorized review-only SQL, fixture guard, and bounded evidence.
+  'app/free.js',
+  'data/empty-state.js',
+  'data/seed.js',
+  'tests/h10-browser.cjs',
+  'tests/h10-hardening.test.js',
+  'supabase/proposals/h10-command-contract.sql',
+  'supabase/tests/h10-negative.sql',
+  'supabase/tests/run-h10-local.cjs',
+  'evidence/h1.0/README.md',
+  'evidence/h1.0/mutation-inventory.md',
+  'evidence/h1.0/manifest.json',
+  'evidence/h1.0/tests-first.txt',
+  'evidence/h1.0/tests.txt',
+  'evidence/h1.0/browser.ndjson',
+  'evidence/h1.0/validation.txt',
+
   '.gitignore', '.nvmrc', '.github/workflows/portal-ci.yml', 'app/auth.js',
   'app/atomic-mutations.js', 'app/client.js', 'app/environment-indicator.js',
   'app/environment.js', 'app/portal.css', 'app/portal.js',
@@ -33,6 +50,9 @@ const forbidden = [
   /stripe|payment|webhook|edge.?function/i
 ];
 const governedBackend = new Set([
+  // These exact H1.0 paths are review artifacts, never automatic migrations.
+  'supabase/proposals/h10-command-contract.sql', 'supabase/tests/h10-negative.sql',
+  'supabase/tests/run-h10-local.cjs', 'data/seed.js',
   'supabase/README.md',
   'supabase/migrations/05_lead_pipeline.sql',
   'supabase/migrations/06_lead_anon_insert_policy.sql',

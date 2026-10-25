@@ -196,6 +196,8 @@
       return chain.then(function () {
         return new Promise(function (resolve, reject) {
           var script = document.createElement('script');
+          if (!window.DVEnv || !['DEMO', 'SANDBOX', 'LIVE'].includes(DVEnv.state())) return reject(new Error('ENV_CHANGED_DURING_BOOT'));
+          if (path === 'data/seed.js' && !DVEnv.isDemo()) return reject(new Error('FIXTURES_DEMO_ONLY'));
           script.src = path;
           script.onload = resolve;
           script.onerror = function () { reject(new Error('APP_RESOURCE_UNAVAILABLE')); };
@@ -213,7 +215,7 @@
       var model = render(snapshot);
       if (model.operational && !loaded) {
         loaded = true;
-        loadScripts(options.scripts || []).catch(function () {
+        loadScripts((model.state === 'DEMO' ? (options.demoScripts || []) : []).concat(options.scripts || [])).catch(function () {
           loaded = false;
         });
       }

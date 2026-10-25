@@ -7,7 +7,23 @@
 window.DVStore = (function () {
   const S = window.DV_SEED;
   const LIVE = () => window.DVSupa && DVSupa.BACKEND();
-  const STORAGE = window.DVEnv && DVEnv.storage;
+  // Backend caches are ephemeral. DEMO caches include actor + tenant identity.
+  const STORAGE = {
+    getItem(key) { return !LIVE() && DVEnv.storage ? DVEnv.storage.getItem(cacheKey(key)) : null; },
+    setItem(key, value) { if (!LIVE() && DVEnv.storage) DVEnv.storage.setItem(cacheKey(key), value); },
+    removeItem(key) { if (DVEnv.storage) DVEnv.storage.removeItem(cacheKey(key)); }
+  };
+  let generation = 0;
+  function cacheKey(key) { return key === 'session' ? key : 'actor:' + JSON.stringify([session && session.userId, session && session.accountId, session && session.email]) + ':' + key; }
+  function clearCaches() { _chats = null; _iters = null; _skillMeta = null; _backlog = null; _period = null; _work = null; ['DVClient','DVStaff','DVFree','DVAuth'].forEach(name => { if (window[name] && window[name].resetTransient) window[name].resetTransient(); }); }
+  function purgeCaches() {
+    if (!DVEnv.storage || !window.localStorage) return;
+    const prefix = DVEnv.storage.prefix, keys = [];
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(prefix) && k !== DVEnv.storage.keyFor('supabase-auth')) keys.push(k); }
+    keys.forEach(k => localStorage.removeItem(k));
+  }
+  function clearData() { Object.keys(S).forEach(k => { if (k === 'CAPAS') return; if (Array.isArray(S[k])) S[k].length = 0; else delete S[k]; }); }
+
   const listeners = [];
   let session = null; // { userId, role, accountId, memberRole, actor:'cliente'|'staff' }
 
@@ -33,7 +49,9 @@ window.DVStore = (function () {
   }
   function userByEmail(email) { return S.users.find(u => u.email.toLowerCase() === String(email).toLowerCase()); }
   function loginAs(user) {
-    session = { userId: user.id, role: user.role, accountId: user.account_id, memberRole: user.member_role, actor: user.role === 'cliente' ? 'cliente' : 'staff', environmentFingerprint: DVEnv.fingerprint() };
+    if (LIVE() && session && (session.userId !== user.id || session.accountId !== user.account_id)) clearData();
+    clearCaches(); generation++;
+    session = { generation, userId: user.id, role: user.role, accountId: user.account_id, memberRole: user.member_role, actor: user.role === 'cliente' ? 'cliente' : 'staff', environmentFingerprint: DVEnv.fingerprint() };
     saveSession(); emit();
   }
   function setRole(role) { // demo: cambia rol dentro del mismo actor
@@ -42,7 +60,7 @@ window.DVStore = (function () {
     else { session.role = role; session.userId = role === 'admin' ? 'u-arturo' : 'u-luis'; }
     saveSession(); emit();
   }
-  function logout() { session = null; saveSession(); emit(); }
+  function logout() { purgeCaches(); generation++; session = null; clearCaches(); saveSession(); if (LIVE()) clearData(); emit(); }
   function me() { if (session && session.actor === 'freemium') return { name: (session.profile && session.profile.person) || (session.profile && session.profile.business) || 'Invitado', email: session.email }; return S.users.find(u => u.id === (session && session.userId)); }
   function isAdmin() { return session && session.actor === 'staff' && session.role === 'admin'; }
   function isAnalyst() { return session && session.actor === 'staff'; }
@@ -88,6 +106,7 @@ window.DVStore = (function () {
   function blocksOf(accId) { const p = projectOf(accId); return p ? S.blocks.filter(b => b.project_id === p.id) : []; }
   function block(id) { return S.blocks.find(b => b.id === id); }
   function roundsOf(blockId) { return S.rounds.filter(r => r.block_id === blockId); }
+  function feedbackOf(blockId) { return (S.feedback || []).filter(f => f.block_id === blockId); }
   function allRounds(accId) {
     const p = projectOf(accId); if (!p) return [];
     const ids = S.blocks.filter(b => b.project_id === p.id).map(b => b.id);
@@ -414,7 +433,7 @@ window.DVStore = (function () {
   }
 
   /* ── mutaciones (demo, en memoria) ── */
-  function _identity() { return session && session.environmentFingerprint || null; }
+  function _identity() { return JSON.stringify([generation, session && session.userId, session && session.accountId, session && session.role, session && session.memberRole, DVEnv.fingerprint()]); }
   function _atomic(key, backend, commit) {
     if (!LIVE()) {
       const value = commit();
@@ -422,16 +441,22 @@ window.DVStore = (function () {
     }
     const fingerprint = DVEnv.fingerprint(), sessionIdentity = _identity();
     return DVAtomicMutations.run({
-      key, fingerprint, sessionIdentity,
+      key: sessionIdentity + key, fingerprint, sessionIdentity,
       getFingerprint: () => DVEnv.fingerprint(),
       getSessionIdentity: _identity,
-      execute: backend,
+      execute: async () => {
+        const canonical = await backend();
+        if (!canonical || typeof canonical !== 'object' || canonical.authorized === false) throw new Error('CANONICAL_RESULT_REQUIRED');
+        return canonical;
+      },
       commit: canonical => { commit(canonical); }
     });
   }
+  function latestRevision(id) { const rs = roundsOf(id); return rs.length ? rs[rs.length - 1].id : null; }
   function approve(blockId) {
     const b = block(blockId); if (!b) return Promise.resolve({ status: 'FAILED', committed: false });
-    return _atomic('approve:' + blockId, () => DVSupa.write.approve(blockId), () => {
+    return _atomic('approve:' + blockId, () => DVSupa.write.approve(blockId, b.version, latestRevision(blockId)), canonical => {
+      if (LIVE()) { Object.assign(b, canonical.block); emit(); return; }
       b.status = 'cerrado'; b.prog = b.progress = 100; emit();
     });
   }
@@ -439,7 +464,8 @@ window.DVStore = (function () {
     const b = block(blockId); const seqN = roundsOf(blockId).length + 1;
     const p = Object.assign({ title: '', deliverable: '', feedback: '', result: 'propuesto', author: (me() || {}).name || 'Equipo' }, patch);
     const row = Object.assign({ id: blockId + '-R' + seqN, block_id: blockId, seq: 'R' + seqN, created_at: new Date().toISOString() }, p);
-    return _atomic('round:' + blockId, () => DVSupa.write.addRound(blockId, seqN, p), canonical => {
+    return _atomic('round:' + blockId, () => DVSupa.write.addRound(blockId, seqN, p, b && b.version, latestRevision(blockId)), canonical => {
+      if (LIVE()) { Object.assign(b, canonical.block); if (canonical.feedback) (S.feedback || (S.feedback = [])).push(canonical.feedback); if (canonical.round && !S.rounds.some(r => r.id === canonical.round.id)) S.rounds.push(Object.assign({}, canonical.round, { seq: 'R' + canonical.round.seq })); emit(); return; }
       S.rounds.push(Object.assign({}, row, canonical && canonical.id ? canonical : {}));
       if (b && b.status === 'en_curso') b.status = 'en_revision';
       emit();
@@ -519,7 +545,8 @@ window.DVStore = (function () {
   function activate(accId, analystName, kind) {
     const a = account(accId); if (!a) return Promise.resolve({ status: 'FAILED', committed: false });
     const actor = me(), analyst = S.users.find(x => x.name.split(' ')[0] === analystName);
-    return _atomic('activate:' + accId, () => DVSupa.write.activate(accId, analyst ? analyst.id : (actor ? actor.id : null)), () => {
+    return _atomic('activate:' + accId, () => DVSupa.write.activate(accId, analyst ? analyst.id : (actor ? actor.id : null), a.version), canonical => {
+    if (LIVE()) { Object.assign(a, canonical.account); ['brands','projects','blocks','rounds','package_access','assignments'].forEach(k => { (canonical[k] || []).forEach(row => { if (!S[k].some(x => x.id === row.id)) S[k].push(row); }); }); emit(); return; }
     a.status = 'activo'; a.queue_position = null; a.pkg = 'Fundación'; a.kind = kind || a.kind || 'cliente';
     const b = { id: 'br-' + accId.slice(4), account_id: accId, name: a.name, layer: 'marca', enabled: true }; S.brands.push(b);
     const p = { id: 'pr-' + accId.slice(4), brand_id: b.id, title: 'Sistema de marca ' + a.name }; S.projects.push(p);
@@ -668,10 +695,12 @@ window.DVStore = (function () {
   function on(fn) { listeners.push(fn); }
   function emit() { listeners.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); }
 
-  const api = {
+  function getPreference(key) { return STORAGE.getItem(key); }
+  function savePreference(key, value) { STORAGE.setItem(key, value); }
+  const api = { getPreference, savePreference,
     loadSession, session: () => session, userByEmail, loginAs, setRole, logout, me, isAdmin, isAnalyst, isOwner, isFree,
     loginFree, freeProfile, updateFreeProfile,
-    accounts, waitlist, leads, finished, historyAccounts, analystsLoad, setAccountKind, accountCapas, toggleCapa, account, brandOf, projectOf, access, analystName, blocksOf, block, roundsOf, allRounds,
+    accounts, waitlist, leads, finished, historyAccounts, analystsLoad, setAccountKind, accountCapas, toggleCapa, account, brandOf, projectOf, access, analystName, blocksOf, block, roundsOf, feedbackOf, allRounds,
     previewOf, assetsOf, assetsAllOf, invoicesOf, balance, membersOf, resendInvite, removeMember, requestInvoice, queue, acctNameOfBlock, accIdOfBlock, staff, skills, skillHistory, billingAll, capacity, CAPAS: S.CAPAS,
     margin, claudeUsage, operating, laborModel, teamCost, setTeamCost, activeHoursOf, startWork, stopWork, valueModel, getPeriod, setPeriod, periodLabel, periodMonths, monthsActiveOf,
     catalog, setCatalogPrice, appLinesOf, appMonthlyValue, appPieces, applicationValue, impactOf, impactModel, savingsOf, incentiveCfg, setIncentiveCfg, setUmbral, incentiveModel, referrals, referralStats, markReferralPaid, addReferral, referralByCode,
@@ -683,7 +712,7 @@ window.DVStore = (function () {
     perfHistory, perfSummary, hrEvents, addHrEvent, removeHrEvent, assignmentLog, userName, analystStats,
     reviews, reviewsOf, reviewFor, reviewById, reviewStatus, addReview, publishTestimonial, unpublishTestimonial, retractReview, grantReviewConsent, publishedFeed, ratingAvgOf, analystRating, firmRating, pendingSurvey, ltvOf
   };
-  const guardedMutations = {
+  const guardedMutations = { savePreference: ['ui.preference', 'ui-state'],
     loginAs: ['session.login', 'session'], setRole: ['session.role', 'session'], logout: ['session.logout', 'session'],
     loginFree: ['session.login', 'session'], updateFreeProfile: ['session.profile', 'profile'],
     setAccountKind: ['account.kind', 'account'], toggleCapa: ['account.layers', 'account'],
@@ -712,8 +741,14 @@ window.DVStore = (function () {
     const original = api[name], policy = guardedMutations[name];
     api[name] = function () {
       const args = arguments;
-      return DVWriteGuard.run(policy[0], policy[1], { resourceId: args[0] == null ? null : String(args[0]) }, () => original.apply(null, args));
+      try {
+        const result = DVWriteGuard.run(policy[0], policy[1], { resourceId: args[0] == null ? null : String(args[0]) }, () => original.apply(null, args));
+        return result && typeof result.then === 'function' ? result.catch(() => ({ status: 'FAILED', committed: false })) : result;
+      } catch (_) { return { status: 'FAILED', committed: false }; }
     };
+  });
+  if (DVEnv.subscribe) DVEnv.subscribe(snapshot => {
+    if (snapshot.state === 'VALIDATING' || snapshot.state === 'BLOCKED') { generation++; session = null; clearCaches(); clearData(); }
   });
   return api;
 })();

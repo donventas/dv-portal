@@ -138,7 +138,7 @@
       return executed(authorization, EXECUTION.FAILED, { error: CODES.WRITE_EXECUTOR_MISSING, executorCount: 0 });
     }
     var controls = arguments[3] || {};
-    var key = pendingKey(request);
+    var key = (controls.pendingScope || '') + pendingKey(request);
     if (pending.has(key)) return pending.get(key);
     function current() {
       try { return typeof controls.isCurrent !== 'function' || controls.isCurrent(request) === true; }
@@ -192,10 +192,12 @@
   ];
   localActions.forEach(function (action) {
     policies[action] = {
-      modes: ['DEMO', 'SANDBOX', 'LIVE'], origins: ['LOCAL', 'PREVIEW', 'PRODUCTION'],
+      modes: ['DEMO'], origins: ['LOCAL', 'PREVIEW', 'PRODUCTION'],
       writePolicies: ['local-only', 'rls'], synthetic: true
     };
   });
+  // Only session plumbing and UI preferences are supported without a business command.
+  ['session.login','session.logout','ui.preference','block.approve','round.create','scope.request','account.activate'].forEach(function (action) { policies[action].modes = ['DEMO','SANDBOX','LIVE']; });
   var backend = {
     'auth.otp': 1, 'auth.oauth': 1, 'auth.signout': 1, 'block.backend.approve': 1,
     'round.backend.create': 1, 'invitation.backend.create': 1, 'staff.backend.invite': 1,
@@ -230,12 +232,15 @@
     };
   }
   function execute(action, resourceType, options, executor) {
+    function identity() { var s = window.DVStore && DVStore.session(); return s ? JSON.stringify([s.userId, s.accountId, s.role, s.memberRole, s.generation, s.email]) : null; }
+    var initialIdentity = identity();
     var initial = context(action, resourceType, options);
     return C.execute(initial, executor, policies, {
+      pendingScope: initial.environmentFingerprint + ':' + initialIdentity + ':',
       isCurrent: function () {
         var now = context(action, resourceType, options);
         return now.environmentFingerprint === initial.environmentFingerprint &&
-          now.sessionFingerprint === initial.sessionFingerprint;
+          (action === 'auth.signout' || (now.sessionFingerprint === initial.sessionFingerprint && identity() === initialIdentity));
       }
     });
   }
