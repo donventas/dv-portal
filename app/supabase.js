@@ -39,6 +39,7 @@ window.DVSupa = (function () {
     _client = window.supabase.createClient(CFG.URL, CFG.ANON, {
       auth: {
         persistSession: true,
+        flowType: 'pkce',
         detectSessionInUrl: true,
         autoRefreshToken: true,
         storageKey: DVEnv.storageKey('supabase-auth')
@@ -57,7 +58,7 @@ window.DVSupa = (function () {
       const c = await client();
       const { error } = await c.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: location.href.split('#')[0] }
+        options: { shouldCreateUser: false, emailRedirectTo: new URL(location.href).origin + new URL(location.href).pathname }
       });
       if (error) throw error;
       return true;
@@ -68,7 +69,7 @@ window.DVSupa = (function () {
       const c = await client();
       const { error } = await c.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: location.href.split('#')[0] }
+        options: { redirectTo: new URL(location.href).origin + new URL(location.href).pathname }
       });
       if (error) throw error;
       return true;

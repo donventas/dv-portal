@@ -184,7 +184,7 @@ declare
 begin
  if auth.uid() is null then raise exception 'AUTH_REQUIRED' using errcode='42501'; end if;
  select * into u from public.app_user where id=auth.uid() for share;
- if u.id is null or u.pending then raise exception 'ACTOR_REVOKED' using errcode='42501'; end if;
+ if u.id is null or u.pending or not auth_dv.portal_actor_active() then raise exception 'ACTOR_REVOKED' using errcode='42501'; end if;
  if p_key is null or p_resource is null or p_version is null or p_version < 0
     or p_kind not in ('approve','feedback','round','activate') or p_kind is null
     or p_payload is null or jsonb_typeof(p_payload) <> 'object' then raise exception 'COMMAND_INVALID'; end if;

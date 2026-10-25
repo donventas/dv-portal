@@ -6,6 +6,13 @@ const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
   '.gitattributes',
+  // Authorized isolated identity/Auth integration; private lab material is excluded.
+  'supabase/proposals/h10-identity-contract.sql',
+  'supabase/tests/setup-identity-lab.cjs', 'supabase/tests/identity-provider.cjs',
+  'supabase/tests/identity-browser.cjs', 'tests/auth-contract.test.js',
+  'evidence/identity-auth-20261025/REPORT.md',
+  'evidence/identity-auth-20261025/provider-results.json',
+  'evidence/identity-auth-20261025/browser-results.json',
   // Authorized actual-backup rehearsal: sanitized reports only, never dumps or secrets.
   'evidence/hosted-restore-20261025/REPORT.md',
   'evidence/hosted-restore-20261025/results.json',
@@ -81,6 +88,9 @@ const forbidden = [
   /stripe|payment|webhook|edge.?function/i
 ];
 const governedBackend = new Set([
+  'supabase/proposals/h10-identity-contract.sql',
+  'supabase/tests/setup-identity-lab.cjs', 'supabase/tests/identity-provider.cjs',
+  'supabase/tests/identity-browser.cjs',
   'supabase/tests/h10-fixtures.sql', 'supabase/tests/h10-security.sql',
   'supabase/tests/local-bootstrap.sql', 'supabase/tests/provider-bootstrap.sql',
   'supabase/tests/provider-integration.cjs', 'supabase/tests/rebuild-local.ps1',

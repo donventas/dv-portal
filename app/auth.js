@@ -35,7 +35,7 @@ window.DVAuth = (function () {
       (LIVE() ? '<div class="orsep">o</div>' + googleBtn('Continuar con Google') : '') +
       '<div class="suggest" id="cliSuggest"></div></div>' +
       '<div id="cli2" style="display:none"><label>Revisa tu correo</label>' +
-      '<p class="lead" style="margin:0 0 10px">Te enviamos un enlace a <b id="cliEcho"></b>. Ábrelo en este dispositivo para entrar.</p>' +
+      '<p class="lead" style="margin:0 0 10px">Te enviamos un enlace a <b id="cliEcho"></b>. Ábrelo en este mismo navegador para entrar.</p>' +
       '<button class="btn solid full" id="cli2demo" style="margin-top:6px" onclick="DVAuth.enterClient()">Abrir mi portal →</button>' +
       '<div class="note">El enlace expira en 15 min y es de un solo uso.</div></div>' +
       '</div>' +
@@ -60,7 +60,7 @@ window.DVAuth = (function () {
         ? '<label>Correo del equipo</label><input id="teamEmail" type="email" placeholder="tu@donventas.mx" autocomplete="email">' +
           '<button class="btn solid full" onclick="DVAuth.sendTeamLink()">Enviar enlace mágico →</button>' +
           '<div class="orsep">o</div>' + googleBtn('Continuar con Google') +
-          '<div class="note">Tu rol (analista o admin) se resuelve por tu cuenta. El enlace expira en 15 min.</div>'
+          '<div class="note">Tu rol (analista o admin) se resuelve por tu cuenta. Abre el enlace en este mismo navegador; expira en 15 min.</div>'
         : '<button class="btn solid full" style="margin-top:6px" onclick="DVAuth.enterStaff(\'analista\')">Entrar como analista →</button>' +
           '<button class="btn full" onclick="DVAuth.enterStaff(\'admin\')">Entrar como admin →</button>' +
           '<div class="note">Analista: tus cuentas asignadas. Admin: todas + waitlist, equipo, accesos y facturación.</div>') +

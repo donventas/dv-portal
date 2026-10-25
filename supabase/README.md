@@ -8,10 +8,30 @@ Configuración ausente/parcial/obsoleta queda BLOCKED. No hay fallback a DEMO.
 
 ## Estado de este corte
 
-Producto base `3b0cd48b3dc6657881a40289f6fca8c477612b45`; rama local
-`codex/portal-h1-hardening`. Ninguna migración aplicada ni servicio configurado.
-H1.0 frontend probado localmente; RLS/transacciones reales **NOT_TESTED**.
-H1.1 y publicación no forman parte de este cambio.
+Rama `codex/portal-h1-hardening`, PR de desarrollo #6. Los candidatos H1.0 e
+identidad se aplicaron solamente en restauraciones aisladas del respaldo real.
+RLS, transacciones, Auth y PKCE tienen pruebas locales con proveedor real y datos
+sintéticos. Producción sigue sin cambios y LIVE permanece bloqueado.
+Estado y límites actuales: [respaldo/restauración](../evidence/hosted-restore-20261025/REPORT.md)
+y [aprovisionamiento/Auth](../evidence/identity-auth-20261025/REPORT.md).
+La DEMO H1.1 no acredita persistencia de producto ni despliegue.
+
+## Identidad y aprovisionamiento aislado
+
+Después de `proposals/h10-command-contract.sql`, el candidato
+`proposals/h10-identity-contract.sql` requiere identidad Auth verificada y sesión
+vigente para acceder al negocio. `portal_identity_command_v1` permite a un admin
+existente con MFA asignar owner/miembro/analista por UUID, revocar o restaurar.
+No crea administradores ni transfiere usuarios entre cuentas. Cada operación
+verifica versión, genera auditoría atómica y requiere un nuevo inicio de sesión
+al conceder o restaurar acceso. Una renovación de sesión antigua no basta.
+
+El adaptador solicita PKCE, callbacks sin parámetros ni fragmentos y
+`shouldCreateUser: false`. El enlace se abre en el mismo navegador que lo solicitó.
+La invitación del proveedor se envía desde una operación administrativa confiable;
+una clave de servicio nunca pertenece al frontend. La UI de administración de
+invitaciones sigue deshabilitada hasta integrar ese servicio. El ensayo usa
+Mailpit como destino SMTP local, sin correos externos ni OAuth alojado.
 
 `migrations/01`–`06` son historia versionada, no una receta para ejecutar en bloque.
 `03_seed.sql` y `data/seed.js` nunca se ejecutan contra producción. El loader solo
