@@ -191,6 +191,16 @@ window.DVPortal = (function () {
 (function () {
   const BACKEND = window.DVSupa && DVSupa.BACKEND();
   if (BACKEND) {
+    if (DVSupa.captureInvitation()) {
+      const host = document.getElementById('auth');
+      host.innerHTML = '<div class="acard"><h1>Confirma tu invitación</h1><p class="lead">Revisaremos la verificación de tu correo. El administrador debe conceder el acceso antes de que puedas entrar.</p><button class="btn solid full" id="acceptInvitation">Continuar</button><p id="invitationResult" role="status"></p></div>';
+      document.getElementById('acceptInvitation').onclick = async function () {
+        this.disabled = true;
+        try { await DVSupa.acceptInvitation(); document.getElementById('invitationResult').textContent = 'Correo verificado. Cuando el administrador conceda tu acceso, solicita un enlace nuevo para entrar.'; }
+        catch (_) { document.getElementById('invitationResult').textContent = 'No se pudo completar la confirmación. Pide al administrador revisar tu invitación.'; }
+      };
+      return;
+    }
     // EN VIVO: la sesión se deriva de Supabase Auth (no de localStorage).
     U_boot();
     return;

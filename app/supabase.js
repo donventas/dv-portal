@@ -176,6 +176,59 @@ window.DVSupa = (function () {
     });
   }
   const unsupported = () => Promise.reject(new Error('BACKEND_ACTION_UNSUPPORTED'));
+  let invitationToken = null;
+  function captureInvitation() {
+    if (!identity.enabled()) return false;
+    const fragment = new URLSearchParams(location.hash.slice(1));
+    if (fragment.get('type') !== 'invite') return false;
+    invitationToken = fragment.get('access_token');
+    history.replaceState(null, '', location.pathname);
+    return true;
+  }
+  function acceptInvitation() {
+    return guarded('auth.invitation', 'auth-session', {}, async () => {
+      identityGate(); const token = invitationToken; invitationToken = null;
+      if (!token) throw new Error('INVITATION_INVALID');
+      // Provider invites use a one-time implicit callback, not PKCE. Do not install
+      // that bearer session in the SDK/Store; verify and close it, then use PKCE login.
+      const headers = { apikey: CFG.ANON, Authorization: 'Bearer ' + token };
+      const r = await fetch(CFG.URL + '/auth/v1/user', { headers, signal: AbortSignal.timeout(10000) });
+      const user = await r.json();
+      if (!r.ok || !user.email_confirmed_at) throw new Error('INVITATION_INVALID');
+      const logout = await fetch(CFG.URL + '/auth/v1/logout?scope=local', { method: 'POST', headers, signal: AbortSignal.timeout(10000) });
+      if (!logout.ok) throw new Error('INVITATION_CLOSE_UNCONFIRMED');
+      return true;
+    });
+  }
+  function identityGate() {
+    if (!BACKEND() || DVEnv.state() !== 'SANDBOX' || location.hostname !== '127.0.0.1' ||
+        DVEnv.resolution().config.features.identityInvitations !== 'isolated-v1') throw new Error('IDENTITY_CONTRACT_UNVERIFIED');
+  }
+  const identity = {
+    enabled: () => { try { identityGate(); return true; } catch (_) { return false; } },
+    directory: async (kind, after) => { identityGate(); const c = await client(); return checked(await c.rpc('portal_identity_directory_v1', { p_kind: kind, p_after: after || null })); },
+    factors: async () => { identityGate(); const c = await client(); const r = await c.auth.mfa.listFactors(); if (r.error) throw new Error('MFA_REQUIRED'); return r.data.totp.filter(f => f.status === 'verified'); },
+    verify: (factorId, code) => guarded('identity.mfa', 'auth-session', { requiresAuth: true }, async () => {
+      identityGate(); const c = await client(); const r = await c.auth.mfa.challengeAndVerify({ factorId, code });
+      if (r.error) throw new Error('MFA_REQUIRED'); return true;
+    }),
+    invite: (key, email, reason) => guarded('identity.invite', 'invitation', { requiresAuth: true, externallyVisible: true }, async () => {
+      identityGate(); const c = await client(), session = await c.auth.getSession();
+      const token = session.data?.session?.access_token; if (!token) throw new Error('AUTH_REVALIDATION_REQUIRED');
+      const r = await fetch('/api/admin/invitations', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({ key, email, reason }), signal: AbortSignal.timeout(25000) });
+      const data = await r.json(); if (!r.ok || !data.id || !['queued','dispatching','uncertain','sent','failed','cancelled'].includes(data.state)) throw new Error('INVITATION_NOT_CONFIRMED');
+      return data;
+    }),
+    cancel: id => guarded('identity.cancel', 'invitation', { resourceId: id, requiresAuth: true }, async () => {
+      identityGate(); const c = await client(); return checked(await c.rpc('portal_invitation_cancel_v1', { p_id: id }));
+    }),
+    command: params => guarded('identity.access', 'identity', { resourceId: params.p_target, requiresAuth: true }, async () => {
+      identityGate(); const c = await client(); const result = checked(await c.rpc('portal_identity_command_v1', params));
+      if (result.target !== params.p_target || result.contract !== 'portal-identity-v1' || result.version !== params.p_version + 1) throw new Error('CANONICAL_RESULT_INVALID');
+      return result;
+    })
+  };
   const write = {
     approve: (id, version, revision) => command('approve', id, version, revision, {}),
     addRound: (id, seq, patch, version, revision) => command(patch.result === 'ajustes' ? 'feedback' : 'round', id, version, revision, { title: patch.title, deliverable: patch.deliverable, feedback: patch.feedback }),
@@ -186,5 +239,5 @@ window.DVSupa = (function () {
   if (window.DVEnv && DVEnv.subscribe) DVEnv.subscribe(snapshot => {
     if (snapshot.state === 'VALIDATING' || snapshot.state === 'BLOCKED') { epoch++; intentions.clear(); if (_client && _client.removeAllChannels) _client.removeAllChannels(); _client = null; _clientFingerprint = null; }
   });
-  return { LIVE, BACKEND, client, signIn, signInWithGoogle, authUid, authEmail, signOut, hydrate, write };
+  return { LIVE, BACKEND, client, signIn, signInWithGoogle, authUid, authEmail, signOut, hydrate, write, identity, captureInvitation, acceptInvitation };
 })();

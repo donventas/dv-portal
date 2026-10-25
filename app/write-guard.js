@@ -212,6 +212,11 @@
       confirmSandbox: /invite|payment|activate|publish/.test(action)
     };
   });
+  ['identity.mfa','identity.invite','identity.cancel','identity.access'].forEach(function (action) {
+    policies[action] = { modes: ['SANDBOX'], origins: ['LOCAL'], writePolicy: 'rls', requiresAuth: true,
+      confirmSandbox: action !== 'identity.mfa' };
+  });
+  policies['auth.invitation'] = { modes: ['SANDBOX'], origins: ['LOCAL'], writePolicy: 'rls', requiresAuth: false };
   function context(action, resourceType, options) {
     options = options || {};
     var resolution = window.DVEnv && DVEnv.resolution ? DVEnv.resolution() : {};

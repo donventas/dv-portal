@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-25T21:10:52.477Z",
+  "scope": "Sanitized restored local DB; real Portal UI/Auth/REST/SMTP; explicit local capability admission only",
+  "checks": [
+    "Anonymous/pending non-admin/aal1, foreign origin, external recipient and direct dispatch are denied before email",
+    "Concurrent/replayed invitations dispatch once; duplicate recipient blocked; received mail grants no authority",
+    "Lost provider response, lost receipt and expired lease never trigger automatic resend",
+    "Only queued work cancels; approval expires; completion is privileged, nonce-bound and idempotent",
+    "Real Portal UI requires MFA, captures invitation locally, strips callback tokens and leaves verified invitee pending",
+    "UI grants only verified UUID; PKCE login reaches its account; UI revoke/restore cannot revive old refresh",
+    "Full Portal shell and invitation controls fit 320/390/1280px; no external traffic or service credential in browser",
+    "Real directory keyset pages are complete without duplicates or dispatch secrets; quota rejects excess requests",
+    "Revocation blocks queued dispatch and cached replay while preserving already-claimed effect receipts"
+  ],
+  "dispatches": 4,
+  "externalEmails": 0,
+  "productionConnections": 0,
+  "externalBrowserRequests": 0,
+  "privilegedBrowserRequests": 0
+}

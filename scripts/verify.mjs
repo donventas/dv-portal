@@ -5,6 +5,11 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
+  'evidence/operational-backlog.md',
+  'app/admin-invitations.js', 'server/invitations.cjs', 'tests/invitations.test.js',
+  'supabase/proposals/h10-invitations.sql', 'supabase/tests/invitation-lab.cjs', 'supabase/tests/invitations-integration.cjs',
+  'evidence/invitations-20261025/REPORT.md', 'evidence/invitations-20261025/results.json',
+  'evidence/invitations-20261025/admin-1280.png', 'evidence/invitations-20261025/admin-390.png',
   '.gitattributes',
   // Authorized isolated identity/Auth integration; private lab material is excluded.
   'supabase/proposals/h10-identity-contract.sql',
@@ -88,6 +93,7 @@ const forbidden = [
   /stripe|payment|webhook|edge.?function/i
 ];
 const governedBackend = new Set([
+  'supabase/proposals/h10-invitations.sql', 'supabase/tests/invitation-lab.cjs', 'supabase/tests/invitations-integration.cjs',
   'supabase/proposals/h10-identity-contract.sql',
   'supabase/tests/setup-identity-lab.cjs', 'supabase/tests/identity-provider.cjs',
   'supabase/tests/identity-browser.cjs',
@@ -124,7 +130,7 @@ if (mode === 'paths') {
   if (/<script src="data\/seed\.js"/.test(html)) fail('SEED_IN_STATIC_BOOT');
 } else if (mode === 'secrets') {
   const files = changed().filter(file => fs.existsSync(path.join(root, file)) &&
-    /\.(?:js|ts|sql|json|html|mjs|yml|yaml|md|nvmrc)$/.test(file));
+    /\.(?:js|cjs|ts|sql|json|html|mjs|yml|yaml|md|nvmrc)$/.test(file));
   const patterns = [
     /service[_-]?role\s*[:=]\s*['"][^'"]+/i,
     /(?:password|private[_-]?key|webhook[_-]?secret)\s*[:=]\s*['"][^'"]+/i,

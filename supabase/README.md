@@ -29,9 +29,14 @@ al conceder o restaurar acceso. Una renovación de sesión antigua no basta.
 El adaptador solicita PKCE, callbacks sin parámetros ni fragmentos y
 `shouldCreateUser: false`. El enlace se abre en el mismo navegador que lo solicitó.
 La invitación del proveedor se envía desde una operación administrativa confiable;
-una clave de servicio nunca pertenece al frontend. La UI de administración de
-invitaciones sigue deshabilitada hasta integrar ese servicio. El ensayo usa
-Mailpit como destino SMTP local, sin correos externos ni OAuth alojado.
+una clave de servicio nunca pertenece al frontend. El candidato
+`proposals/h10-invitations.sql`, el dispatcher `server/invitations.cjs` y la UI
+`app/admin-invitations.js` están integrados y probados en SANDBOX local, con
+Mailpit como destino SMTP. Requieren la capacidad explícita `isolated-v1`, que
+el mapper normal de release no emite. El dispatcher rechaza servicios remotos
+y destinatarios fuera de `synthetic.invalid`; no hay entrada de despliegue.
+Evidencia y pendientes: [invitaciones administrativas](../evidence/invitations-20261025/REPORT.md).
+Seguimiento vigente: [backlog de flujos operativos por área](../evidence/operational-backlog.md).
 
 `migrations/01`–`06` son historia versionada, no una receta para ejecutar en bloque.
 `03_seed.sql` y `data/seed.js` nunca se ejecutan contra producción. El loader solo
@@ -71,8 +76,9 @@ Los demás adaptadores heredados rechazan la operación; no hay fallback multifi
   red externa abortada. Configurar `H10_PLAYWRIGHT_PATH` y `H10_BROWSER_PATH` con
   instalaciones existentes. LIVE solo simulado, sin endpoint productivo.
 - `tests/h10-negative.sql` (en esta carpeta): SQL directo con fixtures de dos tenants,
-  roles y revocación; rollback, replay, conflictos y activación. **Sin ejecutar**.
-- `tests/run-h10-local.cjs --authorized-local-disposable`: futura ejecución mediante
+  roles y revocación; rollback, replay, conflictos y activación. Ensayo local
+  documentado en `../evidence/h1-chain/README.md`; no prueba un destino alojado.
+- `tests/run-h10-local.cjs --authorized-local-disposable`: ejecución explícita mediante
   `psql` existente; solo loopback y base `portal_h10_disposable`, sin parámetros de
   conexión adicionales. Requiere `H10_DISPOSABLE_DATABASE_URL` en entorno seguro;
   nunca guardar esa variable en Git. No crea bases ni aplica propuestas.
@@ -94,11 +100,12 @@ freemium persistentes ni muestra éxito para acciones demo-only. Cachés backend
 son efímeras; logout/cambio de identidad invalida datos, borradores y operaciones.
 Los comandos exigen fila canónica versionada antes de confirmar UI. Timeout no
 prueba que el servidor no haya confirmado: retry conserva la misma clave.
-SDK CDN fijado a `2.49.8`, sin instalación ni descarga en esta tarea; compatibilidad
-y disponibilidad del artefacto con backend real pendientes. Hydrate global sin
-paginación sigue como deuda antes de escalar.
+SDK navegador fijado a `2.118.0` con SRI y probado contra proveedor local real.
+Hydrate global sin paginación sigue pendiente; los nuevos directorios administrativos
+sí tienen paginación probada. El laboratorio no certifica un destino alojado.
 
-Siguiente gate: revisar diff y autorizar por separado commit/push/PR de desarrollo;
-después autorizar una BD desechable y revisión de seguridad. No merge a main,
-deploy, migración real ni H1.1 por superar estas pruebas. Evidencia detallada en
-`../evidence/h1.0/README.md` y su inventario de mutaciones.
+Commit/push/PR de desarrollo, ensayos aislados y revisión independiente ya están
+autorizados; no implican merge, deploy ni migración alojada. Los siguientes gates
+y flujos pendientes están en el backlog operativo enlazado arriba. Los recibos
+H1.0 y de identidad conservan sus cortes históricos; el informe de invitaciones
+es el corte local más reciente.

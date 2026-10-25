@@ -548,6 +548,7 @@ window.DVStaff = (function () {
   }
 
   function renderEquipo(host) {
+    if (window.DVSupa && DVSupa.identity.enabled() && window.DVAdminInvitations) return DVAdminInvitations.render(host);
     host.innerHTML = '<div class="eyebrow">Administración</div><h2 class="vh">Equipo</h2>' +
       '<p class="vsub">Analistas y diseñadores. El staff entra <b>solo por invitación</b>.</p>' +
       '<div class="list">' + S.staff().map(s => '<div class="li"><div class="g"><b>' + U.esc(s.name) + '</b><small>' + U.esc(s.email) + '</small></div><span class="tag ' + (s.role === 'admin' ? 'blue' : '') + '">' + s.role + '</span></div>').join('') + '</div>' +

@@ -49,3 +49,10 @@ test('Auth rejection cannot report successful login request', async () => {
   await assert.rejects(h.api.signIn('user@synthetic.invalid'));
   await assert.rejects(h.api.signInWithGoogle());
 });
+test('administrative invitations remain disabled without explicit isolated capability admission', async () => {
+  const h = harness();
+  assert.equal(h.api.identity.enabled(), false);
+  await assert.rejects(h.api.identity.directory('users'), /IDENTITY_CONTRACT_UNVERIFIED/);
+  await assert.rejects(h.api.identity.invite('synthetic', 'person@synthetic.invalid', 'Synthetic reason'), /IDENTITY_CONTRACT_UNVERIFIED/);
+  assert.equal(h.calls.length, 1);
+});
