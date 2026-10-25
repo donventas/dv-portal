@@ -144,6 +144,47 @@ input[type=checkbox],input[type=radio]{accent-color:var(--dv-action)}
  .hy-demo nav .btn{font-size:12px}
  .hy-question legend{font-size:21px}
 }
+/* Interaction: immediate semantic color changes keep theme-switch contrast intact.
+   Only geometry animates; hover never conveys selection or gates a field. */
+:is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button),.hy-option,.dv-action-arrow{transition:transform 160ms ease-out,box-shadow 160ms ease-out}
+.dv-action-arrow{display:inline-block;margin-left:10px}
+.hy-option:focus-within{border-color:var(--dv-focus);box-shadow:inset 3px 0 var(--dv-focus)}
+.hy-option>div:not([hidden]){animation:dv-context-enter 160ms ease-out}
+@keyframes dv-context-enter{from{transform:translateY(-4px)}to{transform:translateY(0)}}
+.hy-demo details[open]>:not(summary){animation:dv-context-enter 160ms ease-out}
+.hy-demo summary:focus-visible{background:var(--dv-selected);color:var(--dv-text)}
+:is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button):not(:disabled):not([aria-disabled=true]):not(.locked):focus-visible{border-color:var(--dv-focus)}
+.hy-demo nav .btn:not(.solid):focus-visible,.nav:not(.on):not(.locked):focus-visible{background:var(--dv-selected);color:var(--dv-text);box-shadow:inset 0 -2px var(--dv-link)}
+.hy-demo nav .btn.solid:focus-visible{outline-offset:3px}
+@media(hover:hover) and (pointer:fine){
+ .hy-option:has(.hy-choice:hover){border-color:var(--dv-selected-border);background:var(--dv-selected)}
+ .hy-option:not([data-selected=true]):has(.hy-choice:hover){box-shadow:inset 0 -2px var(--dv-link)}
+ #app :is(input,textarea,select):not(:disabled):not([readonly]):hover,#auth :is(input,textarea,select):not(:disabled):not([readonly]):hover{border-color:var(--dv-link)}
+ :is(.btn,.iconbtn,.roleseg button,.tabs button,.perseg button):not(:disabled):not([aria-disabled=true]):hover{border-color:var(--dv-link);box-shadow:inset 0 -2px var(--dv-link)}
+ .btn:not(.solid):not(:disabled):not([aria-disabled=true]):hover,.iconbtn:not(:disabled):hover{background:var(--dv-selected);color:var(--dv-text)}
+ .btn.solid:not(:disabled):not([aria-disabled=true]):hover,.hy-demo .btn.solid:not(:disabled):not([aria-disabled=true]):hover{background:var(--dv-action-hover);color:var(--dv-on-action);border-color:var(--dv-action-hover);box-shadow:none}
+ .btn:not(:disabled):not([aria-disabled=true]):hover .dv-action-arrow{transform:translateX(3px)}
+ .nav:not(.locked):not(:disabled):not([aria-disabled=true]):hover{background:var(--dv-selected);color:var(--dv-text);border-color:var(--dv-link)}
+ .nav:not(.on):not(.locked):hover{box-shadow:inset 0 -2px var(--dv-link)}
+ .hy-demo nav .btn:not(.solid):hover{background:var(--dv-selected);color:var(--dv-text);box-shadow:inset 0 -2px var(--dv-link)}
+ .hy-demo summary:hover{background:var(--dv-selected);color:var(--dv-text)}
+}
+:is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button):not(:disabled):not([aria-disabled=true]):not(.locked):active{transform:translateY(1px);box-shadow:inset 0 0 0 2px var(--dv-link)}
+.hy-demo .hy-choice:active{background:var(--dv-selected)}
+.hy-demo summary:active{background:var(--dv-selected);color:var(--dv-text)}
+/* Neutralize legacy hover paint on touch-only devices; tapping still has :active. */
+@media(hover:none){
+ .btn:hover:not(:active),.btn.solid:hover:not(:active){transform:none;box-shadow:none}
+ .btn.solid:hover,.hy-demo .btn.solid:hover{background:var(--dv-action);color:var(--dv-on-action);border-color:var(--dv-action)}
+ .btn:disabled:hover,.hy-demo button:disabled:hover{background:var(--dv-disabled);color:var(--dv-disabled-text);border-color:var(--dv-control-border)}
+ .nav:not(.on):hover{background:transparent;color:var(--dv-muted)}
+ .nav.on:hover{background:var(--dv-selected);color:var(--dv-text)}
+ .hy-demo nav .btn:not(.solid):hover{background:transparent;color:var(--dv-text)}
+}
+@media(prefers-reduced-motion:reduce){
+ :is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button):is(:hover,:active),.dv-action-arrow{transform:none!important}
+}
+.btn:disabled,.hy-demo .btn.solid:disabled,.btn:disabled:hover,.hy-demo .btn:disabled:hover,.btn[aria-disabled=true],.btn[aria-disabled=true]:hover{background:var(--dv-disabled);color:var(--dv-disabled-text);border-color:var(--dv-control-border);box-shadow:none;transform:none}
 @media(forced-colors:active){
  :is(button,input,select,textarea,.hy-option,.nav.on){border:1px solid ButtonText}
  :is(button,a,input,select,textarea,summary):focus-visible{outline-color:Highlight}

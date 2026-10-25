@@ -37,6 +37,39 @@ El aparente recorte de una línea de la nota en la captura general se descartó 
 captura cercana y comprobación de caja de texto. Se regeneró la evidencia móvil
 con el textarea contextual completo en pantalla. Aceptación humana pendiente.
 
+## Interacciones 03 — formulario, botones y navegación
+
+Mandato de Arturo: aplicar la propuesta de hover, respuesta al toque/teclado y
+movimiento breve en ambos temas y móvil, sin producción. Base `be73433`, checkout
+limpio, misma rama/PR; fuentes y ruta BSB de las revisiones anteriores conservadas.
+Cambios limitados a `app/appearance.css`, presentación/ARIA del formulario en
+`app/hybrid-demo-ui.js` y pruebas en `tests/browser/appearance.spec.js`.
+
+- Hover de puntero preciso refuerza borde/fondo y línea azul, sin seleccionar ni
+  revelar datos. Selección conserva checkbox y borde lateral; foco funciona con teclado.
+- Botones primarios cambian a su tono semántico hover; flecha decorativa solo en
+  confirmar contexto, guardar ficha y crear solicitud. Movimiento 160 ms, 3 px en
+  flecha y respuesta de pulsación de 1 px. Colores cambian inmediatamente para no
+  introducir contraste transitorio al alternar Claro/Oscuro.
+- Contexto y desplegables tienen entrada de 160 ms sin cambiar alturas mediante
+  límites artificiales ni borrar texto. Checkbox anuncia contenedor y expansión.
+- Toque funciona sin hover; se neutralizan desplazamiento y halo heredados tras
+  tap. Movimiento reducido elimina animaciones, transiciones y desplazamientos,
+  manteniendo color, estado y foco. Botones deshabilitados conservan apariencia
+  inactiva también antes/después de hover; sin señales de acción falsas.
+
+Verificación: 256 pruebas Node aprobadas; suite de navegador ampliada a 19 casos,
+incluidos hover/selección, Space, pulsación, conservación del contexto, botones
+deshabilitados, contraste de CTA hovered, móvil táctil simulado y movimiento
+reducido. Las capturas de interacción son evidencia local de coordinación en
+`evidence/portal-h11-appearance-20261025/` del workspace; las diez capturas estáticas
+de este paquete conservan la composición editorial 02, no prueban movimiento.
+Revisión independiente sin bloqueantes de implementación; la comprobación táctil
+final conserva un botón real durante un tap en el fixture para comprobar el reset
+de hover sin que el rerender enmascare el resultado. Estado de QA/CI registrado en
+el paquete de coordinación. No dispositivo
+físico, auditoría WCAG completa ni aceptación visual humana implícita.
+
 ## Mandato, fuente y límites
 
 Arturo declara disponible la variante clara y autoriza integrarla con selector

@@ -142,6 +142,60 @@ test('without JavaScript appearance follows the device and selector remains disa
  expect(await page.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(238, 241, 246)');
  await context.close();
 });
+
+test('hover, keyboard and press distinguish preview from selection in both themes',async({page})=>{
+ await boot(page);await page.setViewportSize({width:1280,height:900});
+ const option=page.locator('.hy-option').first(),check=option.locator('input[type=checkbox]'),note=page.locator('[name="qnote_needs_launch"]');
+ for(const mode of ['light','dark']){
+  await theme(page,mode);await check.uncheck();
+  await option.locator('.hy-choice').hover();
+  expect(await option.evaluate(e=>getComputedStyle(e).backgroundColor)).not.toBe(await page.locator('.hy-body').evaluate(e=>getComputedStyle(e).backgroundColor));
+  await expect(check).not.toBeChecked();await expect(note).toBeHidden();
+  await check.focus();await page.keyboard.press('Space');
+  await expect(check).toHaveAttribute('aria-expanded','true');await note.fill('Contexto que se conserva');
+  await check.focus();await page.keyboard.press('Space');await expect(check).toHaveAttribute('aria-expanded','false');await expect(note).toBeHidden();
+  await page.keyboard.press('Space');await expect(note).toHaveValue('Contexto que se conserva');
+  if(process.env.H11_INTERACTION_CAPTURE){await note.scrollIntoViewIfNeeded();await page.screenshot({path:path.join(process.env.H11_INTERACTION_CAPTURE,'interaction-'+mode+'.png')});}
+  const button=page.locator('[data-action="context"]');await button.hover();
+  const normal=await button.evaluate(e=>{const s=getComputedStyle(e);return {bg:s.backgroundColor,color:s.color}});
+  await expect(button.locator('.dv-action-arrow')).toHaveCSS('transform','matrix(1, 0, 0, 1, 3, 0)');
+  await page.mouse.down();await expect(button).toHaveCSS('transform','matrix(1, 0, 0, 1, 0, 1)');await page.mouse.move(0,0);await page.mouse.up();
+  const inactive=page.locator('[data-tab="ficha"]');await inactive.hover();
+  await expect(inactive).toHaveAttribute('aria-current','false');await expect(page.locator('[data-tab="marca"]')).toHaveAttribute('aria-current','step');
+  expect(await inactive.evaluate(e=>getComputedStyle(e).backgroundColor)).not.toBe(await page.locator('[data-tab="marca"]').evaluate(e=>getComputedStyle(e).backgroundColor));
+  await inactive.click();const disabled=page.locator('[data-action="artifact"]');await expect(disabled).toBeDisabled();
+  const before=await disabled.evaluate(e=>getComputedStyle(e).backgroundColor);await disabled.hover();await expect(disabled).toHaveCSS('background-color',before);await expect(disabled).toHaveCSS('transform','none');
+  const luminance=c=>c.match(/[\d.]+/g).slice(0,3).map(Number).map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4}).reduce((a,x,i)=>a+x*[.2126,.7152,.0722][i],0);
+  const a=luminance(normal.bg),b=luminance(normal.color);expect((Math.max(a,b)+.05)/(Math.min(a,b)+.05),'Hovered primary button contrast').toBeGreaterThanOrEqual(4.5);
+  await page.locator('[data-tab="marca"]').click();
+ }
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.locator('[data-action="context"]').hover();await expect(page.locator('.dv-action-arrow').first()).toHaveCSS('transform','none');
+ await expect(page.locator('[data-action="context"]')).toHaveCSS('transform','none');
+ await expect(option).toHaveCSS('transition-duration','0s');
+ await check.uncheck();await check.check();await expect(note.locator('..').locator('..')).toHaveCSS('animation-name','none');
+});
+
+test('touch options and navigation work without sticky hover in light and dark',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const page=await context.newPage();await boot(page);
+ for(const mode of ['light','dark']){
+  await theme(page,mode);expect(await page.evaluate(()=>matchMedia('(hover: none)').matches)).toBeTruthy();
+  const menu=page.getByRole('button',{name:'Menú',exact:true});await menu.tap();await expect(menu).toHaveCSS('transform','none');await expect(menu).toHaveCSS('box-shadow','none');await menu.tap();
+  // Preserve this real .btn node for one tap: otherwise the stage handler replaces
+  // it, which would fail to exercise sticky :hover on a persistent control.
+  const persistent=page.locator('[data-tab="marca"]');
+  await persistent.evaluate(e=>e.addEventListener('click',event=>event.stopPropagation(),{once:true}));
+  await persistent.tap();await expect(persistent).toHaveCSS('transform','none');await expect(persistent).toHaveCSS('box-shadow','none');
+  const check=page.locator('[name="q_needs_launch"]');await check.uncheck();await check.tap();
+  await expect(check).toBeChecked();await expect(check).toHaveAttribute('aria-expanded','true');
+  await page.locator('[name="qnote_needs_launch"]').fill('Contexto desde móvil');
+  if(process.env.H11_INTERACTION_CAPTURE)await page.screenshot({path:path.join(process.env.H11_INTERACTION_CAPTURE,'touch-'+mode+'.png')});
+  await page.locator('[data-tab="contexto"]').tap();await expect(page.locator('[data-tab="contexto"]')).toHaveAttribute('aria-current','step');
+  await page.locator('[data-tab="marca"]').tap();await expect(page.locator('[name="qnote_needs_launch"]')).toHaveValue('Contexto desde móvil');
+  await fits(page,'touch '+mode);
+ }
+ await context.close();
+});
 test('blocked/prelaunch retains selector and no backend; storage denial degrades safely',async({page})=>{
  const external=[];await page.route('**/*',r=>{if(new URL(r.request().url()).origin!=='http://127.0.0.1:8002'){external.push(r.request().url());return r.abort();}return r.continue();});
  await page.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw new Error('Unavailable');}});});
