@@ -15,7 +15,7 @@ window.DVStore = (function () {
   };
   let generation = 0;
   function cacheKey(key) { return key === 'session' ? key : 'actor:' + JSON.stringify([session && session.userId, session && session.accountId, session && session.email]) + ':' + key; }
-  function clearCaches() { _chats = null; _iters = null; _skillMeta = null; _backlog = null; _period = null; _work = null; ['DVClient','DVStaff','DVFree','DVAuth'].forEach(name => { if (window[name] && window[name].resetTransient) window[name].resetTransient(); }); }
+  function clearCaches() { _chats = null; _iters = null; _skillMeta = null; _backlog = null; _period = null; _work = null; ['DVClient','DVStaff','DVFree','DVAuth','DVHybridDemo'].forEach(name => { if (window[name] && window[name].resetTransient) window[name].resetTransient(); }); }
   function purgeCaches() {
     if (!DVEnv.storage || !window.localStorage) return;
     const prefix = DVEnv.storage.prefix, keys = [];
@@ -85,7 +85,7 @@ window.DVStore = (function () {
   function leads() { return isAdmin() ? (S.leads || []).slice().sort((a, b) => Date.parse(b.created_at || 0) - Date.parse(a.created_at || 0)) : []; }
   function finished() { const ids = scopedAccountIds(); return S.accounts.filter(a => ids.indexOf(a.id) >= 0 && a.status === 'finalizado').sort((a, b) => Date.parse(b.finished_at || 0) - Date.parse(a.finished_at || 0)); }
   function historyAccounts() { const ids = scopedAccountIds(); return S.accounts.filter(a => ids.indexOf(a.id) >= 0 && (a.status === 'activo' || a.status === 'finalizado')); }
-  function analystsLoad() { return staff().map(u => { const load = activeLoadOf(u.id), base = baseOf(u.id); return { id: u.id, name: u.name, first: u.name.split(' ')[0], role: u.role, load, tope: base, base, monthCount: load, atBase: load >= base, founder: isFounder(u.id), pending: pendingCountOf(u.id) }; }).sort((a, b) => (a.load / a.base) - (b.load / b.base)); }
+  function analystsLoad() { return staff().map(u => { const load = activeLoadOf(u.id), base = baseOf(u.id); return { id: u.id, name: u.name, first: String(u.name || '').split(' ')[0], role: u.role, load, tope: base, base, monthCount: load, atBase: load >= base, founder: isFounder(u.id), pending: pendingCountOf(u.id) }; }).sort((a, b) => (a.load / a.base) - (b.load / b.base)); }
   /* Tope de capas por tipo de cuenta: el tipo fija el TECHO de servicio que puede
      ver el cliente. Cliente = completo · Piloto = sin Activación · Demostración = solo Fundación. */
   const KIND_CAPAS = { cliente: ['Fundación', 'Sistema', 'Activación'], piloto: ['Fundación', 'Sistema'], demostracion: ['Fundación'] };
@@ -101,7 +101,7 @@ window.DVStore = (function () {
   function brandOf(accId) { return S.brands.find(b => b.account_id === accId); }
   function projectOf(accId) { const b = brandOf(accId); return b && S.projects.find(p => p.brand_id === b.id); }
   function access(accId) { return S.package_access.find(p => p.account_id === accId); }
-  function analystName(accId) { const a = S.assignments.find(x => x.account_id === accId); const u = a && S.users.find(y => y.id === a.analyst_id); return u ? u.name.split(' ')[0] : '—'; }
+  function analystName(accId) { const a = S.assignments.find(x => x.account_id === accId); const u = a && S.users.find(y => y.id === a.analyst_id); return u ? String(u.name || '').split(' ')[0] : '—'; }
 
   function blocksOf(accId) { const p = projectOf(accId); return p ? S.blocks.filter(b => b.project_id === p.id) : []; }
   function block(id) { return S.blocks.find(b => b.id === id); }
@@ -346,7 +346,7 @@ window.DVStore = (function () {
       addBrands: perBrand ? gap / perBrand : 0, addBlocks: hoursPerBlock ? Math.max(0, contractH - activeH) / hoursPerBlock : 0 };
   }
   function capacity() {
-    return staff().map(u => ({ name: u.name.split(' ')[0], load: activeLoadOf(u.id), tope: baseOf(u.id) }));
+    return staff().map(u => ({ name: String(u.name || '').split(' ')[0], load: activeLoadOf(u.id), tope: baseOf(u.id) }));
   }
 
   /* ══ CAPA 3 · MODELO DE VALOR (Estrategia de valor · Activación & retainer) ══
@@ -626,7 +626,7 @@ window.DVStore = (function () {
   }
   function perfSummary() {
     return staff().map(u => { const hist = perfHistory(u.id); const closed = hist.filter(r => !r.current); const met = closed.filter(r => r.met).length;
-      return { id: u.id, name: u.name, first: u.name.split(' ')[0], role: u.role, founder: isFounder(u.id), base: baseOf(u.id), load: activeLoadOf(u.id), hist, months: closed.length, met, ratio: closed.length ? met / closed.length : null, events: hrEvents(u.id) }; });
+      return { id: u.id, name: u.name, first: String(u.name || '').split(' ')[0], role: u.role, founder: isFounder(u.id), base: baseOf(u.id), load: activeLoadOf(u.id), hist, months: closed.length, met, ratio: closed.length ? met / closed.length : null, events: hrEvents(u.id) }; });
   }
   function hrEvents(uid) { const h = _hr(); return h.events.filter(e => !uid || e.user_id === uid).slice().sort((a, b) => Date.parse(b.date) - Date.parse(a.date)); }
   function addHrEvent(uid, type, text) { if (!text) return; const h = _hr(); h.events.push({ id: 'hr-' + Date.now(), user_id: uid, type, date: new Date().toISOString().slice(0, 10), text, by: (me() || {}).id || null }); _saveHr(h); emit(); }

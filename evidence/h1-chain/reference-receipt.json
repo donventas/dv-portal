@@ -1,0 +1,82 @@
+[
+  {
+    "archive": "AI for Marketing.zip",
+    "sha256": "997e9683a7e5026c7b40c9f2c8b80993fc3d21fdfe05407568710f2efd5c7696",
+    "coverage": "selected transcripts only; full course and PDFs not reviewed",
+    "entries": [
+      {
+        "path": "AI for Marketing/Transcripts/Unit 4. Make AI Know Your Customers.md",
+        "sha256": "778dd90590ccad9f167ed6781f38b9d3600ab91a76c10da20ed7cf48bf93888c"
+      },
+      {
+        "path": "AI for Marketing/Transcripts/Unit 5a. Build Your Customer Taste.md",
+        "sha256": "e2471b826f96e382ad4a78e87564c81287b7786e4a16c407ba09327074b8f1a9"
+      },
+      {
+        "path": "AI for Marketing/Transcripts/Unit 5b. Build Your Brand Profile.md",
+        "sha256": "d088d37174173f13af81374e48e701fb3463df62a42b3d7d037630ca0198c931"
+      }
+    ]
+  },
+  {
+    "archive": "Sales & Negotiation.zip",
+    "sha256": "b3a466061abddfec954eb25158e495bdd51873718181102bf48e5de6b6fd8908",
+    "coverage": "selected transcripts only; full course and PDFs not reviewed",
+    "entries": [
+      {
+        "path": "Sales & Negotiation/Transcripts/Sales & Negotiation_ Unit 1. Understand Why People Buy-transcript (1).txt",
+        "sha256": "6e93726c43bbc668767494e85c7c92057c7b94f97feeec63a9581bffd6c2f83f"
+      },
+      {
+        "path": "Sales & Negotiation/Transcripts/Sales & Negotiation_ Unit 11. Use the Voice of Customers -transcript.txt",
+        "sha256": "a66da322ebf7ed5af80dc27f2e374129f0d8d83c57ea9a6822f84f59d16579ae"
+      },
+      {
+        "path": "Sales & Negotiation/Transcripts/Sales & Negotiation_ Unit 12. Be Perceived as Different-transcript.txt",
+        "sha256": "1c17a440542c52ffc0c8ac38200577ce8b14c9a0adb04bc3f5314aed3b9ef453"
+      },
+      {
+        "path": "Sales & Negotiation/Transcripts/Sales & Negotiation_ Unit 4. Ask Before You Tell-transcript (1).txt",
+        "sha256": "5929dd0c94c7b3fafb192636b7f754492dc925043fe26027dedd9a5adaf663c4"
+      }
+    ]
+  },
+  {
+    "archive": "Fundraising.zip",
+    "sha256": "cb1d34ebd8c23a9b8b5d9cbbff5d8f32b6d3b4050cbb18a4648cc03c13005191",
+    "coverage": "selected transcripts only; full course and PDFs not reviewed",
+    "entries": [
+      {
+        "path": "Fundraising/Transcripts/Fundraising_ Unit 7. The Pitch-transcript.txt",
+        "sha256": "ee7b409520f92df2ed767f103063d000c4dce86c61fa5af28db37837f36d812b"
+      },
+      {
+        "path": "Fundraising/Transcripts/Fundraising_ Unit 9. The Perfect Pitch Deck-transcript.txt",
+        "sha256": "3e1f8dc6e775db0982926f471a4c654690b5d3c0d8cd7803c64c38d79e23e079"
+      }
+    ]
+  },
+  {
+    "archive": "Brand Marketing.zip",
+    "sha256": "449f42a75fc631dc96858da5ec769ceacfccb5ed6caa3fef2663f4731c45f9be",
+    "coverage": "selected transcripts only; full course and PDFs not reviewed",
+    "entries": [
+      {
+        "path": "Brand Marketing/Transcripts/Unit 2. The Power of Emotional Value.md",
+        "sha256": "e4cceabca48ff6f6cdf3837d8b61ce02607c9f5b64491ee86fa15b24b818fab3"
+      },
+      {
+        "path": "Brand Marketing/Transcripts/Unit 3. Build Your Brand Arena.md",
+        "sha256": "54fcf46f213adb8cf263ff6c7b4355a7e88d07f0e6c73b4f9cf9ab1fcc291077"
+      },
+      {
+        "path": "Brand Marketing/Transcripts/Unit 4. Defining Your Brand Personality.md",
+        "sha256": "705d668bbd2ae4a25b4b4b2fadbf2a8b66ccf7eadba926ce9b1d6fe877dddcb4"
+      },
+      {
+        "path": "Brand Marketing/Transcripts/Unit 6. The Story Telling Framework.md",
+        "sha256": "130be424bc70383c4f0b82f1179d806efac9e86428ffac78f87f83926dd70745"
+      }
+    ]
+  }
+]

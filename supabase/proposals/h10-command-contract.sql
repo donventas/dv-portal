@@ -2,6 +2,98 @@
 -- Requires schema 01, RLS 02 and RPC 04; owner must inventory actual grants first.
 begin;
 revoke create on schema public from public, anon, authenticated;
+-- Revocation applies to helpers as well as table policies, including direct SQL calls.
+create or replace function auth_dv.me() returns public.app_user language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$select * from public.app_user where id=auth.uid() and not pending$$;
+create or replace function auth_dv.role() returns public.user_role language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$select role from public.app_user where id=auth.uid() and not pending$$;
+create or replace function auth_dv.account_id() returns uuid language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$select account_id from public.app_user where id=auth.uid() and not pending$$;
+create or replace function auth_dv.member_role() returns public.member_role language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$select member_role from public.app_user where id=auth.uid() and not pending$$;
+create or replace function auth_dv.is_admin() returns boolean language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$select coalesce(auth_dv.role()='admin',false)$$;
+create or replace function auth_dv.is_staff() returns boolean language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$select coalesce(auth_dv.role() in ('admin','analista'),false)$$;
+create or replace function auth_dv.is_owner() returns boolean language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$select coalesce(auth_dv.role()='cliente' and auth_dv.member_role()='owner',false)$$;
+create or replace function auth_dv.account_ids() returns setof uuid language plpgsql stable security definer set search_path=pg_catalog,public,pg_temp as $$
+declare u public.app_user; begin
+ select * into u from public.app_user where id=auth.uid() and not pending;
+ if u.id is null then return; end if;
+ if u.role='cliente' then return query select u.account_id where u.account_id is not null;
+ elsif u.role='admin' then return query select id from public.account;
+ else return query select account_id from public.assignment where analyst_id=u.id;
+ end if;
+end $$;
+create or replace function auth_dv.account_of_block(b uuid) returns uuid language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$
+ select br.account_id from public.block bl join public.project p on p.id=bl.project_id join public.brand br on br.id=p.brand_id
+ where bl.id=b and br.account_id in(select auth_dv.account_ids())
+$$;
+create or replace function auth_dv.block_is_paid(b uuid) returns boolean language sql stable security definer set search_path=pg_catalog,public,pg_temp as $$
+ select exists(select 1 from public.block bl join public.project p on p.id=bl.project_id join public.brand br on br.id=p.brand_id
+ join public.invoice i on i.account_id=br.account_id where bl.id=b and br.account_id in(select auth_dv.account_ids())
+ and i.status='pagado' and i.layer=public.capa_to_layer(bl.capa))
+$$;
+-- Explicit, supported write surface: commands plus own display name only.
+-- RLS does not protect TRUNCATE, and column grants survive table REVOKE.
+do $$ declare t text; c record; begin
+ foreach t in array array['account','app_user','invitation','assignment','package_access','brand','project','block','round','preview','scope_change','asset','invoice','payment','skill'] loop
+  execute format('revoke all on public.%I from public,anon,authenticated',t);
+  for c in select column_name from information_schema.columns where table_schema='public' and table_name=t loop
+   execute format('revoke all (%I) on public.%I from public,anon,authenticated',c.column_name,t);
+  end loop;
+  execute format('grant select on public.%I to authenticated',t);
+ end loop;
+end $$;
+-- Harden inherited definers too; pg_temp must be explicit LAST, never implicit first.
+do $$ declare f record; begin
+ for f in select p.oid::regprocedure as signature from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='auth_dv' loop
+  execute format('alter function %s set search_path = pg_catalog, public, pg_temp',f.signature);
+  execute format('revoke all on function %s from public,anon',f.signature);
+  execute format('grant execute on function %s to authenticated',f.signature);
+ end loop;
+end $$;
+alter function public.activate_account(uuid,uuid) set search_path = pg_catalog, public, pg_temp;
+alter function public.handle_new_auth_user() set search_path = pg_catalog, public, pg_temp;
+-- Authentication does not grant membership. Legacy email matching must never
+-- reactivate a revoked/pending identity or accept an expired invitation.
+create or replace function public.handle_new_auth_user() returns trigger
+language plpgsql security definer set search_path = pg_catalog, public, pg_temp as $$
+begin
+ insert into public.app_user(id,email,name,role,account_id,member_role,pending)
+ values(new.id,new.email,split_part(new.email,'@',1),'cliente',null,null,true)
+ on conflict do nothing;
+ return new;
+end $$;
+revoke all on function public.handle_new_auth_user() from public,anon,authenticated;
+alter table public.app_user add constraint portal_display_name
+ check(name is not null and length(btrim(name)) between 1 and 120) not valid;
+alter function public.capa_to_layer(text) set search_path = pg_catalog, public, pg_temp;
+-- Narrow staff reads to assigned accounts. Admin keeps its explicit global scope.
+drop policy app_user_staff_read on public.app_user;
+create policy app_user_staff_read on public.app_user for select to authenticated
+ using(auth_dv.is_admin() or (auth_dv.is_staff() and account_id in(select auth_dv.account_ids())));
+drop policy invitation_read on public.invitation;
+create policy invitation_read on public.invitation for select to authenticated
+ using(auth_dv.is_admin() or (account_id in(select auth_dv.account_ids()) and (auth_dv.is_staff() or auth_dv.is_owner())));
+drop policy assignment_read on public.assignment;
+create policy assignment_read on public.assignment for select to authenticated
+ using(auth_dv.is_admin() or analyst_id=auth.uid());
+drop policy invoice_read on public.invoice;
+create policy invoice_read on public.invoice for select to authenticated
+ using(account_id in(select auth_dv.account_ids()) and (auth_dv.is_staff() or auth_dv.is_owner()));
+drop policy payment_read on public.payment;
+create policy payment_read on public.payment for select to authenticated
+ using(invoice_id in(select id from public.invoice));
+-- Existing permissive policies are intersected with the contracted brand layer.
+create function auth_dv.portal_can_read_block(bid uuid) returns boolean language sql stable
+ security definer set search_path = pg_catalog, public, pg_temp as $$
+ select exists(select 1 from public.block b join public.project p on p.id=b.project_id
+ join public.brand br on br.id=p.brand_id
+ where b.id=bid and br.account_id in(select auth_dv.account_ids()) and
+ (auth_dv.is_staff() or (br.enabled and exists(select 1 from public.package_access pa
+ where pa.account_id=br.account_id and br.layer=any(pa.layers)))))
+$$;
+revoke all on function auth_dv.portal_can_read_block(uuid) from public,anon;
+grant execute on function auth_dv.portal_can_read_block(uuid) to authenticated;
+create policy portal_package on public.block as restrictive for select to authenticated using(auth_dv.portal_can_read_block(id));
+create policy portal_package on public.round as restrictive for select to authenticated using(auth_dv.portal_can_read_block(block_id));
+create policy portal_package on public.preview as restrictive for select to authenticated using(auth_dv.portal_can_read_block(block_id));
+create policy portal_package on public.asset as restrictive for select to authenticated using(auth_dv.portal_can_read_block(block_id));
 -- Self-service profile updates have one field. Even staff/admin cannot self-edit authority.
 revoke update on public.app_user from public, anon, authenticated;
 do $$ declare c record; begin
@@ -14,7 +106,7 @@ drop policy if exists app_user_self_update on public.app_user;
 create policy app_user_self_update on public.app_user for update to authenticated
 using (id=auth.uid()) with check (id=auth.uid());
 create or replace function public.portal_profile_boundary() returns trigger
-language plpgsql set search_path = pg_catalog, public as $$ begin
+language plpgsql set search_path = pg_catalog, public, pg_temp as $$ begin
   if current_user in ('anon','authenticated') and
      (to_jsonb(new) - 'name') is distinct from (to_jsonb(old) - 'name') then
     raise exception 'PROFILE_AUTHORITY_IMMUTABLE' using errcode='42501';
@@ -50,7 +142,7 @@ alter table public.portal_command_audit enable row level security;
 revoke all on public.portal_command_receipt, public.portal_feedback, public.portal_command_audit from public, anon, authenticated;
 grant select on public.portal_feedback to authenticated;
 create policy portal_feedback_read on public.portal_feedback for select to authenticated
-using (auth_dv.can_see_account(auth_dv.account_of_block(block_id)));
+using (auth_dv.portal_can_read_block(block_id));
 -- Old activation and direct block/round writes cannot bypass the command contract.
 revoke execute on function public.activate_account(uuid,uuid) from public, anon, authenticated;
 revoke insert, update, delete on public.block, public.round, public.account from public, anon, authenticated;
@@ -63,7 +155,7 @@ do $$ declare c record; begin
 end $$;
 -- Revoked/pending actors cannot use a still-valid JWT for existing table reads/writes.
 create or replace function auth_dv.portal_actor_active() returns boolean language sql stable
-security definer set search_path = pg_catalog, public as $$
+security definer set search_path = pg_catalog, public, pg_temp as $$
  select exists(select 1 from public.app_user where id=auth.uid() and not pending)
 $$;
 revoke all on function auth_dv.portal_actor_active() from public,anon;
@@ -76,7 +168,7 @@ do $$ declare t record; begin
 end $$;
 create or replace function public.portal_command_v1(
  p_key uuid, p_kind text, p_resource uuid, p_version integer, p_revision uuid, p_payload jsonb
-) returns jsonb language plpgsql security definer set search_path = pg_catalog, public as $$
+) returns jsonb language plpgsql security definer set search_path = pg_catalog, public, pg_temp as $$
 declare
  u public.app_user; b public.block; a public.account; r public.round;
  f public.portal_feedback; saved public.portal_command_receipt;
@@ -99,9 +191,11 @@ begin
    select * into b from public.block where id=p_resource for update;
    if b.id is null then raise exception 'RESOURCE_UNAVAILABLE'; end if;
    tenant := auth_dv.account_of_block(b.id);
+   if tenant is null then raise exception 'FORBIDDEN' using errcode='42501'; end if;
    select * into a from public.account where id=tenant for share;
    if a.id is null or a.status <> 'activo' then raise exception 'ACCOUNT_UNAVAILABLE'; end if;
    if u.role='cliente' then
+     if not auth_dv.portal_can_read_block(b.id) then raise exception 'PACKAGE_FORBIDDEN' using errcode='42501'; end if;
      if u.account_id is distinct from tenant or u.member_role <> 'owner' or p_kind='round' then raise exception 'FORBIDDEN' using errcode='42501'; end if;
    elsif u.role='analista' then
      perform 1 from public.assignment where analyst_id=u.id and account_id=tenant for share;

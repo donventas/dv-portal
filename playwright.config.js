@@ -11,6 +11,7 @@ module.exports = defineConfig({
   use: {
     baseURL: 'http://127.0.0.1:8002',
     browserName: 'chromium',
+    launchOptions: process.env.H10_BROWSER_PATH ? { executablePath: process.env.H10_BROWSER_PATH } : {},
     trace: 'off',
     screenshot: 'off',
     video: 'off'

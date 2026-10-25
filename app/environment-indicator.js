@@ -115,7 +115,7 @@
       '<main class="env-prelaunch-screen" role="main" aria-labelledby="envBlockedTitle">' +
       '<div class="prelaunch-shell">' +
       '<header class="prelaunch-head"><a class="prelaunch-brand" href="https://www.donventas.mx/" aria-label="Don Ventas, volver al sitio">' +
-      '<img src="brand/donventas-horizontal-curvas-reverse.svg" alt="Don Ventas" width="392" height="130"></a>' +
+      '<img src="brand/donventas-wordmark-b6-reverse.svg" alt="Don Ventas" width="210" height="130"></a>' +
       '<span class="prelaunch-state" aria-label="Portal bloqueado: aún no habilitado">Portal aún no habilitado</span></header>' +
       '<section class="prelaunch-hero"><div class="prelaunch-copy">' +
       '<p class="prelaunch-kicker">Portal Don Ventas</p><h1 id="envBlockedTitle" tabindex="-1">Próximamente</h1>' +

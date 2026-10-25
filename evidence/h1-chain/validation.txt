@@ -1,0 +1,14 @@
+2026-10-25
+verify:paths PASS
+verify:bundle PASS
+verify:secrets PASS
+git diff --check PASS
+asset source/target byte and SHA-256 parity PASS
+246 unit/integration tests PASS
+10 browser tests PASS; responsive samples 320/390/640/768/805/890/980/981/1024/1280
+Actual GoTrue/JWT/PostgREST/SDK local checks: 10 PASS
+SQL negative/security and two-session replay PASS
+Synthetic restore/baseline recovery PASS
+Human design acceptance: PENDING
+Hosted configuration/migrations/SMTP/OAuth: NOT_TESTED
+Production deployment: NO_GO

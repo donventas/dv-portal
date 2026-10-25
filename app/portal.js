@@ -14,7 +14,7 @@ window.DVPortal = (function () {
     go(route);
     try { const v = S.getPreference('view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
   }
-  function hasRoute(v) { return mod().nav().some(n => n.route === v); }
+  function hasRoute(v) { return (v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) || mod().nav().some(n => n.route === v); }
 
   function buildShell() {
     const s = S.session(), m = mod();
@@ -24,35 +24,47 @@ window.DVPortal = (function () {
       ? '<span class="roleseg"><button id="rgA" class="' + (S.isOwner() ? 'on' : '') + '" onclick="DVPortal.role(\'owner\')">Owner</button><button id="rgB" class="' + (S.isOwner() ? '' : 'on') + '" onclick="DVPortal.role(\'miembro\')">Miembro</button></span>'
       : '<span class="roleseg"><button id="rgA" class="' + (S.isAdmin() ? '' : 'on') + '" onclick="DVPortal.role(\'analista\')">Analista</button><button id="rgB" class="' + (S.isAdmin() ? 'on' : '') + '" onclick="DVPortal.role(\'admin\')">Admin</button></span>';
     U.el('topBar').innerHTML =
-      U.MARK + '<span class="brand">DON<i>·</i>VENTAS</span>' +
+      '<button id="mobileNavToggle" class="mobile-nav-toggle" aria-controls="side" aria-expanded="false">Menú</button>' + U.WORDMARK +
       '<span class="ctx">' + m.ctxLabel() + '</span>' +
       '<span class="who">' + roleSeg +
-      '<div class="popwrap" onmouseenter="DVPortal.renderNoti()"><button class="iconbtn" onclick="DVPortal.pin(\'noti\')" aria-label="Notificaciones">🔔<span class="ndot"></span></button>' +
+      '<div class="popwrap" onmouseenter="DVPortal.renderNoti()"><button class="iconbtn" onclick="DVPortal.pin(\'noti\')" aria-label="Notificaciones">' + U.icon('message') + '<span class="ndot"></span></button>' +
       '<div class="pop" id="notiPop"><div class="ph">Notificaciones</div><div id="notiBody"></div></div></div>' +
       '<div class="popwrap" onmouseenter="DVPortal.renderGloss()"><button class="iconbtn" onclick="DVPortal.pin(\'gloss\')" aria-label="Glosario">?</button>' +
       '<div class="pop" id="glossPop"><div class="ph">Glosario</div><div class="ghead" id="glossHead"></div><div id="glossBody"></div></div></div>' +
-      '<span class="pill" id="rolePill"></span><span class="av">' + (me.name ? me.name[0] : '·') + '</span>' +
+      '<span class="pill" id="rolePill"></span><span class="av">' + U.esc(me.name ? me.name[0] : '·') + '</span>' +
       '<button class="iconbtn" title="Salir" onclick="DVPortal.logout()" aria-label="Salir">⎋</button></span>';
     U.el('rolePill').textContent = s.actor === 'freemium' ? 'Cuenta gratis' : s.actor === 'cliente' ? (S.isOwner() ? 'Owner' : 'Miembro') : (S.isAdmin() ? 'Admin' : 'Analista');
     buildNav();
+    U.el('app').classList.remove('nav-open');
+    U.el('mobileNavToggle').onclick = () => {
+      const open = U.el('app').classList.toggle('nav-open');
+      U.el('mobileNavToggle').setAttribute('aria-expanded', String(open));
+    };
+    U.el('app').onkeydown = e => { if(e.key==='Escape' && U.el('app').classList.contains('nav-open')) { U.el('app').classList.remove('nav-open');U.el('mobileNavToggle').setAttribute('aria-expanded','false');U.el('mobileNavToggle').focus(); } };
   }
 
   function buildNav() {
-    U.el('side').innerHTML = mod().nav().map(n => {
+    const icons = { tablero:'layers', impacto:'target', bitacora:'article', archivos:'order', cuenta:'coins', miembros:'users', cuentas:'layers', cola:'order', skills:'zap', mejoras:'bulb', waitlist:'calendar', capacidad:'chart', desempeno:'trending', resenas:'message', equipo:'users', accesos:'shield', facturacion:'coins', utilidad:'chart', valor:'target', prospectos:'search', aplicacion:'website', referidos:'users', diagnostico:'diagnosis' };
+    U.el('side').innerHTML = (DVEnv.isDemo() && window.DVHybridDemo ? '<button class="nav" data-nav="hybrid" onclick="DVPortal.go(\'hybrid\')">' + U.icon('compass') + 'Recorrido de marca · DEMO</button>' : '') + mod().nav().map(n => {
       if (n.group) return '<div class="lbl">' + n.group + '</div>';
-      if (n.static) return '<div class="nav locked"' + (n.title ? ' title="' + U.esc(n.title) + '"' : '') + '><span class="i">' + n.icon + '</span> ' + n.label + ' ' + (n.badge || '') + '</div>';
-      return '<button class="nav" data-nav="' + n.route + '" onclick="DVPortal.go(\'' + n.route + '\')"><span class="i">' + n.icon + '</span> ' + n.label + ' ' + (n.badge || '') + '</button>';
+      if (n.static) return '<div class="nav locked"' + (n.title ? ' title="' + U.esc(n.title) + '"' : '') + '>' + U.icon(n.locked ? 'shield' : 'tag') + ' ' + n.label + ' ' + (n.badge || '') + '</div>';
+      return '<button class="nav" data-nav="' + n.route + '" onclick="DVPortal.go(\'' + n.route + '\')">' + U.icon(icons[n.route] || 'layers') + ' ' + n.label + ' ' + (n.badge || '') + '</button>';
     }).join('');
     markNav();
   }
   function markNav() { U.qsa('#side .nav[data-nav]').forEach(b => b.classList.toggle('on', b.dataset.nav === route)); }
 
   function go(v) {
+    const menuWasOpen=U.el('app').classList.contains('nav-open');
+    U.el('app').classList.remove('nav-open');
+    U.el('mobileNavToggle')?.setAttribute('aria-expanded','false');
     route = v;
-    mod().render(v, U.el('viewHost'));
+    if(v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) DVHybridDemo.render(U.el('viewHost'));
+    else mod().render(v, U.el('viewHost'));
     applyCapabilities();
     markNav();
     const main = U.el('main'); if (main) main.scrollTop = 0;
+    if(menuWasOpen){U.el('viewHost').tabIndex=-1;U.el('viewHost').focus({preventScroll:true});}
     try { if (v !== 'bloque') DVWriteGuard.run('ui.preference', 'ui-state', {}, () => S.savePreference('view-' + S.session().actor, v)); } catch (e) { }
   }
 

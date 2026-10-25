@@ -29,7 +29,9 @@ window.DVSupa = (function () {
     if (!window.supabase) {
       await new Promise((res, rej) => {
         const s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.min.js';
+        s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js';
+        s.integrity = 'sha384-UagCvVPT5XXA0Hx+nJYUAGBFseHT9zBgpJMSebsAxl9lciTwbT+39j5VfRjdP5Tp';
+        s.crossOrigin = 'anonymous';
         s.onload = res; s.onerror = () => rej(new Error('No se pudo cargar supabase-js'));
         document.head.appendChild(s);
       });

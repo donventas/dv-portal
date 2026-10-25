@@ -1,0 +1,215 @@
+{
+  "state": "ROUTE_RESOLVED_NOT_EXECUTION_APPROVAL",
+  "tasks": [
+    "web"
+  ],
+  "phase": "execute",
+  "modifiers": [
+    "protected-mark"
+  ],
+  "baseline_declared_not_verified": true,
+  "files": [
+    {
+      "id": "router",
+      "path": "governance/execution/BSB-EXECUTION-ROUTER-v0.1.md",
+      "sha256": "170ee9a40cce93d0ae747aae5d64272bbf16f3e08985a37ee06076a81800d186",
+      "characters": 12491,
+      "words": 1611
+    },
+    {
+      "id": "manifest",
+      "path": "architecture/capabilities/manifests/BSB-CAPABILITY-MANIFEST-v1.0.md",
+      "sha256": "0b3ca969d8458f5b40ca2988e910a4fcf4e5edd73379ad3969a0ea5932d1f276",
+      "characters": 17589,
+      "words": 1820
+    },
+    {
+      "id": "cgc",
+      "path": "architecture/capabilities/contracts/BSB-CAPABILITY-GOVERNANCE-CONTRACT-v1.0.md",
+      "sha256": "b794b0f19820d3d54b9a549b8c843f23bea2945183e8ef18f733899a570ddec6",
+      "characters": 16748,
+      "words": 2033
+    },
+    {
+      "id": "design",
+      "path": "governance/execution/BSB-DESIGN-MOTION-3D-CAPSULES-v0.1.md",
+      "sha256": "dbb480dee2221355d2e75c730d3944a6eeb885e1929cd309f23d9d88826f37ed",
+      "characters": 19767,
+      "words": 2494
+    },
+    {
+      "id": "design_sheet",
+      "path": "product-os/templates/BSB-DESIGN-MOTION-3D-WORKSHEET-v0.1.md",
+      "sha256": "11c030bb9b4fb07f05ea5514f88b94bb3a5e3f0cbeea3beb14abfec5d394d3e7",
+      "characters": 3876,
+      "words": 488
+    },
+    {
+      "id": "web_method",
+      "path": "governance/execution/BSB-WEB-EXPERIENCE-AND-PUBLICATION-METHOD-v0.1.md",
+      "sha256": "c0b0d9d20cd4291c09e80df44495359ab1ef6873539aeb5b7f36157b4889a506",
+      "characters": 22224,
+      "words": 2875
+    },
+    {
+      "id": "web_assurance",
+      "path": "governance/policies/AVOS-WEB-DELIVERY-ASSURANCE-STANDARD-v0.1.md",
+      "sha256": "b647bd8ec17dba259e33c2f0e7b83466bea17b2ac13f1987102d54805c650c57",
+      "characters": 10199,
+      "words": 1335
+    },
+    {
+      "id": "web_sheet",
+      "path": "product-os/templates/BSB-WEB-EXPERIENCE-WORKSHEET-v0.1.md",
+      "sha256": "2b48269fdfb0eccd1412003913bb95bedd2971cc48b85ecc10066c969aa46046",
+      "characters": 6001,
+      "words": 833
+    },
+    {
+      "id": "adr49",
+      "path": "architecture/decisions/ADR-049-BSB-WEB-EXPERIENCE-AND-PUBLICATION.md",
+      "sha256": "636d688e6114571fa11ca4abbbdc6f61cb0ba6dbe446775149525a9124826cab",
+      "characters": 4476,
+      "words": 538
+    },
+    {
+      "id": "delivery",
+      "path": "governance/execution/DELIVERY-LEARNING-CONTROLS-v0.1.md",
+      "sha256": "bac18f77441e402c586bbe055025b3a7cf3acd75db5782718d5c6d02c909baf4",
+      "characters": 10541,
+      "words": 1452
+    },
+    {
+      "id": "adr27",
+      "path": "architecture/decisions/ADR-027-GOVERNANCE-AS-VISUAL-INFRASTRUCTURE.md",
+      "sha256": "10f1a7e6d8b35a0d7aba79caa188a4d699c442191f1fc665fcb4e4844ae6421b",
+      "characters": 4393,
+      "words": 613
+    },
+    {
+      "id": "adr28",
+      "path": "architecture/decisions/ADR-028-CANONICAL-HUB-ROUTING-AND-RELEASE-INTEGRITY.md",
+      "sha256": "56967b63dd630c6582b0b1e77732132276f817f4a6a7ad50d42fc0a71f1d4483",
+      "characters": 6782,
+      "words": 934
+    },
+    {
+      "id": "composition",
+      "path": "architecture/capabilities/contracts/BSB-COMPOSITION-AND-CROSS-VIEW-CONTRACT-v1.0.md",
+      "sha256": "54c7d61f893e9c6deb9cea144bf9c1f53b1adebcd23cac33e6eb56d96c9a2e02",
+      "characters": 10502,
+      "words": 1414
+    },
+    {
+      "id": "adr29",
+      "path": "architecture/decisions/ADR-029-BSB-VISUAL-AUTHORSHIP-PHASE-SHOWCASES-AND-DELIVERY.md",
+      "sha256": "205d9db8ad878d12742e44b8c7615334ea95d7a1083fe5687304b2a7435298d6",
+      "characters": 11531,
+      "words": 1529
+    },
+    {
+      "id": "adr38",
+      "path": "architecture/decisions/ADR-038-BSB-CROSS-BRAND-CONTEXT-FIREWALL-AND-VISUAL-DERIVATION-GATE.md",
+      "sha256": "f86b83d0a81ff7612c8aa940bc7e8a4921c9fe1462156efa8c47df1fbf12b68c",
+      "characters": 12620,
+      "words": 1631
+    },
+    {
+      "id": "adr30",
+      "path": "architecture/decisions/ADR-030-BSB-ADAPTIVE-CREATIVE-DIRECTION-AND-HUMAN-REFERENCE-ATLAS.md",
+      "sha256": "73d1f46b16e36a12d9eca712b31a52e4840751073742add662e04a6a0d599f00",
+      "characters": 13098,
+      "words": 1713
+    },
+    {
+      "id": "adr31",
+      "path": "architecture/decisions/ADR-031-BSB-VISUAL-ASSET-PRODUCTION-AND-EXPERIENCE-ASSEMBLY.md",
+      "sha256": "607b16acb7851644231241a2f3c194bd304acc8cf188b091fda0f2e163be8ae1",
+      "characters": 14723,
+      "words": 2006
+    },
+    {
+      "id": "adr36",
+      "path": "architecture/decisions/ADR-036-BSB-CANONICAL-PARITY-DERIVED-SURFACE-ASSEMBLY-AND-ARTIFACT-HYGIENE.md",
+      "sha256": "0f96746d02415503e4edee472614e1005ca89caaf6468fe135c609dcbc315d19",
+      "characters": 13209,
+      "words": 1770
+    },
+    {
+      "id": "adr34",
+      "path": "architecture/decisions/ADR-034-BSB-BRAND-BOOK-EDITORIAL-SYNTHESIS-AND-PRINT-RELEASE-GATE.md",
+      "sha256": "56e1cc7d571606dce29e4b4a8e91671be98bc44c99f2cfae285359fd6e14e44f",
+      "characters": 11668,
+      "words": 1649
+    },
+    {
+      "id": "adr35",
+      "path": "architecture/decisions/ADR-035-BSB-ASSET-FIRST-EDITORIAL-ASSEMBLY-AND-EFFECTIVE-PAGE-OCCUPANCY.md",
+      "sha256": "a5a21ef7735ccccd11003e2a01f936b941bdf6e79c6b7acc7ab4d24b3b0cffe5",
+      "characters": 11808,
+      "words": 1622
+    },
+    {
+      "id": "adr37",
+      "path": "architecture/decisions/ADR-037-BSB-GOVERNED-BLOCK-REFINEMENT-AND-DOWNSTREAM-CONVERGENCE.md",
+      "sha256": "c682e3d819d88b4de5ef58da211ea7bb435b5611112522990ca292e3e4e38fee",
+      "characters": 13527,
+      "words": 1795
+    },
+    {
+      "id": "assembly",
+      "path": "product-os/templates/BSB-SURFACE-ASSEMBLY-PACKAGE.md",
+      "sha256": "473c9f8106dc8ac16e39505a6caa595543823529096bdd1c9bbf91265f16304f",
+      "characters": 23775,
+      "words": 3316
+    },
+    {
+      "id": "refinement_sheet",
+      "path": "product-os/templates/BSB-BLOCK-REFINEMENT-PACKAGE.md",
+      "sha256": "e66a549f3db0e278d22554947d9c5194c037474b63b1f58542aba46adaccbe4f",
+      "characters": 11902,
+      "words": 1730
+    },
+    {
+      "id": "adr41",
+      "path": "architecture/decisions/ADR-041-BSB-CANONICAL-EXPORT-FRESHNESS-AND-CONSUMER-BINDING.md",
+      "sha256": "7f67ed2c4518f3ea2eeb395916053e8c07f46a8d70c64f1f767c70c6bf783299",
+      "characters": 8667,
+      "words": 1212
+    },
+    {
+      "id": "adr45",
+      "path": "architecture/decisions/ADR-045-BSB-BRAND-MARK-STRATEGY-CONSTRUCTION-AND-VALIDATION.md",
+      "sha256": "450d944379d238322cf66027a2e30d96c9418124bf880775d40e6942c8abaa6e",
+      "characters": 19031,
+      "words": 2602
+    },
+    {
+      "id": "adr39",
+      "path": "architecture/decisions/ADR-039-BSB-LOCKED-BRAND-ASSET-COMPOSITING-IN-GENERATED-IMAGERY.md",
+      "sha256": "a5039925cc0e05e07641ac776b084511622d3cd2c9faa84dc6236fccc0ec27f6",
+      "characters": 9122,
+      "words": 1262
+    },
+    {
+      "id": "adr42",
+      "path": "architecture/decisions/ADR-042-BSB-SURFACE-TO-SCENE-ASSEMBLY-AND-MULTI-ELEMENT-INTEGRATION-GATE.md",
+      "sha256": "d656c879e81ac1bc90fc3ee23f4ac694cac4a4921f42142f1c4b6af4444bde78",
+      "characters": 13288,
+      "words": 1846
+    }
+  ],
+  "characters": 333558,
+  "words": 44123,
+  "all_routes_union_characters": 470713,
+  "union_comparator_reduction_percent": 29.1,
+  "token_count": "NOT_MEASURED",
+  "runtime_installation": "NOT_VERIFIED",
+  "required_external_inputs": [
+    "authorized project source/revision",
+    "approved brand/brief/assets",
+    "source-backed approvals and QA receipts",
+    "task-specific acceptance authority",
+    "relevant Asset Request Tickets for generated/scene assets"
+  ]
+}

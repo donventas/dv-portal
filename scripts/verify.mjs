@@ -5,6 +5,34 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
+  '.gitattributes',
+  // Authorized H1 chain: synthetic DEMO, canonical brand consumers and local proof.
+  'app/util.js', 'app/brand-tokens.css', 'app/hybrid-demo.js', 'app/hybrid-demo-ui.js',
+  'app/hybrid-demo.css', 'dv-shared/blocks.css', 'scripts/serve-demo.mjs', 'vercel.json',
+  'brand/donventas-wordmark-b6-reverse.svg', 'brand/donventas-symbol-bs-reverse.svg',
+  'brand/don-ventas-icons-sprite.svg',
+  'brand/fonts/LICENSE-Schibsted-Grotesk.txt', 'brand/fonts/LICENSE-Space-Mono.txt',
+  'brand/fonts/schibsted-grotesk-latin-normal.woff2',
+  'brand/fonts/space-mono-latin-400.woff2', 'brand/fonts/space-mono-latin-700.woff2',
+  'tests/h11-workflow.test.js', 'tests/browser/h11.spec.js',
+  'supabase/tests/h10-fixtures.sql', 'supabase/tests/h10-security.sql',
+  'supabase/tests/local-bootstrap.sql', 'supabase/tests/provider-bootstrap.sql',
+  'supabase/tests/provider-integration.cjs', 'supabase/tests/rebuild-local.ps1',
+  'evidence/h1-chain/README.md', 'evidence/h1-chain/asset-receipt.json',
+  'evidence/h1-chain/brand-and-form.md', 'evidence/h1-chain/bsb-route.json',
+  'evidence/h1-chain/functional-design.md', 'evidence/h1-chain/reference-receipt.json',
+  'evidence/h1-chain/release-runbook.md', 'evidence/h1-chain/security-review.md',
+  'evidence/h1-chain/provider-results.json', 'evidence/h1-chain/restore-results.json',
+  'evidence/h1-chain/sql-concurrency.json', 'evidence/h1-chain/sql-negative.txt',
+  'evidence/h1-chain/sql-security.txt', 'evidence/h1-chain/tests.txt',
+  'evidence/h1-chain/browser.txt', 'evidence/h1-chain/modes.ndjson',
+  'evidence/h1-chain/npm-audit.json', 'evidence/h1-chain/manifest.json',
+  'evidence/h1-chain/validation.txt',
+  'evidence/h1-chain/access-1280.png', 'evidence/h1-chain/members-1280.png',
+  'evidence/h1-chain/members-390.png', 'evidence/h1-chain/demo-1280.png',
+  'evidence/h1-chain/demo-390.png', 'evidence/h1-chain/form-1280.png',
+  'evidence/h1-chain/form-390.png', 'evidence/h1-chain/form-options.png',
+  'evidence/h1-chain/responsive-890.png',
   // H1.0 explicitly authorized review-only SQL, fixture guard, and bounded evidence.
   'app/free.js',
   'data/empty-state.js',
@@ -50,6 +78,9 @@ const forbidden = [
   /stripe|payment|webhook|edge.?function/i
 ];
 const governedBackend = new Set([
+  'supabase/tests/h10-fixtures.sql', 'supabase/tests/h10-security.sql',
+  'supabase/tests/local-bootstrap.sql', 'supabase/tests/provider-bootstrap.sql',
+  'supabase/tests/provider-integration.cjs', 'supabase/tests/rebuild-local.ps1',
   // These exact H1.0 paths are review artifacts, never automatic migrations.
   'supabase/proposals/h10-command-contract.sql', 'supabase/tests/h10-negative.sql',
   'supabase/tests/run-h10-local.cjs', 'data/seed.js',

@@ -1,0 +1,369 @@
+{
+  "date": "2026-10-25",
+  "baseline": "279555432e28a62fe9fc917c87b17ce463a03143",
+  "repository": "donventas/dv-portal",
+  "branch": "codex/portal-h1-hardening",
+  "scope": "staged Git blobs, self excluded; sha256 is portable repository content, not platform checkout newlines",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "f8badcedfbd7e98963c3d11ab4a9d3c93cf628254ae9dce0b301794527a615da",
+      "bytes": 504
+    },
+    {
+      "path": "app/brand-tokens.css",
+      "sha256": "bf8fb2637239b850e7945ba30d841ac337d6b906cc5801378ec746a21a4bf3d5",
+      "bytes": 857
+    },
+    {
+      "path": "app/environment-indicator.js",
+      "sha256": "f594f724754a3a92ae6978eab1394d0faf125762d450459a91e438d10df5fdea",
+      "bytes": 14224
+    },
+    {
+      "path": "app/hybrid-demo-ui.js",
+      "sha256": "7eb7a1dbe15ea218938edb7ab0e00191616db3e25429c371c2612266ec371cc3",
+      "bytes": 18391
+    },
+    {
+      "path": "app/hybrid-demo.css",
+      "sha256": "b0b7df5abfb1198cf3f7d17b09cb5076fe7024598a4c2cb72c7d97f01cbfca0e",
+      "bytes": 5936
+    },
+    {
+      "path": "app/hybrid-demo.js",
+      "sha256": "6cda616f9ba2e5a190d601d9df566330cdb1accbc5827825b610e7adc7f73ca9",
+      "bytes": 12274
+    },
+    {
+      "path": "app/portal.css",
+      "sha256": "f5026cd4b26f5e28a776959abbf73efbbeedaa799e11810398424a85b3379fad",
+      "bytes": 68355
+    },
+    {
+      "path": "app/portal.js",
+      "sha256": "2db149a3f239f774ec7f08e5e49784b905b9659c7f998e834895c62cf7c93d97",
+      "bytes": 17293
+    },
+    {
+      "path": "app/staff.js",
+      "sha256": "d6e151be8306dcdc6cf2eadd7a3a27ff5acfe764169f18e4a5e9fa03c6209e35",
+      "bytes": 103336
+    },
+    {
+      "path": "app/store.js",
+      "sha256": "dd9bc1fdb8c95a9b11b33c761f9021786670c90909b93b46f6964b8cae81117d",
+      "bytes": 66270
+    },
+    {
+      "path": "app/supabase.js",
+      "sha256": "7bbcc3dd7cdf3ff0cdd874003da40ca412d86daa6193e5a5e07f74d26ef72646",
+      "bytes": 10828
+    },
+    {
+      "path": "app/util.js",
+      "sha256": "4313d708e5ed97927b73a5454de3d8740bd9feff72eaa3aaaf3285b6df7c7354",
+      "bytes": 4927
+    },
+    {
+      "path": "brand/don-ventas-icons-sprite.svg",
+      "sha256": "5a8b11e2c75167d6d8eee4737ad4e49cb1ed9268eacf6ff3fcf50173e42c91c4",
+      "bytes": 41127
+    },
+    {
+      "path": "brand/donventas-symbol-bs-reverse.svg",
+      "sha256": "28f701d69d0e31c2f636fc0c775a1f851cb106af1cb1873ca783772c1dae5bed",
+      "bytes": 640
+    },
+    {
+      "path": "brand/donventas-wordmark-b6-reverse.svg",
+      "sha256": "c3a0810940289164ff5a40b3ac2524de10d43d12c98743ad41c4089aedb8a90a",
+      "bytes": 2721
+    },
+    {
+      "path": "brand/fonts/LICENSE-Schibsted-Grotesk.txt",
+      "sha256": "18852241dc5c083d426ff47301f53fa96a4d3d456dc061d20646c0b9ffd80744",
+      "bytes": 4499
+    },
+    {
+      "path": "brand/fonts/LICENSE-Space-Mono.txt",
+      "sha256": "a73c20d6b38329c23a89570c7e16373a9100976fef58deb5a8f2a867ee332496",
+      "bytes": 4485
+    },
+    {
+      "path": "brand/fonts/schibsted-grotesk-latin-normal.woff2",
+      "sha256": "4c8b93f431d462c696e12b9d6a033feb3394d36e66e781357c496b95d8a75e05",
+      "bytes": 46752
+    },
+    {
+      "path": "brand/fonts/space-mono-latin-400.woff2",
+      "sha256": "fb4a81a2d0a893e5c38c394a7e716a1cef0b24610a0af49c96f6d529bd66bf2b",
+      "bytes": 16520
+    },
+    {
+      "path": "brand/fonts/space-mono-latin-700.woff2",
+      "sha256": "2d46bd159b53f55c41167a4f1540a074649464194fd1e416f5b4694a6c0f282c",
+      "bytes": 16724
+    },
+    {
+      "path": "dv-shared/blocks.css",
+      "sha256": "544afc8aa80e2fab951def127a8e4fc4f7bf17c9e416286c1adeff6d25c85735",
+      "bytes": 6491
+    },
+    {
+      "path": "evidence/h1-chain/README.md",
+      "sha256": "794df3ee2f4742bbfb677b496a3a0879ee349e541548c7d04fee87566ce66e53",
+      "bytes": 4912
+    },
+    {
+      "path": "evidence/h1-chain/access-1280.png",
+      "sha256": "8694d9a5fe2296e3f8c0446e62e78909547141ec84d5d0d28b91ac54aedb9336",
+      "bytes": 105239
+    },
+    {
+      "path": "evidence/h1-chain/asset-receipt.json",
+      "sha256": "651b7fc76b8f5caa3f35802069d15d9554ddce9da007d2f0bdd7ca72e2d51f99",
+      "bytes": 2686
+    },
+    {
+      "path": "evidence/h1-chain/brand-and-form.md",
+      "sha256": "1a9991e588a7f6861eb5ad628f831e5ec3d58743cabf8e24ed1b5f8d7545ba42",
+      "bytes": 6687
+    },
+    {
+      "path": "evidence/h1-chain/browser.txt",
+      "sha256": "1db2dc6440b08d60ec99476f2a62ea398aac4678d3b3e81c72ca15a96fd36f46",
+      "bytes": 1199
+    },
+    {
+      "path": "evidence/h1-chain/bsb-route.json",
+      "sha256": "e18a031ec416404988990d3f11ca7d383e5412aa89df9f9c30bcf65b31eb68c9",
+      "bytes": 7703
+    },
+    {
+      "path": "evidence/h1-chain/demo-1280.png",
+      "sha256": "b2c76187f9e5e42603136c275e342c32c3958338593fb5f126ba9a11ece03f6e",
+      "bytes": 111596
+    },
+    {
+      "path": "evidence/h1-chain/demo-390.png",
+      "sha256": "99b047c5b019ffc9803e012b7de583df7e17c37754d0b1bee53ea5d9bc2222bc",
+      "bytes": 61298
+    },
+    {
+      "path": "evidence/h1-chain/form-1280.png",
+      "sha256": "6bb45b2237f9ba47a2a1fe10251d4ed4ccdafb69177dd220c0745c8d309e73a1",
+      "bytes": 121575
+    },
+    {
+      "path": "evidence/h1-chain/form-390.png",
+      "sha256": "7da9174ae80c86013bb388ed0c40ab20d7cd69a749e088a06a49b11956d79658",
+      "bytes": 63248
+    },
+    {
+      "path": "evidence/h1-chain/form-options.png",
+      "sha256": "1a4fa0f61fa08c1f6ffb968f5180c39f0e0e8040bc66ed57fb7f2dea9868ac62",
+      "bytes": 114795
+    },
+    {
+      "path": "evidence/h1-chain/functional-design.md",
+      "sha256": "11fc0dc2b723fd918956d613cced4c9d12b7f08f32f1fd78582f3cf93fe45399",
+      "bytes": 3247
+    },
+    {
+      "path": "evidence/h1-chain/members-1280.png",
+      "sha256": "6b3e618fa6e28f9b59db0fad3ee888c77a960349b51c0355eea45af8eeda5e65",
+      "bytes": 100343
+    },
+    {
+      "path": "evidence/h1-chain/members-390.png",
+      "sha256": "ae92ccf0087a50c5adfa4eca135ca48daf6aa8ab999372983b42e233160418d1",
+      "bytes": 62497
+    },
+    {
+      "path": "evidence/h1-chain/modes.ndjson",
+      "sha256": "4a47fa6e7908c5ef3af4d10163821ae0469dfbdd9137594a7b5020ca37f961f9",
+      "bytes": 440
+    },
+    {
+      "path": "evidence/h1-chain/npm-audit.json",
+      "sha256": "f9a031af1fd5991a41d6dbf8c4fcafa5b596b094a7d17ad5dea052518cd16fb7",
+      "bytes": 358
+    },
+    {
+      "path": "evidence/h1-chain/provider-results.json",
+      "sha256": "10395144bd5be64d765201d83bf496762c52651e0844261d3b3c12d909508f21",
+      "bytes": 883
+    },
+    {
+      "path": "evidence/h1-chain/reference-receipt.json",
+      "sha256": "8ebd7bcee008eed85917fdb51b51b004e76fdb8b8d5cae5da163196532b514cd",
+      "bytes": 3536
+    },
+    {
+      "path": "evidence/h1-chain/release-runbook.md",
+      "sha256": "c04e150a7d6352598b4beacd5333cd6edf03d79b00e8cbbc4335b917d6879c9d",
+      "bytes": 4974
+    },
+    {
+      "path": "evidence/h1-chain/responsive-890.png",
+      "sha256": "9ca12f7ec255a213e04057859414f092bba423b6441988b2832339e31a07b2c3",
+      "bytes": 68361
+    },
+    {
+      "path": "evidence/h1-chain/restore-results.json",
+      "sha256": "972bdbe7adc983bb01bdd75bdd9baba37c0b84cb3626c85966b0bea7812203e6",
+      "bytes": 511
+    },
+    {
+      "path": "evidence/h1-chain/security-review.md",
+      "sha256": "416ed50088e47ee02f2391426a198290fe6f2931a2170d8c132949e362acb21c",
+      "bytes": 1308
+    },
+    {
+      "path": "evidence/h1-chain/sql-concurrency.json",
+      "sha256": "a6f9eb23b5065b37b4768f948af7cba12c34afa0ae6baec54a85527a86830e4a",
+      "bytes": 669
+    },
+    {
+      "path": "evidence/h1-chain/sql-negative.txt",
+      "sha256": "ce6f033d0d8d389138ee740e4a81ab0912244eeb78324a8aee5abaf3782041da",
+      "bytes": 18170
+    },
+    {
+      "path": "evidence/h1-chain/sql-security.txt",
+      "sha256": "d433ef60f5ca92d8dd2e4ed9b596fc96009759d3ffd5c541051a4c28a315ae23",
+      "bytes": 3178
+    },
+    {
+      "path": "evidence/h1-chain/tests.txt",
+      "sha256": "7fc816040528a8cd689ddebb9526c12d9b4eaeec98ee3fd6796ebbc37911766e",
+      "bytes": 36670
+    },
+    {
+      "path": "evidence/h1-chain/validation.txt",
+      "sha256": "5e9c431c8540e764cf55e677ebf8f941fce00c43b4245aa7890a95d250763b17",
+      "bytes": 517
+    },
+    {
+      "path": "favicon.svg",
+      "sha256": "28f701d69d0e31c2f636fc0c775a1f851cb106af1cb1873ca783772c1dae5bed",
+      "bytes": 640
+    },
+    {
+      "path": "index.html",
+      "sha256": "f157c8a65ac7a121ef140525a108bc35b7f0d95ba46185631949ecec21c97530",
+      "bytes": 4028
+    },
+    {
+      "path": "og-portal.png",
+      "sha256": "728fdbdce8039008eab9cae02c96cc3f2b499f6ef4350c75739ad3bf6acca4c2",
+      "bytes": 143298
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "666e092bd7e608eedea8821333b8f4a09f0ab552684a6713a16bca11a84f83fc",
+      "bytes": 1644
+    },
+    {
+      "path": "package.json",
+      "sha256": "e310cd29df1c696deb158647328e84d18245b22f307f6080f655d7fb826d0a0f",
+      "bytes": 939
+    },
+    {
+      "path": "playwright.config.js",
+      "sha256": "025b440f3f3ccb44c526de063386c54e248ab206bfaee9a2efd27ec54ba348a6",
+      "bytes": 691
+    },
+    {
+      "path": "scripts/render-social-card.mjs",
+      "sha256": "f59a8ae09abac1861104fc043b74f25e7d879f95efafa6c792ab561fe3af2348",
+      "bytes": 991
+    },
+    {
+      "path": "scripts/serve-demo.mjs",
+      "sha256": "3f53f56eee378dd7a2edfb9455642362eb37fd9a5f99034f9e5bfaebf13b5b4e",
+      "bytes": 2674
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "sha256": "8509b6f0e7458e8ec441eb9278694761cfedad645cc19331b700b22ebb096025",
+      "bytes": 6635
+    },
+    {
+      "path": "social-cards/portal.html",
+      "sha256": "ba580a3e48f7bcfdab78bbcd0f4c96c6bacb25662c138a12803ea73260e88d32",
+      "bytes": 3448
+    },
+    {
+      "path": "supabase/proposals/h10-command-contract.sql",
+      "sha256": "97662836fdc118f995e08af82546e7ce402a0466985f9ab534f75d5e118b5bc6",
+      "bytes": 20151
+    },
+    {
+      "path": "supabase/tests/h10-fixtures.sql",
+      "sha256": "3a37206ec108a596b224e6c3ebcf08a2f3570297bdf8ac5d6b994f425150cd69",
+      "bytes": 2111
+    },
+    {
+      "path": "supabase/tests/h10-negative.sql",
+      "sha256": "3498e3d001814e1aa89924298ea438e04b233123ea9f4ba677d2ec43839d3832",
+      "bytes": 8206
+    },
+    {
+      "path": "supabase/tests/h10-security.sql",
+      "sha256": "95df17acf18aa98fbe1c6e1b4f6893aa8b9431fb1826df1c43af37566581358c",
+      "bytes": 7150
+    },
+    {
+      "path": "supabase/tests/local-bootstrap.sql",
+      "sha256": "e9371f685ce13edd2783ee08a64b5b06ff5ab695e221b584a1844b7a7acaa581",
+      "bytes": 1237
+    },
+    {
+      "path": "supabase/tests/provider-bootstrap.sql",
+      "sha256": "7443735a0d89d2236daebbb62e4e546693e19b106123dc224a6ac5c2189ba85c",
+      "bytes": 533
+    },
+    {
+      "path": "supabase/tests/provider-integration.cjs",
+      "sha256": "8f81b60d7a33b2bcaca77bdc3c102d30afb790b25ca716f0482cd23b858a1875",
+      "bytes": 8440
+    },
+    {
+      "path": "supabase/tests/rebuild-local.ps1",
+      "sha256": "1add89bf6824429372c76a885bc0ceac739b392512abc7cab96142a999148386",
+      "bytes": 2496
+    },
+    {
+      "path": "supabase/tests/run-h10-local.cjs",
+      "sha256": "5feee624896dbb3cd18d061f32029b54af8681be68b7246958a6ce445ed9e8b2",
+      "bytes": 4721
+    },
+    {
+      "path": "tests/browser/foundation.spec.js",
+      "sha256": "6171da4efa56f097cfcff02d30f9abb6db64bb51e763bed2b711c967f5b7c0d7",
+      "bytes": 7418
+    },
+    {
+      "path": "tests/browser/h11.spec.js",
+      "sha256": "1242b201c5d105216fb9ebee15349d290e4a519bb4836fd87776972c2d20299d",
+      "bytes": 11006
+    },
+    {
+      "path": "tests/environment-indicator.test.js",
+      "sha256": "7628935121c3346fefd68ae7b5e1138cf910e6cbe20d65ccdca9291ba4b23d50",
+      "bytes": 14049
+    },
+    {
+      "path": "tests/h11-workflow.test.js",
+      "sha256": "c82fdde46b4f3497c0c5820dcd48b67bf08cd2d79dfaa272a14e06b0180b0167",
+      "bytes": 6265
+    },
+    {
+      "path": "vercel.json",
+      "sha256": "479067ed766936250298383a8ba79b2761994dbb028da95aec0f38a590769142",
+      "bytes": 147
+    }
+  ]
+}

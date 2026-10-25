@@ -5,7 +5,7 @@
 begin;
 do $$ begin
  if current_database() <> 'portal_h10_disposable' or inet_server_addr() is not null and
-    inet_server_addr()::text not in ('127.0.0.1','::1') then raise exception 'DISPOSABLE_LOCAL_DB_REQUIRED'; end if;
+    host(inet_server_addr()) not in ('127.0.0.1','::1') then raise exception 'DISPOSABLE_LOCAL_DB_REQUIRED'; end if;
 end $$;
 create function pg_temp.assert_true(ok boolean, label text) returns void language plpgsql as $$ begin
  if ok is distinct from true then raise exception 'ASSERT_FAILED: %',label; end if;
@@ -16,27 +16,7 @@ create function pg_temp.denied(query text) returns void language plpgsql as $$ b
  end;
  raise exception 'EXPECTED_DENIAL_MISSING: %',query;
 end $$;
-insert into public.account(id,name,status) values
- ('10000000-0000-0000-0000-000000000001','Synthetic A','activo'),
- ('10000000-0000-0000-0000-000000000002','Synthetic B','activo'),
- ('10000000-0000-0000-0000-000000000003','Synthetic waitlist','waitlist');
-insert into public.app_user(id,email,name,role,account_id,member_role,pending) values
- ('20000000-0000-0000-0000-000000000001','owner-a@synthetic.invalid','Synthetic owner A','cliente','10000000-0000-0000-0000-000000000001','owner',false),
- ('20000000-0000-0000-0000-000000000002','owner-b@synthetic.invalid','Synthetic owner B','cliente','10000000-0000-0000-0000-000000000002','owner',false),
- ('20000000-0000-0000-0000-000000000003','member-a@synthetic.invalid','Synthetic member','cliente','10000000-0000-0000-0000-000000000001','miembro',false),
- ('20000000-0000-0000-0000-000000000004','staff@synthetic.invalid','Synthetic staff','analista',null,null,false),
- ('20000000-0000-0000-0000-000000000005','admin@synthetic.invalid','Synthetic admin','admin',null,null,false),
- ('20000000-0000-0000-0000-000000000006','revoked@synthetic.invalid','Synthetic revoked','cliente','10000000-0000-0000-0000-000000000001','owner',true);
-insert into public.brand(id,account_id,name) values
- ('30000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001','Synthetic brand');
-insert into public.project(id,brand_id,title) values
- ('40000000-0000-0000-0000-000000000001','30000000-0000-0000-0000-000000000001','Synthetic project');
-insert into public.block(id,project_id,code,title,capa,status) values
- ('50000000-0000-0000-0000-000000000001','40000000-0000-0000-0000-000000000001','F1','Synthetic block','Fundación','en_revision');
-insert into public.round(id,block_id,seq,title) values
- ('60000000-0000-0000-0000-000000000001','50000000-0000-0000-0000-000000000001',1,'Synthetic revision');
-insert into public.assignment(analyst_id,account_id) values
- ('20000000-0000-0000-0000-000000000004','10000000-0000-0000-0000-000000000001');
+\ir h10-fixtures.sql
 -- Inventory effective grants, including inherited table/column privileges. Do not report secrets.
 select grantee,table_name,privilege_type from information_schema.role_table_grants
  where table_schema='public' and table_name in ('app_user','block','round','account');

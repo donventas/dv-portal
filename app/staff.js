@@ -137,7 +137,7 @@ window.DVStaff = (function () {
     const rv = S.reviewsOf(a.id)[0], ltv = S.ltvOf(a.id);
     const title = '<b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · cerrado ' + U.ago(a.finished_at) + '</small>';
     const count = rv ? ratingStars(rv.rating) : '<span class="fmeta">sin reseña</span>';
-    const cells = '<div class="findetail">' + finCell('Analista responsable', S.analystName(a.id)) + finCell('LTV · tiempo', ltv.months + ' meses') + finCell('LTV · valor', U.mxn(ltv.money)) + finCell('Tipo de cuenta', kindLabel(a.kind)) + '</div>';
+    const cells = '<div class="findetail">' + finCell('Analista responsable', U.esc(S.analystName(a.id))) + finCell('LTV · tiempo', ltv.months + ' meses') + finCell('LTV · valor', U.mxn(ltv.money)) + finCell('Tipo de cuenta', kindLabel(a.kind)) + '</div>';
     const review = rv ? '<div class="finreview"><div class="row spread"><b>Reseña del cliente</b>' + ratingStars(rv.rating) + '</div>' + (rv.feedback ? '<p class="quote">“' + U.esc(rv.feedback) + '”</p>' : '') + '<div class="finrev-ft">' + reviewStatusTag(rv) + testimonialAction(rv) + '</div></div>' : '<div class="finreview empty">Sin reseña del cliente todavía.</div>';
     const body = cells + review + '<div class="acts"><button class="btn sm" onclick="DVPortal.go(\'bitacora\')">Ver bitácora</button><button class="btn sm" onclick="DVPortal.go(\'resenas\')">Ir a Reseñas ↗</button></div>';
     return accordion('fin-' + a.id, false, title, count, body);
@@ -178,12 +178,12 @@ window.DVStaff = (function () {
     return '<div class="kbcard cli" onclick="DVPortal.go(\'cola\')"><div class="kt">' + U.esc(a.name) + '</div>' +
       '<div class="cmeta">' + U.esc(a.segment) + '</div>' +
       '<div class="crow">' + kindTag(a.kind) + '<span class="tag blue">' + open + ' en cola</span></div>' +
-      '<div class="cana">analista: ' + S.analystName(a.id) + '</div>' + U.prog(pct) + '</div>';
+      '<div class="cana">analista: ' + U.esc(S.analystName(a.id)) + '</div>' + U.prog(pct) + '</div>';
   }
   function activaRow(a) {
     const bs = S.blocksOf(a.id), open = bs.filter(b => ['en_curso', 'pendiente', 'en_revision'].indexOf(b.status) >= 0).length;
     const pct = Math.round(bs.reduce((s, b) => s + b.progress, 0) / (bs.length || 1));
-    return '<div class="li" style="cursor:pointer" onclick="DVPortal.go(\'cola\')"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + U.esc(a.pkg || '—') + ' · analista: ' + S.analystName(a.id) + '</small>' +
+    return '<div class="li" style="cursor:pointer" onclick="DVPortal.go(\'cola\')"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + U.esc(a.pkg || '—') + ' · analista: ' + U.esc(S.analystName(a.id)) + '</small>' +
       '<div class="prog" style="margin-top:8px;max-width:260px"><i style="width:' + pct + '%"></i></div></div>' +
       kindTag(a.kind) + '<span class="tag blue">' + open + ' en cola</span></div>';
   }
@@ -204,7 +204,7 @@ window.DVStaff = (function () {
       accToolbar('cola') +
       (accs.length ? accs.map(a => {
         const bs = S.blocksOf(a.id), pend = bs.filter(b => b.status !== 'cerrado').length;
-        const title = '<b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + bs.length + ' bloques · analista: ' + S.analystName(a.id) + '</small>';
+        const title = '<b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + bs.length + ' bloques · analista: ' + U.esc(S.analystName(a.id)) + '</small>';
         const count = '<span class="acount">' + pend + ' activos / ' + bs.length + '</span>';
         return accordion('cola-' + a.id, pend > 0, title, count, kanban(bs));
       }).join('') : '<div class="list"><div class="li"><div class="g"><small>Sin bloques en cola.</small></div></div></div>');
@@ -325,7 +325,7 @@ window.DVStaff = (function () {
   function renderResenas(host) {
     const rvs = S.reviews(), firm = S.firmRating();
     const head = firm ? '<div class="kpis">' + kpi(firm.avg.toFixed(1) + ' ★', 'Rating promedio') + kpi(firm.n, 'Reseñas') + kpi(firm.published, 'Publicadas en landing') + '</div>' : '';
-    const analystRows = S.staff().map(u => { const r = S.analystRating(u.id); return r ? '<div class="li"><div class="g"><b>' + U.esc(u.name.split(' ')[0]) + '</b><small>' + r.n + ' reseña' + (r.n > 1 ? 's' : '') + '</small></div>' + ratingStars(Math.round(r.avg)) + '<span class="fmeta">' + r.avg.toFixed(1) + '</span></div>' : ''; }).join('');
+    const analystRows = S.staff().map(u => { const r = S.analystRating(u.id); return r ? '<div class="li"><div class="g"><b>' + U.esc(String(u.name || '').split(' ')[0]) + '</b><small>' + r.n + ' reseña' + (r.n > 1 ? 's' : '') + '</small></div>' + ratingStars(Math.round(r.avg)) + '<span class="fmeta">' + r.avg.toFixed(1) + '</span></div>' : ''; }).join('');
     const list = rvs.map(r => { const a = S.account(r.account_id), ltv = S.ltvOf(r.account_id); const phL = { build: 'Cierre del build', capa3: 'Seguimiento · Capa 3' }[r.phase] || r.phase;
       return '<div class="rvcard"><div class="rvcard-h"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + phL + ' · ' + U.ago(r.submitted_at) + ' · analista: ' + U.esc((S.userName(r.analyst_id) || '—').split(' ')[0]) + '</small></div>' + ratingStars(r.rating) + '</div>' +
         (r.feedback ? '<p class="quote">“' + U.esc(r.feedback) + '”</p>' : '<p class="d">Sin comentario.</p>') +
@@ -560,7 +560,7 @@ window.DVStaff = (function () {
     host.innerHTML = '<div class="eyebrow">Administración</div><h2 class="vh">Accesos & asignación</h2>' +
       '<p class="vsub">Por cuenta: reclasifica el <b>tipo</b>, asigna el analista y controla las <b>capas de servicio contratadas</b>. El <b>tipo de cuenta</b> fija el techo de capas disponibles (Cliente = completo · Piloto = sin Activación · Demostración = solo Fundación); el botón <b>Capas</b> abre qué etapas tiene el cliente y qué secciones del portal le desbloquea cada una.</p>' +
       S.accounts().map(a => {
-        const opts = S.staff().map(s => { const n = s.name.split(' ')[0]; return '<option' + (S.analystName(a.id) === n ? ' selected' : '') + '>' + n + '</option>'; }).join('');
+        const opts = S.staff().map(s => { const n = String(s.name || '').split(' ')[0]; return '<option' + (S.analystName(a.id) === n ? ' selected' : '') + '>' + U.esc(n) + '</option>'; }).join('');
         const open = _isOpen('capas-' + a.id, false);
         const kopts = ACT_KINDS.map(x => '<option value="' + x.k + '"' + (a.kind === x.k ? ' selected' : '') + '>' + x.b + '</option>').join('');
         const row = '<div class="li"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + U.esc(a.pkg || '—') + '</small></div>' +

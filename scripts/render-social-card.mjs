@@ -8,7 +8,7 @@ if (!source || !destination) {
   process.exit(1);
 }
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true, ...(process.env.H10_BROWSER_PATH ? { executablePath: process.env.H10_BROWSER_PATH } : {}) });
 try {
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
   await page.goto(pathToFileURL(path.resolve(source)).href, { waitUntil: 'networkidle' });
