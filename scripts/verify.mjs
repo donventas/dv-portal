@@ -6,6 +6,9 @@ const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
   '.gitattributes',
+  // Authorized actual-backup rehearsal: sanitized reports only, never dumps or secrets.
+  'evidence/hosted-restore-20261025/REPORT.md',
+  'evidence/hosted-restore-20261025/results.json',
   // Authorized H1 chain: synthetic DEMO, canonical brand consumers and local proof.
   'app/util.js', 'app/brand-tokens.css', 'app/hybrid-demo.js', 'app/hybrid-demo-ui.js',
   'app/hybrid-demo.css', 'dv-shared/blocks.css', 'scripts/serve-demo.mjs', 'vercel.json',

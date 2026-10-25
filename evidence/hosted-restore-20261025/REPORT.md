@@ -93,6 +93,9 @@ unaccent 1.1 y uuid-ossp 1.1.
 - Pruebas: unicidad de todos los efectos de activación, fallo antes del receipt
   con rollback integral, permisos efectivos del esquema; el harness deja de
   corregir USAGE por fuera del candidato.
+- CI: se agregan a la lista de rutas autorizadas únicamente este informe y
+  results.json. El primer CI detectó su omisión; no se amplía la admisión a
+  dumps, logs privados ni directorios completos.
 - Comparación de bloques del esquema antes/después: solo cambios esperados en
   objetos Portal public/auth_dv. Se preservaron dv_comments, funciones
   dv_article_*/dv_newsletter_*, cron, Vault, Storage, Auth y webhook de lead.
