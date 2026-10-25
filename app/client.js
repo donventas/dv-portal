@@ -45,7 +45,7 @@ window.DVClient = (function () {
       owner && { route: 'cuenta', icon: '$', label: 'Cuenta' },
       owner && { route: 'miembros', icon: '◎', label: 'Miembros' },
       { group: 'Capas del ecosistema' },
-      { static: true, icon: '◆', label: 'Marca', badge: '<span class="lock" style="color:#7DE0A6;opacity:1">activa</span>' },
+      { static: true, icon: '◆', label: 'Marca', badge: '<span class="lock" style="color:var(--fg);opacity:1">activa</span>' },
       { static: true, locked: true, icon: '◇', label: 'Operación', badge: '<span class="lock">🔒</span>', title: 'Otra empresa del grupo — operación y estrategia comercial' },
       { static: true, locked: true, icon: '◇', label: 'Datos · finanzas', badge: '<span class="lock">🔒</span>', title: 'Otra empresa del grupo — datos, contabilidad y finanzas' }
     ].filter(Boolean);

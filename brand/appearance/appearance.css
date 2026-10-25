@@ -1,0 +1,157 @@
+/* GENERATED from appearance.json. Candidate 0.1.0; parent canon unchanged. */
+:root, :root[data-dv-appearance="light"]{
+  --dv-canvas:#EEF1F6;
+  --dv-surface:#FFFFFF;
+  --dv-raised:#FFFFFF;
+  --dv-inset:#DFE4EC;
+  --dv-text:#0E1117;
+  --dv-muted:#545F70;
+  --dv-subtle:#545F70;
+  --dv-line:#C3CAD5;
+  --dv-control-border:#6C7585;
+  --dv-control:#FFFFFF;
+  --dv-link:#1B49A0;
+  --dv-emphasis:#1B49A0;
+  --dv-action:#1B49A0;
+  --dv-action-hover:#11346F;
+  --dv-on-action:#FFFFFF;
+  --dv-selected:#F1F5FF;
+  --dv-selected-border:#1B49A0;
+  --dv-focus:#1B49A0;
+  --dv-notice:#F1F5FF;
+  --dv-notice-text:#11346F;
+  --dv-disabled:#DFE4EC;
+  --dv-disabled-text:#545F70;
+  --dv-error:#0E1117;
+  --dv-error-border:#3C4655;
+  --dv-shadow:none;
+  color-scheme:light;
+  --dv-show-light:block;
+  --dv-show-dark:none;
+}
+:root[data-dv-appearance="dark"]{
+  --dv-canvas:#0E1117;
+  --dv-surface:#161B23;
+  --dv-raised:#1D232D;
+  --dv-inset:#0E1117;
+  --dv-text:#EEF1F6;
+  --dv-muted:#99A2B0;
+  --dv-subtle:#99A2B0;
+  --dv-line:#2A323F;
+  --dv-control-border:#6C7585;
+  --dv-control:#0E1117;
+  --dv-link:#6E97F6;
+  --dv-emphasis:#6E97F6;
+  --dv-action:#6E97F6;
+  --dv-action-hover:#9DB8F9;
+  --dv-on-action:#0E1117;
+  --dv-selected:#0C2350;
+  --dv-selected-border:#9DB8F9;
+  --dv-focus:#9DB8F9;
+  --dv-notice:#0C2350;
+  --dv-notice-text:#C4D5FC;
+  --dv-disabled:#1D232D;
+  --dv-disabled-text:#99A2B0;
+  --dv-error:#EEF1F6;
+  --dv-error-border:#C3CAD5;
+  --dv-shadow:none;
+  color-scheme:dark;
+  --dv-show-light:none;
+  --dv-show-dark:block;
+}
+@media(prefers-color-scheme:dark){
+:root:not([data-dv-appearance]){
+  --dv-canvas:#0E1117;
+  --dv-surface:#161B23;
+  --dv-raised:#1D232D;
+  --dv-inset:#0E1117;
+  --dv-text:#EEF1F6;
+  --dv-muted:#99A2B0;
+  --dv-subtle:#99A2B0;
+  --dv-line:#2A323F;
+  --dv-control-border:#6C7585;
+  --dv-control:#0E1117;
+  --dv-link:#6E97F6;
+  --dv-emphasis:#6E97F6;
+  --dv-action:#6E97F6;
+  --dv-action-hover:#9DB8F9;
+  --dv-on-action:#0E1117;
+  --dv-selected:#0C2350;
+  --dv-selected-border:#9DB8F9;
+  --dv-focus:#9DB8F9;
+  --dv-notice:#0C2350;
+  --dv-notice-text:#C4D5FC;
+  --dv-disabled:#1D232D;
+  --dv-disabled-text:#99A2B0;
+  --dv-error:#EEF1F6;
+  --dv-error-border:#C3CAD5;
+  --dv-shadow:none;
+  color-scheme:dark;
+  --dv-show-light:none;
+  --dv-show-dark:block;
+}
+}
+.dv-ink-field{
+  --dv-canvas:#0E1117;
+  --dv-surface:#161B23;
+  --dv-raised:#1D232D;
+  --dv-inset:#0E1117;
+  --dv-text:#EEF1F6;
+  --dv-muted:#99A2B0;
+  --dv-subtle:#99A2B0;
+  --dv-line:#2A323F;
+  --dv-control-border:#6C7585;
+  --dv-control:#0E1117;
+  --dv-link:#6E97F6;
+  --dv-emphasis:#6E97F6;
+  --dv-action:#6E97F6;
+  --dv-action-hover:#9DB8F9;
+  --dv-on-action:#0E1117;
+  --dv-selected:#0C2350;
+  --dv-selected-border:#9DB8F9;
+  --dv-focus:#9DB8F9;
+  --dv-notice:#0C2350;
+  --dv-notice-text:#C4D5FC;
+  --dv-disabled:#1D232D;
+  --dv-disabled-text:#99A2B0;
+  --dv-error:#EEF1F6;
+  --dv-error-border:#C3CAD5;
+  --dv-shadow:none;
+  color-scheme:dark;
+  --dv-show-light:none;
+  --dv-show-dark:block;
+}
+.dv-paper-field{
+  --dv-canvas:#EEF1F6;
+  --dv-surface:#FFFFFF;
+  --dv-raised:#FFFFFF;
+  --dv-inset:#DFE4EC;
+  --dv-text:#0E1117;
+  --dv-muted:#545F70;
+  --dv-subtle:#545F70;
+  --dv-line:#C3CAD5;
+  --dv-control-border:#6C7585;
+  --dv-control:#FFFFFF;
+  --dv-link:#1B49A0;
+  --dv-emphasis:#1B49A0;
+  --dv-action:#1B49A0;
+  --dv-action-hover:#11346F;
+  --dv-on-action:#FFFFFF;
+  --dv-selected:#F1F5FF;
+  --dv-selected-border:#1B49A0;
+  --dv-focus:#1B49A0;
+  --dv-notice:#F1F5FF;
+  --dv-notice-text:#11346F;
+  --dv-disabled:#DFE4EC;
+  --dv-disabled-text:#545F70;
+  --dv-error:#0E1117;
+  --dv-error-border:#3C4655;
+  --dv-shadow:none;
+  color-scheme:light;
+  --dv-show-light:block;
+  --dv-show-dark:none;
+}
+:root{--dv-brand:#3B74F2;--dv-white:#FFFFFF;--dv-black:#0E1117;--dv-logo-ink:#15130F;}
+[data-dv-asset="light"]{display:var(--dv-show-light)}
+[data-dv-asset="dark"]{display:var(--dv-show-dark)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}

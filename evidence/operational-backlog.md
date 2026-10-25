@@ -84,6 +84,11 @@ a IAM/AUTH. Esto cubre también las superficies de sesión del inventario origin
 
 ## Dependencias y aceptación
 
+Avance local posterior: [apariencia H1.1 integrada](h11-appearance/REPORT.md).
+La dependencia de recibir la variante de Runtime está atendida y Portal ya la
+consume en DEMO. UX-01/BRAND-01 conservan pendiente la aceptación visual y la
+habilitación alojada; SITE-01 pertenece al chat del sitio. Esto no activa flujos operativos.
+
 | ID / orden | Corresponde a | Pendiente y criterio de cierre |
 |---|---|---|
 | UX-01 · G | Producto / aceptación | Aceptación funcional y visual de la DEMO revisada, incluyendo contexto libre por selección, accesibilidad y responsividad; decidir funciones que entran a H1.2. Pruebas automáticas no sustituyen aceptación humana. |

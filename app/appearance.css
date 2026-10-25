@@ -1,0 +1,103 @@
+/* Portal projection of Runtime appearance 0.1. No changes to brand masters. */
+:root,:root[data-dv-appearance]{
+ --bg:var(--dv-canvas);--panel:var(--dv-surface);--panel-2:var(--dv-raised);
+ --fg:var(--dv-text);--fg-soft:var(--dv-muted);--fg-faint:var(--dv-subtle);
+ --line:var(--dv-line);--line-2:var(--dv-line);--accent:var(--dv-action);--accent-2:var(--dv-link);
+ --action-bg:var(--dv-action);--action-fg:var(--dv-on-action);--on-accent:var(--dv-on-action);
+ --link-dark:var(--dv-link);--text-essential:var(--dv-muted);--danger:var(--dv-error);
+ --data-strong:var(--dv-link);--data-mute:var(--dv-muted);--data-grid:var(--dv-line);
+ --appearance-h:48px;
+}
+body{transition:none}
+.btn,.nav,.swi,.leadfilters button{transition:transform .16s}
+#appearanceBar{position:fixed;inset:0 0 auto;z-index:10002;height:var(--appearance-h);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:4px 24px;background:var(--dv-surface);color:var(--dv-text);border-bottom:1px solid var(--dv-line);font-size:13px}
+#appearanceBar>span{margin-right:auto;color:var(--dv-muted);font:11px/1.3 var(--mono)}
+#appearanceBar label{font-weight:600}
+#appearanceBar select{min-height:38px;min-width:108px;border:1px solid var(--dv-control-border);border-radius:5px;padding:6px 28px 6px 10px;background:var(--dv-control);color:var(--dv-text);font:inherit}
+#environmentStatusMount{top:var(--appearance-h)}
+#auth,#app,#environmentBlockedMount{top:calc(var(--appearance-h) + var(--env-banner-h))}
+.env-prelaunch-state #environmentBlockedMount{top:var(--appearance-h)}
+.env-prelaunch-state .prelaunch-shell{min-height:calc(100dvh - var(--appearance-h))}
+.env-prelaunch-screen::before{top:var(--appearance-h)}
+.env-indicator{background:var(--dv-notice);color:var(--dv-notice-text);box-shadow:none}
+.env-copy span{color:inherit}
+.env-blocked-card{border-color:var(--dv-error-border);box-shadow:none}
+.env-blocked-symbol,.env-kicker{color:var(--dv-error);border-color:var(--dv-error-border)}
+.env-blocked-screen{background:var(--bg)}
+.prelaunch-safety details,.demoBadge{background:var(--panel)}
+.env-actions button:focus-visible,.env-actions a:focus-visible{outline-color:var(--dv-focus)}
+input:not([type=checkbox]):not([type=radio]),textarea,select{background:var(--dv-control);color:var(--dv-text);border-color:var(--dv-control-border)}
+#auth :is(input,textarea,select),#app :is(input,textarea,select),#modalHost :is(input,textarea,select),#environmentGuardMount :is(input,textarea,select){border-color:var(--dv-control-border)}
+#app :is(input,textarea,select):focus-visible,#modalHost :is(input,textarea,select):focus-visible{outline:3px solid var(--dv-focus);outline-offset:3px}
+.msg.me .bub .nm{color:var(--dv-on-action)}
+.swi{background:var(--dv-control);border-color:var(--dv-control-border)}
+.swi::after{background:var(--dv-muted)}
+.swi.on::after{background:var(--dv-on-action)}
+.swi.lock{opacity:1}
+input::placeholder,textarea::placeholder{color:var(--dv-muted);opacity:1}
+input[type=checkbox],input[type=radio]{accent-color:var(--dv-action)}
+.btn,.iconbtn,.roleseg,.tabs,.perseg,.hy-option,.f0 .opts button{border-color:var(--dv-control-border)}
+.btn.solid,.toast,.perseg button.on,.msg.me .bub,.msg.me .bub p{background:var(--dv-action);color:var(--dv-on-action)}
+.btn.solid:hover,.hy-demo .btn.solid:hover{background:var(--dv-action-hover);border-color:var(--dv-action-hover);color:var(--dv-on-action)}
+.hy-demo nav .btn.solid,.hy-demo nav .btn.solid:hover{background:transparent;color:var(--fg);border-color:transparent;border-bottom-color:var(--dv-selected-border)}
+.hy-option[data-selected=true],.nav.on,.f0 .opts button.on,.kindopt.on,.anopt.on{background:var(--dv-selected);border-color:var(--dv-selected-border)}
+.nav:hover,.li:hover,.acc-hd:hover{background:var(--panel-2)}
+.btn:disabled,.hy-demo button:disabled{opacity:1;color:var(--dv-disabled-text);background:var(--dv-disabled);border-color:var(--dv-control-border);box-shadow:none}
+:is(button,a,input,select,textarea,summary):focus-visible,.acard :is(input,select,textarea):focus-visible{outline:3px solid var(--dv-focus);outline-offset:3px}
+/* Status names remain explicit; inherited traffic-light colors are not brand tokens. */
+.st,.res,.tag,.wm,.warn-s,.plan .powned,.perfchip .pok,.perfchip .pbad,.evrow .g b,.md.dn{color:var(--fg);border-color:var(--dv-control-border)}
+.st.en_curso,.res.ajustes,.tag.blue{color:var(--dv-link);border-color:var(--dv-link)}
+.st .d,.kbcol .dot,.ndot,.capbar.full i{background:currentColor}
+.stars .star.on,.stars.ro .star.on{color:var(--dv-link)}
+.propcard.approved,.plan.owned,.perfchip.met,.perfchip.miss,.reassign,.pend{border-color:var(--dv-control-border)}
+.propcard.approved,.propcard.dismissed{opacity:1}
+.hy-demo header{padding:12px 0 16px}
+.hy-demo h1{max-width:22ch;margin:12px 0 16px}
+.hy-simulation{margin-top:12px}
+.hy-demo nav{margin-bottom:28px}
+.hy-question{padding-block:24px 28px;margin-top:24px}
+.hy-demo .hy-choice{min-height:68px}
+.hy-option>div{border-top:1px solid var(--line);padding-top:14px}
+.hy-demo article{box-shadow:none}
+.top .ctx{flex-wrap:wrap;white-space:normal;gap:4px 8px}
+.top .ctx b{white-space:normal;overflow-wrap:anywhere}
+#app{grid-template-columns:230px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.top{min-height:80px}
+#viewHost{max-width:1440px;margin-inline:auto;min-width:0}
+.acctools,.vt,.vtools{flex-wrap:wrap}
+.btn{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.mcard{max-width:100%;min-width:0}
+.pop{max-width:calc(100vw - 28px);box-shadow:var(--dv-shadow)}
+@media(max-width:980px){
+ #app{grid-template-columns:minmax(0,1fr)}
+ .top .ctx{overflow:visible;white-space:normal}
+ .top .ctx b{white-space:normal}
+ .pop{position:fixed;right:14px;top:calc(var(--appearance-h) + var(--env-banner-h) + 100px);max-height:55dvh}
+ main{padding-inline:24px}
+}
+@media(max-width:640px){
+ #appearanceBar{padding-inline:14px;gap:8px}
+ #appearanceBar>span{font-size:10px}
+ main{padding:20px 16px 48px}
+ .hy-demo h1{font-size:clamp(32px,8vw,40px)}
+ .hy-demo .hy-lead{font-size:17px;line-height:1.55}
+ .hy-demo nav .btn{font-size:13px;padding:10px 8px}
+ .hy-question legend{font-size:21px}
+ .hy-demo article{padding:18px}
+ .hy-demo .hy-choice{min-height:56px}
+ .hy-controls{gap:8px}
+ .top .ctx{font-size:12px}
+ .modal{padding:12px}
+ .acard{padding:24px;max-width:100%;margin-block:auto}
+ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .kpi{min-width:0;overflow-wrap:anywhere}
+ .li{flex-wrap:wrap;gap:10px}
+ .li .g{min-width:0;flex:1 1 180px;overflow-wrap:anywhere}
+ .li select{max-width:100%}
+ .cap,.labin{flex-wrap:wrap}
+}
+@media(max-width:420px){.kpis{grid-template-columns:minmax(0,1fr)!important}}
+@media(forced-colors:active){
+ :is(button,input,select,textarea,.hy-option,.nav.on){border:1px solid ButtonText}
+ :is(button,a,input,select,textarea,summary):focus-visible{outline-color:Highlight}
+}

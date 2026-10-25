@@ -1,0 +1,62 @@
+{
+  "sourceRepository": "FinDataMan/don-ventas-runtime",
+  "sourceCommit": "f8a764bb3b18b8575c5826c7646953d40031ff34",
+  "firstInspectedCommit": "14b6359a164b313d0c310b8d90a1bfb9ea636bdd",
+  "portalBase": "00109ca9c27538056e49f22fae9a337c2ea55f24",
+  "assets": [
+    {
+      "source": "tokens/apariencia-v0.1/appearance.css",
+      "consumer": "brand/appearance/appearance.css",
+      "sha256": "2668be44e59f6b824f392cafae9c42ba28b1b71435a6d45cf2baac5102bfc736",
+      "bytes": 4025,
+      "exact": true
+    },
+    {
+      "source": "tokens/apariencia-v0.1/bootstrap.js",
+      "consumer": "brand/appearance/bootstrap.js",
+      "sha256": "148c47f7caade23ce44a52aff7742164120f8d55fe65cffd5b558a0b8ea1aba4",
+      "bytes": 638,
+      "exact": true
+    },
+    {
+      "source": "tokens/apariencia-v0.1/controller.js",
+      "consumer": "brand/appearance/controller.js",
+      "sha256": "e045805121933c82ae19f7d8172ec137caf2b73064a0813ed1f79e863bd2b47d",
+      "bytes": 2795,
+      "exact": true
+    },
+    {
+      "source": "logos/pack/donventas-wordmark-b6.svg",
+      "consumer": "brand/donventas-wordmark-b6.svg",
+      "sha256": "b10a10ac3fb5f3c55f82acad2f02a435c399d1e658d26da12de2b8ba65201b5a",
+      "bytes": 2720,
+      "exact": true
+    },
+    {
+      "source": "logos/pack/donventas-symbol-bs.svg",
+      "consumer": "brand/donventas-symbol-bs.svg",
+      "sha256": "8ff8e5371177a4d7660d4337e31a3e132ab646c6d51922bb673ad7297c151609",
+      "bytes": 639,
+      "exact": true
+    },
+    {
+      "source": "logos/pack/donventas-wordmark-b6-reverse.svg",
+      "consumer": "brand/donventas-wordmark-b6-reverse.svg",
+      "sha256": "c3a0810940289164ff5a40b3ac2524de10d43d12c98743ad41c4089aedb8a90a",
+      "bytes": 2721,
+      "exact": true
+    },
+    {
+      "source": "logos/pack/donventas-symbol-bs-reverse.svg",
+      "consumer": "brand/donventas-symbol-bs-reverse.svg",
+      "sha256": "28f701d69d0e31c2f636fc0c775a1f851cb106af1cb1873ca783772c1dae5bed",
+      "bytes": 640,
+      "exact": true
+    }
+  ],
+  "bsbSnapshot": "60ed1ec1914bb3b5c636f1142d853a1a70aa91fc",
+  "bsbIntegrity": "PASS",
+  "liveAVOSFreshness": "NOT_VERIFIED",
+  "routeReused": "evidence/h1-chain/bsb-route.json",
+  "routeScope": "web/execute/protected-mark; unchanged governance and assets, authorized appearance adaptation"
+}

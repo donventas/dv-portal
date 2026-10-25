@@ -12,6 +12,7 @@ async function demo(page){
 const act=(page,name)=>page.locator('[data-action="'+name+'"]').click();
 const tab=(page,name)=>page.locator('[data-tab="'+name+'"]').click();
 test('current brand assets load across shell, member view and access',async({page})=>{
+ await page.emulateMedia({colorScheme:'dark'});
  await demo(page);await page.evaluate(()=>document.fonts.ready);
  await expect(page.locator('.brand-wordmark')).toHaveAttribute('src','brand/donventas-wordmark-b6-reverse.svg');
  expect(await page.locator('.brand-wordmark').evaluate(img=>img.complete&&img.naturalWidth>0&&Math.abs(img.width/img.height-210/130)<.04)).toBeTruthy();

@@ -162,7 +162,7 @@ window.DVPortal = (function () {
       const b = DVClient.curBlockObj(), pv = S.previewOf(b.id), acc = S.account(S.session().accountId);
       const wm = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='140'%3E%3Ctext x='6' y='86' font-family='monospace' font-size='15' fill='%23F0C674' fill-opacity='0.13' transform='rotate(-20 120 70)'%3EBORRADOR %C2%B7 " + encodeURIComponent(acc.name.toUpperCase()) + "%3C/text%3E%3C/svg%3E";
       host.innerHTML = '<div class="modal sec-modal on" onclick="if(event.target===this)DVPortal.closeModal()"><div class="mbox">' +
-        '<div class="sec-hd"><span style="color:#7DE0A6">🔒</span> Vista segura · dentro del portal <span class="x2" onclick="DVPortal.closeModal()">Cerrar ✕</span></div>' +
+        '<div class="sec-hd"><span style="color:var(--fg)">🔒</span> Vista segura · dentro del portal <span class="x2" onclick="DVPortal.closeModal()">Cerrar ✕</span></div>' +
         '<div class="sec-body"><div class="sec-stage"><div class="mono" style="font-size:10px;letter-spacing:.14em;color:var(--fg-faint)">PREVIEW · ' + b.code + ' · ' + U.esc(b.title.toUpperCase()) + '</div>' +
         '<div style="font-size:28px;font-weight:800;letter-spacing:-.02em;margin-top:10px;line-height:1.05">Tu marca<br>es tu <span style="color:var(--accent)">ventaja.</span></div>' +
         '<div class="mono" style="color:var(--fg-soft);font-size:12px;margin-top:10px">rama · ' + U.esc(pv.branch) + '</div></div>' +

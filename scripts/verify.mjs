@@ -5,6 +5,13 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
+  'evidence/h11-appearance/form-light-390.png', 'evidence/h11-appearance/form-light-1280.png',
+  'evidence/h11-appearance/form-dark-390.png', 'evidence/h11-appearance/form-dark-1280.png',
+  'app/appearance.css', 'app/appearance.js', 'brand/appearance/appearance.css', 'brand/appearance/bootstrap.js', 'brand/appearance/controller.js',
+  'brand/donventas-wordmark-b6.svg', 'brand/donventas-symbol-bs.svg', 'tests/browser/appearance.spec.js',
+  'evidence/h11-appearance/REPORT.md', 'evidence/h11-appearance/source-receipt.json', 'evidence/h11-appearance/results.json',
+  'evidence/h11-appearance/light-1280.png', 'evidence/h11-appearance/dark-1280.png', 'evidence/h11-appearance/light-390.png', 'evidence/h11-appearance/dark-390.png',
+  'evidence/h11-appearance/admin-light.png', 'evidence/h11-appearance/access-light.png',
   'evidence/operational-backlog.md',
   'app/admin-invitations.js', 'server/invitations.cjs', 'tests/invitations.test.js',
   'supabase/proposals/h10-invitations.sql', 'supabase/tests/invitation-lab.cjs', 'supabase/tests/invitations-integration.cjs',

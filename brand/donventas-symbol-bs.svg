@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="28 27 49 46" width="100" height="100" role="img" aria-labelledby="title desc">
+  <title id="title">Símbolo B-S de Don Ventas para fondo claro</title>
+  <desc id="desc">La misma D de la construcción C2 rellena en tinta, con chevron azul compensado para reducción.</desc>
+  <path d="M20 23 L20 51 L38.2 37 Z" transform="translate(16 12)" fill="#15130F" stroke="#15130F" stroke-width="6.5" stroke-linejoin="round"/>
+  <path d="M20 76 L35.9 90 L20 104" transform="translate(33 -41)" fill="none" stroke="#3B74F2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
