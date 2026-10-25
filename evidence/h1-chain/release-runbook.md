@@ -37,6 +37,12 @@ no herramientas de aprovisionamiento productivo. No se prueba SMTP ni OAuth.
 
 ## Secuencia obligatoria antes de habilitar una BD alojada
 
+Estado al cierre del ensayo del 2026-10-25: inventario real y respaldo/restore
+aislado de los pasos 1–2 completados para el proyecto don-ventas. Véase
+[informe y límites](../hosted-restore-20261025/REPORT.md), especialmente Vault y
+configuración externa. Actualizar el backup antes de una futura ventana remota;
+no inferir autorización de migración o recuperación integral del servicio.
+
 1. Identificar proyecto/backend, dueño, destino y ventana autorizada. Inventariar
    en modo lectura esquema real, políticas, grants de tabla/columna, funciones,
    triggers, índices y extensiones, versiones, configuración Auth y datos heredados.

@@ -79,13 +79,50 @@ do $$ declare a jsonb; b jsonb; begin
  perform pg_temp.denied($q$select public.portal_command_v1('70000000-0000-0000-0000-000000000005','approve','50000000-0000-0000-0000-000000000001',0,'60000000-0000-0000-0000-000000000001','{}')$q$);
 end $$;
 -- Activation is admin-only and replay cannot duplicate a brand/project/block.
-select pg_temp.denied($q$select public.activate_account('10000000-0000-0000-0000-000000000003','20000000-0000-0000-0000-000000000004')$q$);
+do $$ begin
+ if to_regprocedure('public.activate_account(uuid,uuid)') is not null then
+  perform pg_temp.denied($q$select public.activate_account('10000000-0000-0000-0000-000000000003','20000000-0000-0000-0000-000000000004')$q$);
+ end if;
+end $$;
 select pg_temp.denied($q$select public.portal_command_v1('70000000-0000-0000-0000-000000000006','activate','10000000-0000-0000-0000-000000000003',0,null,'{"analyst_id":"20000000-0000-0000-0000-000000000004"}')$q$);
 select set_config('request.jwt.claim.sub','20000000-0000-0000-0000-000000000005',true);
+-- Inject a failure after activation writes but before its receipt/audit complete.
+reset role;
+create function pg_temp.abort_activation_receipt() returns trigger language plpgsql as $$
+begin raise exception 'SYNTHETIC_ACTIVATION_ABORT' using errcode='P0002'; end $$;
+create trigger synthetic_activation_abort before insert on public.portal_command_receipt
+for each row when (new.operation_key='70000000-0000-0000-0000-000000000009')
+execute function pg_temp.abort_activation_receipt();
+set local role authenticated;
+do $$ begin
+ begin
+  perform public.portal_command_v1('70000000-0000-0000-0000-000000000009','activate','10000000-0000-0000-0000-000000000003',0,null,'{"analyst_id":"20000000-0000-0000-0000-000000000004"}');
+  raise exception 'EXPECTED_ACTIVATION_ABORT_MISSING';
+ exception when no_data_found then
+  if sqlerrm <> 'SYNTHETIC_ACTIVATION_ABORT' then raise; end if;
+ end;
+end $$;
+reset role;
+drop trigger synthetic_activation_abort on public.portal_command_receipt;
+select pg_temp.assert_true((select version=0 and status='waitlist' from public.account where id='10000000-0000-0000-0000-000000000003'),'activation rollback account');
+select pg_temp.assert_true((select count(*)=0 from public.brand where account_id='10000000-0000-0000-0000-000000000003'),'activation rollback brand and dependent tree');
+select pg_temp.assert_true((select count(*)=0 from public.package_access where account_id='10000000-0000-0000-0000-000000000003'),'activation rollback package');
+select pg_temp.assert_true((select count(*)=0 from public.assignment where account_id='10000000-0000-0000-0000-000000000003'),'activation rollback assignment');
+select pg_temp.assert_true((select count(*)=0 from public.portal_command_receipt where operation_key='70000000-0000-0000-0000-000000000009'),'activation rollback receipt');
+select pg_temp.assert_true((select count(*)=0 from public.portal_command_audit where operation_key='70000000-0000-0000-0000-000000000009'),'activation rollback audit');
+set local role authenticated;
 select public.portal_command_v1('70000000-0000-0000-0000-000000000006','activate','10000000-0000-0000-0000-000000000003',0,null,'{"analyst_id":"20000000-0000-0000-0000-000000000004"}');
 select public.portal_command_v1('70000000-0000-0000-0000-000000000006','activate','10000000-0000-0000-0000-000000000003',0,null,'{"analyst_id":"20000000-0000-0000-0000-000000000004"}');
 reset role;
 select pg_temp.assert_true((select count(*)=1 from public.brand where account_id='10000000-0000-0000-0000-000000000003'),'activation once');
+select pg_temp.assert_true((select version=1 and status='activo' from public.account where id='10000000-0000-0000-0000-000000000003'),'activation canonical account version');
+select pg_temp.assert_true((select count(*)=1 from public.project p join public.brand b on b.id=p.brand_id where b.account_id='10000000-0000-0000-0000-000000000003'),'activation project once');
+select pg_temp.assert_true((select count(*)=1 from public.block bl join public.project p on p.id=bl.project_id join public.brand b on b.id=p.brand_id where b.account_id='10000000-0000-0000-0000-000000000003'),'activation block once');
+select pg_temp.assert_true((select count(*)=1 from public.package_access where account_id='10000000-0000-0000-0000-000000000003' and package='fundacion'),'activation package once');
+select pg_temp.assert_true((select count(*)=1 from public.assignment where account_id='10000000-0000-0000-0000-000000000003' and analyst_id='20000000-0000-0000-0000-000000000004'),'activation selected analyst once');
+select pg_temp.assert_true((select count(*)=1 from public.round r join public.block bl on bl.id=r.block_id join public.project p on p.id=bl.project_id join public.brand b on b.id=p.brand_id where b.account_id='10000000-0000-0000-0000-000000000003'),'activation kickoff once');
+select pg_temp.assert_true((select count(*)=1 from public.portal_command_receipt where operation_key='70000000-0000-0000-0000-000000000006'),'activation receipt once');
+select pg_temp.assert_true((select count(*)=1 from public.portal_command_audit where operation_key='70000000-0000-0000-0000-000000000006'),'activation audit once');
 select pg_temp.assert_true((select count(*)=1 from public.portal_command_audit where operation_key='70000000-0000-0000-0000-000000000004'),'audit once');
 select pg_temp.assert_true((select count(*)=0 from public.portal_command_receipt where operation_key='70000000-0000-0000-0000-000000000003'),'rollback receipt');
 select pg_temp.assert_true((select count(*)=0 from public.portal_command_audit where operation_key='70000000-0000-0000-0000-000000000003'),'rollback audit');

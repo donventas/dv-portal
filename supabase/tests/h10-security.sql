@@ -33,6 +33,10 @@ insert into public.payment(invoice_id,amount) values('80000000-0000-0000-0000-00
 insert into public.invitation(account_id,email,role) values('10000000-0000-0000-0000-000000000002','invited@synthetic.invalid','miembro');
 insert into public.assignment(analyst_id,account_id) values('20000000-0000-0000-0000-000000000005','10000000-0000-0000-0000-000000000002');
 -- Effective privileges catch grants via PUBLIC, role membership and columns.
+select pg_temp.assert_true(has_schema_privilege('authenticated','auth_dv','USAGE'),'authenticated helper schema admitted');
+select pg_temp.assert_true(not has_schema_privilege('anon','auth_dv','USAGE'),'anon helper schema denied');
+select pg_temp.assert_true(not has_schema_privilege('authenticated','auth_dv','CREATE'),'authenticated cannot create helpers');
+select pg_temp.assert_true(not has_schema_privilege('anon','auth_dv','CREATE'),'anon cannot create helpers');
 do $$ declare t text; c record; begin
  foreach t in array array['account','app_user','assignment','invitation','brand','project','block','round','scope_change','invoice','payment','asset','skill'] loop
   perform pg_temp.assert_true(not has_table_privilege('authenticated','public.'||t,'INSERT,DELETE,TRUNCATE,REFERENCES,TRIGGER'),t||' no direct mutation');

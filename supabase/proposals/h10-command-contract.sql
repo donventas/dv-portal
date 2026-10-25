@@ -1,5 +1,6 @@
 -- H1.0 REVIEW CANDIDATE ONLY. Never auto-apply. Historical SQL remains unchanged.
--- Requires schema 01, RLS 02 and RPC 04; owner must inventory actual grants first.
+-- Requires the inspected core schema/RLS. Legacy RPC 04 is optional.
+-- Still review-only: hosted backup/restore and final schema reconciliation are required.
 begin;
 revoke create on schema public from public, anon, authenticated;
 -- Revocation applies to helpers as well as table policies, including direct SQL calls.
@@ -47,7 +48,14 @@ do $$ declare f record; begin
   execute format('grant execute on function %s to authenticated',f.signature);
  end loop;
 end $$;
-alter function public.activate_account(uuid,uuid) set search_path = pg_catalog, public, pg_temp;
+-- Retire a legacy activation entry point only if it exists. Activation below is
+-- self-contained; do not create a missing legacy RPC just to satisfy this migration.
+do $$ begin
+ if to_regprocedure('public.activate_account(uuid,uuid)') is not null then
+  execute 'alter function public.activate_account(uuid,uuid) set search_path = pg_catalog, public, pg_temp';
+  execute 'revoke all on function public.activate_account(uuid,uuid) from public, anon, authenticated';
+ end if;
+end $$;
 alter function public.handle_new_auth_user() set search_path = pg_catalog, public, pg_temp;
 -- Authentication does not grant membership. Legacy email matching must never
 -- reactivate a revoked/pending identity or accept an expired invitation.
@@ -143,8 +151,7 @@ revoke all on public.portal_command_receipt, public.portal_feedback, public.port
 grant select on public.portal_feedback to authenticated;
 create policy portal_feedback_read on public.portal_feedback for select to authenticated
 using (auth_dv.portal_can_read_block(block_id));
--- Old activation and direct block/round writes cannot bypass the command contract.
-revoke execute on function public.activate_account(uuid,uuid) from public, anon, authenticated;
+-- Direct block/round writes cannot bypass the command contract.
 revoke insert, update, delete on public.block, public.round, public.account from public, anon, authenticated;
 -- Also remove column grants, which survive table-level REVOKE.
 do $$ declare c record; begin
@@ -173,6 +180,7 @@ declare
  u public.app_user; b public.block; a public.account; r public.round;
  f public.portal_feedback; saved public.portal_command_receipt;
  req jsonb; res jsonb; tenant uuid; latest uuid; analyst uuid;
+ activation_brand uuid; activation_project uuid; activation_block uuid;
 begin
  if auth.uid() is null then raise exception 'AUTH_REQUIRED' using errcode='42501'; end if;
  select * into u from public.app_user where id=auth.uid() for share;
@@ -216,8 +224,23 @@ begin
    analyst := (p_payload->>'analyst_id')::uuid;
    perform 1 from public.app_user where id=analyst and role in ('analista','admin') and not pending for share;
    if not found then raise exception 'ANALYST_UNAVAILABLE'; end if;
-   -- Existing definer is called only inside this transaction and after waitlist/version gates.
-   perform public.activate_account(a.id,analyst);
+   -- Preserve the existing activation result inside the locked, audited command.
+   -- No dependency on a separately callable legacy SECURITY DEFINER function.
+   update public.account set status='activo',queue_position=null,pkg='Fundación' where id=a.id;
+   insert into public.brand(account_id,name,layer,enabled)
+     values(a.id,a.name,'marca',true) returning id into activation_brand;
+   insert into public.project(brand_id,title)
+     values(activation_brand,'Sistema de marca '||a.name) returning id into activation_project;
+   insert into public.block(project_id,code,title,capa,status,progress)
+     values(activation_project,'F1','Estrategia y arquetipo','Fundación','en_curso',5)
+     returning id into activation_block;
+   insert into public.package_access(account_id,package,layers,sections)
+     values(a.id,'fundacion',array['marca']::public.brand_layer[],
+       array['tablero','previews','bitacora','cuenta']) on conflict(account_id) do nothing;
+   insert into public.assignment(analyst_id,account_id,assigned_by)
+     values(analyst,a.id,u.id) on conflict(analyst_id,account_id) do nothing;
+   insert into public.round(block_id,seq,title,deliverable,feedback,result,author)
+     values(activation_block,1,'Kickoff · arranque de Fundación','agenda de arranque','—','propuesto',u.name);
    select * into a from public.account where id=p_resource;
    tenant := a.id;
    res := jsonb_build_object('account',to_jsonb(a),
@@ -258,4 +281,8 @@ begin
 end $$;
 revoke all on function public.portal_command_v1(uuid,text,uuid,integer,uuid,jsonb) from public,anon;
 grant execute on function public.portal_command_v1(uuid,text,uuid,integer,uuid,jsonb) to authenticated;
+-- The hosted inventory lacks USAGE. Admit only the role whose helper/table
+-- privileges have just been restricted, atomically with the rest of this change.
+revoke all on schema auth_dv from public,anon,authenticated;
+grant usage on schema auth_dv to authenticated;
 commit;

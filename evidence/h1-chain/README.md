@@ -1,5 +1,9 @@
 # H1 · cierre técnico local y DEMO para aceptación
 
+Actualización posterior: [respaldo real y restauración aislada](../hosted-restore-20261025/REPORT.md)
+completados; candidato adaptado al esquema alojado y recuperación 66/66 tablas
+verificada. Este documento conserva el corte sintético anterior. LIVE sigue NO_GO.
+
 Fecha: 2026-10-25. Único repositorio editable: donventas/dv-portal, rama
 codex/portal-h1-hardening, mismo PR de desarrollo #6. Punto de partida de esta
 continuación: 279555432e28a62fe9fc917c87b17ce463a03143. Baseline de producto:

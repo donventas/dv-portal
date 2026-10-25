@@ -18,7 +18,7 @@ try {
   & (Join-Path $bin 'psql.exe') @connect -d portal_h10_disposable -f (Join-Path $repo $f) >> (Join-Path $taskRoot 'build.log') 2>&1
   if ($LASTEXITCODE -ne 0) { throw "Base schema failed: $f" }
  }
- & (Join-Path $bin 'psql.exe') @connect -d portal_h10_disposable -c 'grant usage on schema auth_dv to authenticated;' >> (Join-Path $taskRoot 'build.log')
+ # Helper schema USAGE must be supplied by the candidate, never by the harness.
  # Baseline recovery point, before candidate, contains no client data/legacy seed.
  & (Join-Path $bin 'pg_dump.exe') -h 127.0.0.1 -p 55439 -U portal_test_owner -d portal_h10_disposable -Fc -f (Join-Path $taskRoot 'baseline.dump')
  if ($LASTEXITCODE -ne 0) { throw 'Baseline backup failed' }
