@@ -1,0 +1,5 @@
+/* Portal adapter; Runtime f01d471 color/type canon 2.0; Landing c487c25 font exports. */
+@font-face{font-family:'Schibsted Grotesk';font-style:normal;font-weight:400 900;font-display:swap;src:url('../brand/fonts/schibsted-grotesk-latin-normal.woff2') format('woff2')}
+@font-face{font-family:'Space Mono';font-style:normal;font-weight:400;font-display:swap;src:url('../brand/fonts/space-mono-latin-400.woff2') format('woff2')}
+@font-face{font-family:'Space Mono';font-style:normal;font-weight:700;font-display:swap;src:url('../brand/fonts/space-mono-latin-700.woff2') format('woff2')}
+:root{--action-bg:#6E97F6;--action-fg:#0E1117;--link-dark:#6E97F6;--text-essential:#99A2B0;--type-h1:clamp(40px,4.5vw,56px);--type-h2:clamp(28px,3vw,34px);--type-body:17px;--type-small:14px;--type-label:12px;--tracking-title:-.035em;--tracking-label:.16em;--measure:66ch}

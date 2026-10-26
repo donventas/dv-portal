@@ -1,0 +1,1639 @@
+{
+  "date": "2026-10-25T22:39:33.592Z",
+  "coverage": [
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cola",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "skills",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cola",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "skills",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cola",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "skills",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "cola",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "analista",
+      "route": "skills",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cola",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "skills",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "valor",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cola",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "skills",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "valor",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cola",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "skills",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "valor",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "cola",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "skills",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "valor",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 320
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 1280
+    },
+    {
+      "mode": "light",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "tablero",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "impacto",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "archivos",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "cuenta",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "cliente",
+      "route": "miembros",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "tablero",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "impacto",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "miembro",
+      "route": "archivos",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cola",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "skills",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cola",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "skills",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cola",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "skills",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cuentas",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "cola",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "analista",
+      "route": "skills",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cola",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "skills",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "valor",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cola",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "skills",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "valor",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cola",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "skills",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "valor",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cuentas",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "cola",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "bitacora",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "skills",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "mejoras",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "waitlist",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "capacidad",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "desempeno",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "resenas",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "equipo",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "accesos",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "facturacion",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "utilidad",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "valor",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "prospectos",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "aplicacion",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "impacto",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "admin",
+      "route": "referidos",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 320
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "diagnostico",
+      "width": 1280
+    },
+    {
+      "mode": "dark",
+      "actor": "freemium",
+      "route": "contratar",
+      "width": 1280
+    }
+  ],
+  "errors": [],
+  "scope": "Local synthetic DEMO; no production"
+}

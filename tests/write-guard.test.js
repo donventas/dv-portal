@@ -66,13 +66,15 @@ test('33 SANDBOX external write confirms', () => assert.equal(sand({ externallyV
 test('34 LIVE external write does not use sandbox confirmation', () => assert.equal(prod({ externallyVisible: true }).outcome, 'ALLOW'));
 test('35 result uses normalized fields only', () => assert.deepEqual(Object.keys(run({})).sort(), ['authorized', 'completed', 'diagnostic', 'execution', 'executorCount', 'outcome']));
 test('36 async executor called once', async () => { let n = 0; const r = await G.execute(base, async () => ++n, policies); assert.equal(n, 1); assert.equal(r.value, 1); });
-test('37 every backend mutation adapter invokes guarded execution', () => {
+test('37 supported backend commands use the guard and unsupported writes have no table fallback', () => {
   const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../app/supabase.js'), 'utf8');
-  ['auth.otp','auth.oauth','auth.signout','block.backend.approve','round.backend.create',
-    'invitation.backend.create','staff.backend.invite','assignment.backend.upsert',
-    'payment.backend.validate','skill.backend.publish','account.backend.register',
-    'account.backend.activate','lead.backend.update'].forEach(action => assert.match(source, new RegExp("guarded\\('" + action.replace('.', '\\.') + "'")));
+  ['auth.otp','auth.oauth','auth.signout'].forEach(action => assert.ok(source.includes("guarded('" + action + "'")));
+  assert.match(source, /return guarded\(kind === 'approve'/);
+  assert.match(source, /rpc\('portal_command_v1'/);
+  assert.doesNotMatch(source, /\.(?:insert|update|upsert|delete)\(/);
+  ['invite','inviteStaff','assign','validatePayment','publishSkill','register','updateLead'].forEach(name => assert.ok(source.includes(name + ': unsupported')));
 });
+
 test('38 executable Store mutation inventory is centrally wrapped', () => {
   const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../app/store.js'), 'utf8');
   ['loginAs','setRole','logout','loginFree','updateFreeProfile','setAccountKind','toggleCapa',

@@ -66,7 +66,7 @@ test('320px and scale-two critical surfaces do not overflow', async ({ browser }
 });
 
 test('missing configuration is BLOCKED with no backend or app navigation', async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 320, height: 640 } });
+  const context = await browser.newContext({ viewport: { width: 320, height: 640 }, colorScheme: 'dark' });
   const page = await context.newPage();
   const forbidden = [];
   page.on('request', request => {
@@ -78,7 +78,7 @@ test('missing configuration is BLOCKED with no backend or app navigation', async
   await expect(page.locator('h1')).toHaveText('Próximamente');
   await expect(page.locator('#environmentStatusMount')).toBeHidden();
   await expect(page.locator('.prelaunch-state')).toHaveText('Portal aún no habilitado');
-  await expect(page.locator('.prelaunch-brand img')).toHaveAttribute('src', 'brand/donventas-horizontal-curvas-reverse.svg');
+  await expect(page.locator('.prelaunch-brand img')).toHaveAttribute('src', 'brand/donventas-wordmark-b6-reverse.svg');
   expect(await page.locator('.prelaunch-brand img').evaluate(image => image.complete && image.naturalWidth > 0)).toBeTruthy();
   expect(await page.locator('#side').isVisible()).toBeFalsy();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();

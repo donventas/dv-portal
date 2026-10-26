@@ -227,6 +227,6 @@ test('55 only the editorial prelaunch removes the fixed BLOCKED banner', () => {
 });
 test('56 prelaunch consumes the canonical reverse lockup without redrawing it', () => {
   const prelaunch = indicatorSource.slice(indicatorSource.indexOf('function renderPrelaunch'), indicatorSource.indexOf('function renderSafetyBlocked'));
-  assert.match(prelaunch, /brand\/donventas-horizontal-curvas-reverse\.svg/);
+  assert.match(prelaunch, /brand\/donventas-wordmark-b6-reverse\.svg/);
   assert.doesNotMatch(prelaunch, /<svg viewBox=/);
 });

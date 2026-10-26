@@ -115,7 +115,7 @@
       '<main class="env-prelaunch-screen" role="main" aria-labelledby="envBlockedTitle">' +
       '<div class="prelaunch-shell">' +
       '<header class="prelaunch-head"><a class="prelaunch-brand" href="https://www.donventas.mx/" aria-label="Don Ventas, volver al sitio">' +
-      '<img src="brand/donventas-horizontal-curvas-reverse.svg" alt="Don Ventas" width="392" height="130"></a>' +
+      '<img src="brand/donventas-wordmark-b6-reverse.svg" alt="Don Ventas" width="210" height="130"></a>' +
       '<span class="prelaunch-state" aria-label="Portal bloqueado: aún no habilitado">Portal aún no habilitado</span></header>' +
       '<section class="prelaunch-hero"><div class="prelaunch-copy">' +
       '<p class="prelaunch-kicker">Portal Don Ventas</p><h1 id="envBlockedTitle" tabindex="-1">Próximamente</h1>' +
@@ -196,6 +196,8 @@
       return chain.then(function () {
         return new Promise(function (resolve, reject) {
           var script = document.createElement('script');
+          if (!window.DVEnv || !['DEMO', 'SANDBOX', 'LIVE'].includes(DVEnv.state())) return reject(new Error('ENV_CHANGED_DURING_BOOT'));
+          if (path === 'data/seed.js' && !DVEnv.isDemo()) return reject(new Error('FIXTURES_DEMO_ONLY'));
           script.src = path;
           script.onload = resolve;
           script.onerror = function () { reject(new Error('APP_RESOURCE_UNAVAILABLE')); };
@@ -213,7 +215,7 @@
       var model = render(snapshot);
       if (model.operational && !loaded) {
         loaded = true;
-        loadScripts(options.scripts || []).catch(function () {
+        loadScripts((model.state === 'DEMO' ? (options.demoScripts || []) : []).concat(options.scripts || [])).catch(function () {
           loaded = false;
         });
       }

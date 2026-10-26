@@ -5,8 +5,8 @@ window.DVClient = (function () {
 
   /* ── acordeón + kanban (mismo sistema que el staff, memoria propia del cliente) ── */
   let _open = _loadOpen();
-  function _loadOpen() { try { return JSON.parse(DVEnv.storage.getItem('open-client') || '{}'); } catch (e) { return {}; } }
-  function _saveOpen() { try { DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('open-client', JSON.stringify(_open))); } catch (e) { } }
+  function _loadOpen() { try { return JSON.parse(S.getPreference('open-client') || '{}'); } catch (e) { return {}; } }
+  function _saveOpen() { try { DVWriteGuard.run('ui.preference', 'ui-state', {}, () => S.savePreference('open-client', JSON.stringify(_open))); } catch (e) { } }
   function _isOpen(key, def) { return _open[key] === undefined ? (def !== false) : _open[key]; }
   function accToggle(key, def) { _open[key] = !_isOpen(key, def); _saveOpen(); DVPortal.go(_route); }
   function accordion(key, def, titleHTML, countHTML, bodyHTML) {
@@ -45,7 +45,7 @@ window.DVClient = (function () {
       owner && { route: 'cuenta', icon: '$', label: 'Cuenta' },
       owner && { route: 'miembros', icon: '◎', label: 'Miembros' },
       { group: 'Capas del ecosistema' },
-      { static: true, icon: '◆', label: 'Marca', badge: '<span class="lock" style="color:#7DE0A6;opacity:1">activa</span>' },
+      { static: true, icon: '◆', label: 'Marca', badge: '<span class="lock" style="color:var(--fg);opacity:1">activa</span>' },
       { static: true, locked: true, icon: '◇', label: 'Operación', badge: '<span class="lock">🔒</span>', title: 'Otra empresa del grupo — operación y estrategia comercial' },
       { static: true, locked: true, icon: '◇', label: 'Datos · finanzas', badge: '<span class="lock">🔒</span>', title: 'Otra empresa del grupo — datos, contabilidad y finanzas' }
     ].filter(Boolean);
@@ -138,7 +138,7 @@ window.DVClient = (function () {
   function setStars(n) { _captureSurvey(); if (_survey) _survey.rating = n; DVPortal.go('tablero'); }
   function toggleConsent() { _captureSurvey(); if (_survey) _survey.consent = !_survey.consent; DVPortal.go('tablero'); }
   function cancelSurvey() { _survey = null; DVPortal.go('tablero'); }
-  function submitSurvey() {
+  function submitSurvey() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     if (!_survey || !_survey.rating) return U.toast('Elige una calificación de 1 a 5');
     _captureSurvey(); const accId = S.session().accountId;
     S.addReview(accId, _survey.phase, _survey.rating, _survey.text || '', _survey.consent);
@@ -146,8 +146,8 @@ window.DVClient = (function () {
     U.toast('¡Gracias! Tu reseña quedó registrada' + (consent ? ' · publicable en 48 h' : ''));
     DVPortal.go('tablero');
   }
-  function retirarReview(id) { S.retractReview(id); U.toast('Reseña retirada · no se publicará sin tu permiso'); DVPortal.go('tablero'); }
-  function reautorizarReview(id) { S.grantReviewConsent(id); U.toast('Autorizada · se publica 48 h después'); DVPortal.go('tablero'); }
+  function retirarReview(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.retractReview(id); U.toast('Reseña retirada · no se publicará sin tu permiso'); DVPortal.go('tablero'); }
+  function reautorizarReview(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.grantReviewConsent(id); U.toast('Autorizada · se publica 48 h después'); DVPortal.go('tablero'); }
 
   /* ── Impacto & valor (lo que el cliente ve · Capa 3) — su impacto + volumen a valor de lista ── */
   function _cliMetric(m) {
@@ -212,7 +212,7 @@ window.DVClient = (function () {
       (groups || '<div class="list"><div class="li"><div class="g"><small>Aún sin archivos.</small></div></div></div>') +
       '<p class="hint">¿Necesitas otro formato o un archivo que no ves aquí? Pídelo a tu analista desde cualquier bloque.</p>';
   }
-  function download(id) { U.toast('Preparando tu descarga…'); }
+  function download(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } U.toast('Preparando tu descarga…'); }
 
   function open(id) { curBlock = id; window.DVPortal.go('bloque'); }
 
@@ -236,6 +236,7 @@ window.DVClient = (function () {
         '<div class="row"><button class="btn sm" onclick="DVClient.comment()">Pedir ajustes</button><button class="btn solid sm" onclick="DVClient.approve(\'' + b.id + '\')">Aprobar ✓</button></div></div></div>' : '') +
       '<h3 style="margin:26px 0 12px;font-size:15px">Rondas de este bloque</h3>' +
       '<div class="rounds">' + (rs.length ? rs.map(r => rndRow(r)).join('') : '<div class="rnd"><div class="tt"><small>Aún sin rondas.</small></div></div>') + '</div>' +
+      S.feedbackOf(b.id).map(f => '<div class="panel"><h3>Ajustes sobre la revisión ' + U.esc(f.revision_id) + '</h3><p>' + U.esc(f.feedback) + '</p></div>').join('') +
       '<h3 style="margin:26px 0 12px;font-size:15px">Entregables</h3><div class="list">' +
       S.assetsOf(b.id).map(a => '<div class="li"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + (a.locked ? 'se desbloquea al liquidar' : a.kind) + '</small></div>' +
         (a.locked ? '<span class="tag locked">🔒 bloqueado</span>' : '<button class="btn sm" onclick="DVUtil.toast(\'Abriendo…\')">Ver</button>') + '</div>').join('') +
@@ -316,7 +317,7 @@ window.DVClient = (function () {
     if (!r || r.status !== 'SUCCEEDED') { U.toast('No se enviaron los ajustes · intenta de nuevo'); return false; }
     U.toast('Ajustes enviados — queda en la ronda'); return true;
   }
-  async function invite() {
+  async function invite() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const i = U.el('inviteEmail'); const e = (i.value || '').trim();
     if (!e) return U.toast('Escribe un correo');
     if (S.membersOf(S.session().accountId).length >= 5) return U.toast('Alcanzaste el límite de 5 miembros');
@@ -328,5 +329,6 @@ window.DVClient = (function () {
   function preview(id) { curBlock = id; window.DVPortal.modal('preview'); }
   function curBlockObj() { return S.block(curBlock); }
 
-  return { nav, ctxLabel, render, open, approve, comment, sendComment, invite, preview, curBlockObj, startSurvey, setStars, toggleConsent, cancelSurvey, submitSurvey, retirarReview, reautorizarReview, download, accToggle, expandAll, collapseAll };
+  function resetTransient() { curBlock = null; _route = 'tablero'; _open = {}; _survey = null; }
+  return { demoOnly: ["submitSurvey", "retirarReview", "reautorizarReview", "download", "invite"], resetTransient, nav, ctxLabel, render, open, approve, comment, sendComment, invite, preview, curBlockObj, startSurvey, setStars, toggleConsent, cancelSurvey, submitSurvey, retirarReview, reautorizarReview, download, accToggle, expandAll, collapseAll };
 })();

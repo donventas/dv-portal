@@ -25,12 +25,27 @@
 <meta name="twitter:image:alt" content="Portal Don Ventas — la memoria de tu marca, lista para trabajar">
 <meta name="theme-color" content="#0E1117">
 <title>Próximamente · Portal Don Ventas</title>
+<meta name="color-scheme" content="light dark">
+<script src="brand/appearance/bootstrap.js"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="/favicon.svg">
 <link rel="stylesheet" href="dv-shared/blocks.css">
+<link rel="stylesheet" href="app/brand-tokens.css">
 <link rel="stylesheet" href="app/portal.css?v=34">
+<link rel="stylesheet" href="app/hybrid-demo.css">
+<link rel="stylesheet" href="brand/appearance/appearance.css">
+<link rel="stylesheet" href="app/appearance.css">
+<script src="brand/appearance/controller.js" defer></script>
+<script src="app/appearance.js" defer></script>
 </head>
 <body>
+<div id="appearanceBar" role="region" aria-label="Preferencias de apariencia">
+  <span data-dv-appearance-status aria-live="polite">Apariencia del sistema</span>
+  <label for="portalAppearance">Apariencia</label>
+  <select id="portalAppearance" data-dv-appearance-control disabled>
+    <option value="light">Claro</option><option value="dark">Oscuro</option><option value="system" selected>Sistema</option>
+  </select>
+</div>
 <div id="environmentStatusMount"></div>
 <div id="environmentBlockedMount"></div>
 <div id="environmentGuardMount"></div>
@@ -62,9 +77,9 @@
 <script src="app/supabase.js"></script>
 <script src="app/environment-indicator.js?v=2"></script>
 <script>
-DVEnvironmentIndicator.start({scripts:[
-  'data/seed.js','app/config.js','app/util.js','app/store.js','app/auth.js',
-  'app/client.js','app/free.js','app/staff.js?v=34','app/portal.js'
+DVEnvironmentIndicator.start({demoScripts:['data/seed.js','app/hybrid-demo.js','app/hybrid-demo-ui.js'], scripts:[
+  'data/empty-state.js','app/config.js','app/util.js','app/store.js','app/auth.js',
+  'app/client.js','app/free.js','app/admin-invitations.js','app/staff.js?v=34','app/portal.js'
 ]});
 </script>
 </body>

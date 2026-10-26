@@ -1,0 +1,2 @@
+/* Empty backend bootstrap. No fixture imports. */
+if (!window.DVEnv || !DVEnv.isDemo()) window.DV_SEED = { accounts: [], users: [], assignments: [], package_access: [], brands: [], projects: [], blocks: [], rounds: [], previews: [], assets: [], invoices: [], skills: [], leads: [], CAPAS: [{ name: 'Fundación', d: 'Estrategia, arquetipo y voz — el porqué te eligen.' }, { name: 'Sistema', d: 'La identidad: logo, color, tipografía y aplicaciones.' }, { name: 'Activación', d: 'Web, contenido y generadores que ponen a vender.' }] };

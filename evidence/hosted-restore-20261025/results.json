@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-25",
+  "scope": "Actual hosted DB logical backup; isolated SQL migration and recovery only",
+  "productionChanged": false,
+  "releaseDecision": "NO_GO_LIVE",
+  "baselineCommit": "1b63698d24fc746282e819e77b0eb899277fa282",
+  "backup": {
+    "file": "production-original.dump",
+    "bytes": 937766,
+    "sha256": "4861B9665818E19BCDCE122B9BBE567C0DDDC2C09720075B49A8B4789F0DFABC",
+    "tocEntries": 895,
+    "tableDataEntries": 66,
+    "pgDumpVersion": "17.11",
+    "sourcePostgresVersion": "17.6",
+    "rolesIncludePasswords": false,
+    "vaultRootKeyRecoveryTested": false,
+    "storageBuckets": 0,
+    "storageObjects": 0
+  },
+  "isolation": {
+    "network": "none",
+    "publishedPorts": [],
+    "cronLaunchActiveJobs": false,
+    "pgNetDatabaseName": "disabled_network_worker",
+    "candidateRoleSuperuser": false,
+    "containerRemovedAfterChecks": true,
+    "machineStoppedAfterChecks": true
+  },
+  "checks": {
+    "fullRestoreExitCode": 0,
+    "extensionVersionMatches": 8,
+    "liveSourceTableMatches": 65,
+    "liveSourceTableTotal": 66,
+    "liveSourceDifference": "cron.job_run_details: 23058 at backup, 23064 at later comparison",
+    "recoveryFromOriginalTableMatches": 66,
+    "legacyRpcAbsent": true,
+    "finalCandidateExitCode": 0,
+    "negativeSuiteExitCode": 0,
+    "securitySuiteExitCode": 0,
+    "injectedSchemaCreateRevoked": true,
+    "activationPartialFailureRollback": true,
+    "afterTestsOriginalTableMatches": 66,
+    "persistentCommandReceipts": 0,
+    "persistentCommandAudits": 0,
+    "incompatibleLegacyDisplayNames": 0,
+    "productionCandidateStillAbsent": true,
+    "unitTestsPassed": 215,
+    "integrationTestsPassed": 31,
+    "pathsBundleSecretsPassed": true,
+    "browserConcurrencyProviderRerun": false
+  },
+  "testedWorktreeFilesSha256": {
+    "supabase/proposals/h10-command-contract.sql": "9F8DFFB55E8692DFEEB031BF9C35323D9E74823378ED47BA5701FA65E71CC021",
+    "supabase/tests/h10-negative.sql": "0CF4BAD281174C04ED9919B62DC0400F419F54EFA9377AF4274369C43499544D",
+    "supabase/tests/h10-security.sql": "0E6164F7B0CEE3588E0B8AD261F7C5D8BF192BC868188743648893E2BE832F24",
+    "supabase/tests/rebuild-local.ps1": "485C600D095F973E7D28B4F38065C16FF8B3DB4670E90FEA6170A89C09DE910A"
+  },
+  "privateEvidenceSha256": {
+    "roles-no-passwords.sql": "9F298A125F013D6CCA2171C4E982914BD58229FF3AD511C1274CF75078767EEE",
+    "restored-before-schema.sql": "A3975E0C46E31EFD9EDA79A3F0DD25DB0343C5E150BD347BA86D6754A7579C36",
+    "restored-after-schema.sql": "C04F4B23A382537F868C77D5D1049B9CD159B9649E802203F94A16E9D46632D4",
+    "candidate-final.log": "6D72AEA13D97448C44770DAE114E44A9BF6F232F60BB1DCC69558A6162767282",
+    "h10-negative-final.log": "7FA26350915AF25808DE04C8B07DF2CE6C3C872F5741A82F2C085AEFA370E56E",
+    "h10-security-final.log": "01EEBA49D4E8DEB46DE3988FEC0A27F79C7805E299DAB4383136DD5849376C45"
+  }
+}

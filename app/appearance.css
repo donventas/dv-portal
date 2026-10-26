@@ -1,0 +1,191 @@
+/* Portal projection of Runtime appearance 0.1. No changes to brand masters. */
+:root,:root[data-dv-appearance]{
+ --bg:var(--dv-canvas);--panel:var(--dv-surface);--panel-2:var(--dv-raised);
+ --fg:var(--dv-text);--fg-soft:var(--dv-muted);--fg-faint:var(--dv-subtle);
+ --line:var(--dv-line);--line-2:var(--dv-line);--accent:var(--dv-action);--accent-2:var(--dv-link);
+ --action-bg:var(--dv-action);--action-fg:var(--dv-on-action);--on-accent:var(--dv-on-action);
+ --link-dark:var(--dv-link);--text-essential:var(--dv-muted);--danger:var(--dv-error);
+ --data-strong:var(--dv-link);--data-mute:var(--dv-muted);--data-grid:var(--dv-line);
+ --appearance-h:48px;
+}
+body{transition:none}
+.btn,.nav,.swi,.leadfilters button{transition:transform .16s}
+#appearanceBar{position:fixed;inset:0 0 auto;z-index:10002;height:var(--appearance-h);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:4px 24px;background:var(--dv-surface);color:var(--dv-text);border-bottom:1px solid var(--dv-line);font-size:13px}
+#appearanceBar>span{margin-right:auto;color:var(--dv-muted);font:11px/1.3 var(--mono)}
+#appearanceBar label{font-weight:600}
+#appearanceBar select{min-height:38px;min-width:108px;border:1px solid var(--dv-control-border);border-radius:5px;padding:6px 28px 6px 10px;background:var(--dv-control);color:var(--dv-text);font:inherit}
+#environmentStatusMount{top:var(--appearance-h)}
+#auth,#app,#environmentBlockedMount{top:calc(var(--appearance-h) + var(--env-banner-h))}
+.env-prelaunch-state #environmentBlockedMount{top:var(--appearance-h)}
+.env-prelaunch-state .prelaunch-shell{min-height:calc(100dvh - var(--appearance-h))}
+.env-prelaunch-screen::before{top:var(--appearance-h)}
+.env-indicator{background:var(--dv-notice);color:var(--dv-notice-text);box-shadow:none}
+.env-copy span{color:inherit}
+.env-blocked-card{border-color:var(--dv-error-border);box-shadow:none}
+.env-blocked-symbol,.env-kicker{color:var(--dv-error);border-color:var(--dv-error-border)}
+.env-blocked-screen{background:var(--bg)}
+.prelaunch-safety details,.demoBadge{background:var(--panel)}
+.env-actions button:focus-visible,.env-actions a:focus-visible{outline-color:var(--dv-focus)}
+input:not([type=checkbox]):not([type=radio]),textarea,select{background:var(--dv-control);color:var(--dv-text);border-color:var(--dv-control-border)}
+#auth :is(input,textarea,select),#app :is(input,textarea,select),#modalHost :is(input,textarea,select),#environmentGuardMount :is(input,textarea,select){border-color:var(--dv-control-border)}
+#app :is(input,textarea,select):focus-visible,#modalHost :is(input,textarea,select):focus-visible{outline:3px solid var(--dv-focus);outline-offset:3px}
+.msg.me .bub .nm{color:var(--dv-on-action)}
+.swi{background:var(--dv-control);border-color:var(--dv-control-border)}
+.swi::after{background:var(--dv-muted)}
+.swi.on::after{background:var(--dv-on-action)}
+.swi.lock{opacity:1}
+input::placeholder,textarea::placeholder{color:var(--dv-muted);opacity:1}
+input[type=checkbox],input[type=radio]{accent-color:var(--dv-action)}
+.btn,.iconbtn,.roleseg,.tabs,.perseg,.hy-option,.f0 .opts button{border-color:var(--dv-control-border)}
+.btn.solid,.toast,.perseg button.on,.msg.me .bub,.msg.me .bub p{background:var(--dv-action);color:var(--dv-on-action)}
+.btn.solid:hover,.hy-demo .btn.solid:hover{background:var(--dv-action-hover);border-color:var(--dv-action-hover);color:var(--dv-on-action)}
+.hy-demo nav .btn.solid,.hy-demo nav .btn.solid:hover{background:transparent;color:var(--fg);border-color:transparent;border-bottom-color:var(--dv-selected-border)}
+.hy-option[data-selected=true],.nav.on,.f0 .opts button.on,.kindopt.on,.anopt.on{background:var(--dv-selected);border-color:var(--dv-selected-border)}
+.nav:hover,.li:hover,.acc-hd:hover{background:var(--panel-2)}
+.btn:disabled,.hy-demo button:disabled{opacity:1;color:var(--dv-disabled-text);background:var(--dv-disabled);border-color:var(--dv-control-border);box-shadow:none}
+:is(button,a,input,select,textarea,summary):focus-visible,.acard :is(input,select,textarea):focus-visible{outline:3px solid var(--dv-focus);outline-offset:3px}
+/* Status names remain explicit; inherited traffic-light colors are not brand tokens. */
+.st,.res,.tag,.wm,.warn-s,.plan .powned,.perfchip .pok,.perfchip .pbad,.evrow .g b,.md.dn{color:var(--fg);border-color:var(--dv-control-border)}
+.st.en_curso,.res.ajustes,.tag.blue{color:var(--dv-link);border-color:var(--dv-link)}
+.st .d,.kbcol .dot,.ndot,.capbar.full i{background:currentColor}
+.stars .star.on,.stars.ro .star.on{color:var(--dv-link)}
+.propcard.approved,.plan.owned,.perfchip.met,.perfchip.miss,.reassign,.pend{border-color:var(--dv-control-border)}
+.propcard.approved,.propcard.dismissed{opacity:1}
+.hy-demo header{padding:12px 0 16px}
+.hy-demo h1{max-width:22ch;margin:12px 0 16px}
+.hy-simulation{margin-top:12px}
+.hy-demo nav{margin-bottom:28px}
+.hy-question{padding-block:24px 28px;margin-top:24px}
+.hy-demo .hy-choice{min-height:68px}
+.hy-option>div{border-top:1px solid var(--line);padding-top:14px}
+.hy-demo article{box-shadow:none}
+.top .ctx{flex-wrap:wrap;white-space:normal;gap:4px 8px}
+.top .ctx b{white-space:normal;overflow-wrap:anywhere}
+#app{grid-template-columns:230px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.top{min-height:80px}
+#viewHost{max-width:1440px;margin-inline:auto;min-width:0}
+.acctools,.vt,.vtools{flex-wrap:wrap}
+.btn{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.mcard{max-width:100%;min-width:0}
+.pop{max-width:calc(100vw - 28px);box-shadow:var(--dv-shadow)}
+@media(max-width:980px){
+ #app{grid-template-columns:minmax(0,1fr)}
+ .top .ctx{overflow:visible;white-space:normal}
+ .top .ctx b{white-space:normal}
+ .pop{position:fixed;right:14px;top:calc(var(--appearance-h) + var(--env-banner-h) + 100px);max-height:55dvh}
+ main{padding-inline:24px}
+}
+@media(max-width:640px){
+ #appearanceBar{padding-inline:14px;gap:8px}
+ #appearanceBar>span{font-size:10px}
+ main{padding:20px 16px 48px}
+ .hy-demo h1{font-size:clamp(32px,8vw,40px)}
+ .hy-demo .hy-lead{font-size:17px;line-height:1.55}
+ .hy-demo nav .btn{font-size:13px;padding:10px 8px}
+ .hy-question legend{font-size:21px}
+ .hy-demo article{padding:18px}
+ .hy-demo .hy-choice{min-height:56px}
+ .hy-controls{gap:8px}
+ .top .ctx{font-size:12px}
+ .modal{padding:12px}
+ .acard{padding:24px;max-width:100%;margin-block:auto}
+ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .kpi{min-width:0;overflow-wrap:anywhere}
+ .li{flex-wrap:wrap;gap:10px}
+ .li .g{min-width:0;flex:1 1 180px;overflow-wrap:anywhere}
+ .li select{max-width:100%}
+ .cap,.labin{flex-wrap:wrap}
+}
+@media(max-width:420px){.kpis{grid-template-columns:minmax(0,1fr)!important}}
+/* Editorial projection of Runtime PR #75: paper, ink and one blue emphasis.
+   Local composition only; the imported semantic source remains byte-exact. */
+:root,:root[data-dv-appearance="light"]{--dv-muted:#48566b;--dv-subtle:#48566b;--dv-line:#c3cbd7}
+:root[data-dv-appearance="dark"]{--dv-muted:#b8c4d8;--dv-subtle:#b8c4d8;--dv-line:#364152}
+@media(prefers-color-scheme:dark){:root:not([data-dv-appearance]){--dv-muted:#b8c4d8;--dv-subtle:#b8c4d8;--dv-line:#364152}}
+.top,aside#side{background:var(--dv-surface)}
+.top{border-bottom:3px solid #3b74f2}
+.nav.on{box-shadow:inset 3px 0 var(--dv-selected-border);font-weight:700}
+.vt{border-bottom:2px solid var(--dv-link);padding-bottom:18px}
+.hy-edition{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;border-bottom:1px solid var(--dv-control-border);padding:0 0 14px;color:var(--dv-muted);font:10px/1.6 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.hy-opening{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(220px,.85fr);gap:28px;align-items:center;padding-block:28px 16px}
+.hy-opening>*{min-width:0}
+.hy-demo .hy-eyebrow{color:var(--dv-link)}
+.hy-eyebrow::before{content:"";display:inline-block;width:24px;height:2px;background:currentColor;vertical-align:middle;margin-right:12px}
+.hy-demo h1{font-size:clamp(38px,4.4vw,62px);max-width:16ch;letter-spacing:-.045em;text-wrap:initial}
+.hy-demo h1 em{font-style:normal;color:var(--dv-emphasis)}
+.hy-demo .hy-editorial-note{background:var(--dv-canvas);color:var(--dv-text);padding:26px;border-top:3px solid #3b74f2}
+.hy-editorial-note .hy-eyebrow{font-size:10px;letter-spacing:.06em}
+.hy-editorial-note p{font:800 clamp(26px,2.6vw,34px)/1.12 var(--display);letter-spacing:-.035em;margin:22px 0}
+.hy-editorial-note em{font-style:normal;color:var(--dv-emphasis)}
+.hy-editorial-note small{display:block;color:var(--dv-text);border-top:1px solid var(--dv-control-border);padding-top:16px;font:12px/1.6 var(--mono)}
+.hy-demo nav{padding:12px 0;gap:4px;border-bottom:1px solid var(--dv-control-border)}
+.hy-demo nav .btn{color:var(--dv-text);font-size:13px}
+.hy-demo nav .btn.solid,.hy-demo nav .btn.solid:hover{background:var(--dv-action);color:var(--dv-on-action);border-color:var(--dv-action)}
+.hy-body{padding:clamp(20px,3vw,36px);background:var(--dv-surface);border:1px solid var(--dv-line);border-top:4px solid var(--dv-emphasis)}
+.hy-demo .hy-section-intro h2{max-width:23ch}
+.hy-question{border-top-color:var(--dv-control-border)}
+.hy-question legend{font-weight:700}
+.hy-number{color:var(--dv-link);font-weight:700}
+.hy-option{border-radius:2px;background:var(--dv-control)}
+.hy-option[data-selected=true]{box-shadow:inset 3px 0 var(--dv-selected-border)}
+.hy-demo :is(input:not([type=checkbox]),textarea,select){background:var(--dv-control);color:var(--dv-text)}
+.hy-demo .hy-choice{font-weight:500}
+.hy-demo .hy-note{border-left:3px solid var(--dv-link);border-bottom:0;padding:10px 16px;background:var(--dv-canvas);color:var(--dv-text)}
+.hy-deeper,.hy-summary{border-top:2px solid var(--dv-link)}
+.hy-demo article{border-radius:2px}
+@media(max-width:640px){
+ .hy-opening{grid-template-columns:minmax(0,1fr);gap:18px;padding-block:20px 8px}
+ .hy-demo h1{font-size:38px;max-width:17ch}
+ .hy-demo .hy-editorial-note{padding:20px}
+ .hy-editorial-note p{font-size:26px;margin:14px 0;max-width:25ch}
+ .hy-editorial-note small{padding-top:12px}
+ .hy-edition{font-size:9px}
+ .hy-body{padding:20px 16px}
+ .hy-demo nav .btn{font-size:12px}
+ .hy-question legend{font-size:21px}
+}
+/* Interaction: immediate semantic color changes keep theme-switch contrast intact.
+   Only geometry animates; hover never conveys selection or gates a field. */
+:is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button),.hy-option,.dv-action-arrow{transition:transform 160ms ease-out,box-shadow 160ms ease-out}
+.dv-action-arrow{display:inline-block;margin-left:10px}
+.hy-option:focus-within{border-color:var(--dv-focus);box-shadow:inset 3px 0 var(--dv-focus)}
+.hy-option>div:not([hidden]){animation:dv-context-enter 160ms ease-out}
+@keyframes dv-context-enter{from{transform:translateY(-4px)}to{transform:translateY(0)}}
+.hy-demo details[open]>:not(summary){animation:dv-context-enter 160ms ease-out}
+.hy-demo summary:focus-visible{background:var(--dv-selected);color:var(--dv-text)}
+:is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button):not(:disabled):not([aria-disabled=true]):not(.locked):focus-visible{border-color:var(--dv-focus)}
+.hy-demo nav .btn:not(.solid):focus-visible,.nav:not(.on):not(.locked):focus-visible{background:var(--dv-selected);color:var(--dv-text);box-shadow:inset 0 -2px var(--dv-link)}
+.hy-demo nav .btn.solid:focus-visible{outline-offset:3px}
+@media(hover:hover) and (pointer:fine){
+ .hy-option:has(.hy-choice:hover){border-color:var(--dv-selected-border);background:var(--dv-selected)}
+ .hy-option:not([data-selected=true]):has(.hy-choice:hover){box-shadow:inset 0 -2px var(--dv-link)}
+ #app :is(input,textarea,select):not(:disabled):not([readonly]):hover,#auth :is(input,textarea,select):not(:disabled):not([readonly]):hover{border-color:var(--dv-link)}
+ :is(.btn,.iconbtn,.roleseg button,.tabs button,.perseg button):not(:disabled):not([aria-disabled=true]):hover{border-color:var(--dv-link);box-shadow:inset 0 -2px var(--dv-link)}
+ .btn:not(.solid):not(:disabled):not([aria-disabled=true]):hover,.iconbtn:not(:disabled):hover{background:var(--dv-selected);color:var(--dv-text)}
+ .btn.solid:not(:disabled):not([aria-disabled=true]):hover,.hy-demo .btn.solid:not(:disabled):not([aria-disabled=true]):hover{background:var(--dv-action-hover);color:var(--dv-on-action);border-color:var(--dv-action-hover);box-shadow:none}
+ .btn:not(:disabled):not([aria-disabled=true]):hover .dv-action-arrow{transform:translateX(3px)}
+ .nav:not(.locked):not(:disabled):not([aria-disabled=true]):hover{background:var(--dv-selected);color:var(--dv-text);border-color:var(--dv-link)}
+ .nav:not(.on):not(.locked):hover{box-shadow:inset 0 -2px var(--dv-link)}
+ .hy-demo nav .btn:not(.solid):hover{background:var(--dv-selected);color:var(--dv-text);box-shadow:inset 0 -2px var(--dv-link)}
+ .hy-demo summary:hover{background:var(--dv-selected);color:var(--dv-text)}
+}
+:is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button):not(:disabled):not([aria-disabled=true]):not(.locked):active{transform:translateY(1px);box-shadow:inset 0 0 0 2px var(--dv-link)}
+.hy-demo .hy-choice:active{background:var(--dv-selected)}
+.hy-demo summary:active{background:var(--dv-selected);color:var(--dv-text)}
+/* Neutralize legacy hover paint on touch-only devices; tapping still has :active. */
+@media(hover:none){
+ .btn:hover:not(:active),.btn.solid:hover:not(:active){transform:none;box-shadow:none}
+ .btn.solid:hover,.hy-demo .btn.solid:hover{background:var(--dv-action);color:var(--dv-on-action);border-color:var(--dv-action)}
+ .btn:disabled:hover,.hy-demo button:disabled:hover{background:var(--dv-disabled);color:var(--dv-disabled-text);border-color:var(--dv-control-border)}
+ .nav:not(.on):hover{background:transparent;color:var(--dv-muted)}
+ .nav.on:hover{background:var(--dv-selected);color:var(--dv-text)}
+ .hy-demo nav .btn:not(.solid):hover{background:transparent;color:var(--dv-text)}
+}
+@media(prefers-reduced-motion:reduce){
+ :is(.btn,.iconbtn,.nav,.roleseg button,.tabs button,.perseg button):is(:hover,:active),.dv-action-arrow{transform:none!important}
+}
+.btn:disabled,.hy-demo .btn.solid:disabled,.btn:disabled:hover,.hy-demo .btn:disabled:hover,.btn[aria-disabled=true],.btn[aria-disabled=true]:hover{background:var(--dv-disabled);color:var(--dv-disabled-text);border-color:var(--dv-control-border);box-shadow:none;transform:none}
+@media(forced-colors:active){
+ :is(button,input,select,textarea,.hy-option,.nav.on){border:1px solid ButtonText}
+ :is(button,a,input,select,textarea,summary):focus-visible{outline-color:Highlight}
+}

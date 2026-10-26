@@ -1,0 +1,243 @@
+BEGIN
+DO
+CREATE FUNCTION
+CREATE FUNCTION
+INSERT 0 3
+INSERT 0 6
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+      grantee      | table_name | privilege_type
+-------------------+------------+----------------
+ portal_test_owner | app_user   | INSERT
+ portal_test_owner | app_user   | SELECT
+ portal_test_owner | app_user   | UPDATE
+ portal_test_owner | app_user   | DELETE
+ portal_test_owner | app_user   | TRUNCATE
+ portal_test_owner | app_user   | REFERENCES
+ portal_test_owner | app_user   | TRIGGER
+ authenticated     | app_user   | SELECT
+ portal_test_owner | block      | INSERT
+ portal_test_owner | block      | SELECT
+ portal_test_owner | block      | UPDATE
+ portal_test_owner | block      | DELETE
+ portal_test_owner | block      | TRUNCATE
+ portal_test_owner | block      | REFERENCES
+ portal_test_owner | block      | TRIGGER
+ authenticated     | block      | SELECT
+ portal_test_owner | round      | INSERT
+ portal_test_owner | round      | SELECT
+ portal_test_owner | round      | UPDATE
+ portal_test_owner | round      | DELETE
+ portal_test_owner | round      | TRUNCATE
+ portal_test_owner | round      | REFERENCES
+ portal_test_owner | round      | TRIGGER
+ authenticated     | round      | SELECT
+ portal_test_owner | account    | INSERT
+ portal_test_owner | account    | SELECT
+ portal_test_owner | account    | UPDATE
+ portal_test_owner | account    | DELETE
+ portal_test_owner | account    | TRUNCATE
+ portal_test_owner | account    | REFERENCES
+ portal_test_owner | account    | TRIGGER
+ authenticated     | account    | SELECT
+(32 rows)
+
+      grantee      | table_name | column_name | privilege_type
+-------------------+------------+-------------+----------------
+ portal_test_owner | app_user   | account_id  | INSERT
+ portal_test_owner | app_user   | account_id  | REFERENCES
+ portal_test_owner | app_user   | account_id  | SELECT
+ portal_test_owner | app_user   | account_id  | UPDATE
+ portal_test_owner | app_user   | created_at  | INSERT
+ portal_test_owner | app_user   | created_at  | REFERENCES
+ portal_test_owner | app_user   | created_at  | SELECT
+ portal_test_owner | app_user   | created_at  | UPDATE
+ portal_test_owner | app_user   | email       | INSERT
+ portal_test_owner | app_user   | email       | REFERENCES
+ portal_test_owner | app_user   | email       | SELECT
+ portal_test_owner | app_user   | email       | UPDATE
+ portal_test_owner | app_user   | id          | INSERT
+ portal_test_owner | app_user   | id          | REFERENCES
+ portal_test_owner | app_user   | id          | SELECT
+ portal_test_owner | app_user   | id          | UPDATE
+ portal_test_owner | app_user   | member_role | INSERT
+ portal_test_owner | app_user   | member_role | REFERENCES
+ portal_test_owner | app_user   | member_role | SELECT
+ portal_test_owner | app_user   | member_role | UPDATE
+ portal_test_owner | app_user   | name        | INSERT
+ portal_test_owner | app_user   | name        | REFERENCES
+ portal_test_owner | app_user   | name        | SELECT
+ portal_test_owner | app_user   | name        | UPDATE
+ portal_test_owner | app_user   | pending     | INSERT
+ portal_test_owner | app_user   | pending     | REFERENCES
+ portal_test_owner | app_user   | pending     | SELECT
+ portal_test_owner | app_user   | pending     | UPDATE
+ portal_test_owner | app_user   | role        | INSERT
+ portal_test_owner | app_user   | role        | REFERENCES
+ portal_test_owner | app_user   | role        | SELECT
+ portal_test_owner | app_user   | role        | UPDATE
+ authenticated     | app_user   | account_id  | SELECT
+ authenticated     | app_user   | created_at  | SELECT
+ authenticated     | app_user   | email       | SELECT
+ authenticated     | app_user   | id          | SELECT
+ authenticated     | app_user   | member_role | SELECT
+ authenticated     | app_user   | name        | SELECT
+ authenticated     | app_user   | name        | UPDATE
+ authenticated     | app_user   | pending     | SELECT
+ authenticated     | app_user   | role        | SELECT
+(41 rows)
+
+ schemaname |    tablename    |       policyname        |  cmd
+------------+-----------------+-------------------------+--------
+ public     | account         | account_scope           | SELECT
+ public     | account         | account_admin_write     | ALL
+ public     | app_user        | app_user_self           | SELECT
+ public     | app_user        | app_user_same_account   | SELECT
+ public     | invitation      | invitation_owner_insert | INSERT
+ public     | app_user        | portal_active_actor     | ALL
+ public     | invitation      | invitation_admin_staff  | INSERT
+ public     | assignment      | assignment_admin_write  | ALL
+ public     | package_access  | pa_scope                | SELECT
+ public     | package_access  | pa_admin_write          | ALL
+ public     | brand           | brand_scope             | SELECT
+ public     | brand           | brand_staff_write       | ALL
+ public     | project         | project_scope           | SELECT
+ public     | project         | project_staff_write     | ALL
+ public     | block           | block_scope             | SELECT
+ public     | block           | block_staff_write       | ALL
+ public     | round           | round_scope             | SELECT
+ public     | round           | round_staff_insert      | INSERT
+ public     | preview         | preview_scope           | SELECT
+ public     | preview         | preview_staff_write     | ALL
+ public     | scope_change    | scope_scope             | SELECT
+ public     | scope_change    | scope_client_insert     | INSERT
+ public     | scope_change    | scope_staff_update      | UPDATE
+ public     | asset           | asset_view              | SELECT
+ public     | asset           | asset_staff_write       | ALL
+ public     | invoice         | invoice_admin_write     | ALL
+ public     | payment         | payment_admin_write     | ALL
+ public     | skill           | skill_staff             | ALL
+ public     | app_user        | app_user_staff_read     | SELECT
+ public     | invitation      | invitation_read         | SELECT
+ public     | assignment      | assignment_read         | SELECT
+ public     | invoice         | invoice_read            | SELECT
+ public     | payment         | payment_read            | SELECT
+ public     | block           | portal_package          | SELECT
+ public     | round           | portal_package          | SELECT
+ public     | preview         | portal_package          | SELECT
+ public     | asset           | portal_package          | SELECT
+ public     | app_user        | app_user_self_update    | UPDATE
+ public     | portal_feedback | portal_feedback_read    | SELECT
+ public     | invitation      | portal_active_actor     | ALL
+ public     | package_access  | portal_active_actor     | ALL
+ public     | brand           | portal_active_actor     | ALL
+ public     | project         | portal_active_actor     | ALL
+ public     | preview         | portal_active_actor     | ALL
+ public     | scope_change    | portal_active_actor     | ALL
+ public     | asset           | portal_active_actor     | ALL
+ public     | payment         | portal_active_actor     | ALL
+ public     | assignment      | portal_active_actor     | ALL
+ public     | invoice         | portal_active_actor     | ALL
+ public     | skill           | portal_active_actor     | ALL
+ public     | portal_feedback | portal_active_actor     | ALL
+ public     | block           | portal_active_actor     | ALL
+ public     | round           | portal_active_actor     | ALL
+ public     | account         | portal_active_actor     | ALL
+(54 rows)
+
+SET
+DO
+DO
+              set_config
+--------------------------------------
+ 20000000-0000-0000-0000-000000000001
+(1 row)
+
+DO
+ denied
+--------
+
+(1 row)
+
+ denied
+--------
+
+(1 row)
+
+ denied
+--------
+
+(1 row)
+
+DO
+DO
+ denied
+--------
+
+(1 row)
+
+ denied
+--------
+
+(1 row)
+
+              set_config
+--------------------------------------
+ 20000000-0000-0000-0000-000000000005
+(1 row)
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          portal_command_v1
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ {"actor": "20000000-0000-0000-0000-000000000005", "blocks": [{"id": "8c98829a-d338-470e-ab2a-b18dc3c33716", "capa": "Fundación", "code": "F1", "title": "Estrategia y arquetipo", "status": "en_curso", "version": 0, "progress": 5, "created_at": "2026-10-25T09:13:19.087518-06:00", "project_id": "6e71bc77-4f37-4927-9137-4a5f38928cb9"}], "brands": [{"id": "98cc80b1-dbf9-4f67-b574-79d879ae3685", "name": "Synthetic waitlist", "layer": "marca", "enabled": true, "account_id": "10000000-0000-0000-0000-000000000003"}], "rounds": [{"id": "2ccccb22-c2bd-4d22-a975-9dc7ce78c226", "seq": 1, "title": "Kickoff · arranque de Fundación", "author": "Synthetic edited name", "result": "propuesto", "block_id": "8c98829a-d338-470e-ab2a-b18dc3c33716", "feedback": "—", "created_at": "2026-10-25T09:13:19.087518-06:00", "deliverable": "agenda de arranque"}], "account": {"id": "10000000-0000-0000-0000-000000000003", "fit": "medio", "pkg": "Fundación", "diag": null, "name": "Synthetic waitlist", "status": "activo", "segment": null, "version": 1, "created_at": "2026-10-25T09:13:19.087518-06:00", "queue_position": null}, "contract": "portal-command-v1", "projects": [{"id": "6e71bc77-4f37-4927-9137-4a5f38928cb9", "title": "Sistema de marca Synthetic waitlist", "brand_id": "98cc80b1-dbf9-4f67-b574-79d879ae3685", "created_at": "2026-10-25T09:13:19.087518-06:00"}], "resource": "10000000-0000-0000-0000-000000000003", "assignments": [{"id": "32beac3a-da7f-43d1-8ee0-c5e6ba126f89", "account_id": "10000000-0000-0000-0000-000000000003", "analyst_id": "20000000-0000-0000-0000-000000000004", "created_at": "2026-10-25T09:13:19.087518-06:00", "assigned_by": "20000000-0000-0000-0000-000000000005"}], "package_access": [{"id": "1656d67b-7b6f-45a5-90e8-7771ec7a39d4", "layers": ["marca"], "package": "fundacion", "sections": ["tablero", "previews", "bitacora", "cuenta"], "account_id": "10000000-0000-0000-0000-000000000003", "updated_at": "2026-10-25T09:13:19.087518-06:00"}]}
+(1 row)
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          portal_command_v1
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ {"actor": "20000000-0000-0000-0000-000000000005", "blocks": [{"id": "8c98829a-d338-470e-ab2a-b18dc3c33716", "capa": "Fundación", "code": "F1", "title": "Estrategia y arquetipo", "status": "en_curso", "version": 0, "progress": 5, "created_at": "2026-10-25T09:13:19.087518-06:00", "project_id": "6e71bc77-4f37-4927-9137-4a5f38928cb9"}], "brands": [{"id": "98cc80b1-dbf9-4f67-b574-79d879ae3685", "name": "Synthetic waitlist", "layer": "marca", "enabled": true, "account_id": "10000000-0000-0000-0000-000000000003"}], "rounds": [{"id": "2ccccb22-c2bd-4d22-a975-9dc7ce78c226", "seq": 1, "title": "Kickoff · arranque de Fundación", "author": "Synthetic edited name", "result": "propuesto", "block_id": "8c98829a-d338-470e-ab2a-b18dc3c33716", "feedback": "—", "created_at": "2026-10-25T09:13:19.087518-06:00", "deliverable": "agenda de arranque"}], "account": {"id": "10000000-0000-0000-0000-000000000003", "fit": "medio", "pkg": "Fundación", "diag": null, "name": "Synthetic waitlist", "status": "activo", "segment": null, "version": 1, "created_at": "2026-10-25T09:13:19.087518-06:00", "queue_position": null}, "contract": "portal-command-v1", "projects": [{"id": "6e71bc77-4f37-4927-9137-4a5f38928cb9", "title": "Sistema de marca Synthetic waitlist", "brand_id": "98cc80b1-dbf9-4f67-b574-79d879ae3685", "created_at": "2026-10-25T09:13:19.087518-06:00"}], "resource": "10000000-0000-0000-0000-000000000003", "assignments": [{"id": "32beac3a-da7f-43d1-8ee0-c5e6ba126f89", "account_id": "10000000-0000-0000-0000-000000000003", "analyst_id": "20000000-0000-0000-0000-000000000004", "created_at": "2026-10-25T09:13:19.087518-06:00", "assigned_by": "20000000-0000-0000-0000-000000000005"}], "package_access": [{"id": "1656d67b-7b6f-45a5-90e8-7771ec7a39d4", "layers": ["marca"], "package": "fundacion", "sections": ["tablero", "previews", "bitacora", "cuenta"], "account_id": "10000000-0000-0000-0000-000000000003", "updated_at": "2026-10-25T09:13:19.087518-06:00"}]}
+(1 row)
+
+RESET
+ assert_true
+-------------
+
+(1 row)
+
+ assert_true
+-------------
+
+(1 row)
+
+ assert_true
+-------------
+
+(1 row)
+
+ assert_true
+-------------
+
+(1 row)
+
+UPDATE 1
+SET
+              set_config
+--------------------------------------
+ 20000000-0000-0000-0000-000000000001
+(1 row)
+
+ assert_true
+-------------
+
+(1 row)
+
+ denied
+--------
+
+(1 row)
+
+RESET
+ROLLBACK
+H10_NEGATIVE_SUITE_PASS

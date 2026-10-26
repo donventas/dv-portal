@@ -1,0 +1,12 @@
+{
+  "scope": "local synthetic core schema only",
+  "baseline": "portal_h10_recovery_final",
+  "dumpSha256": "109944BDD53CB6DADD33605C06BA7CD756C3F7330FD96EBFD5EBF8A34A62B68B",
+  "contentFingerprint": "49b037a2a9f83b26b2f9d4004ac0bcfa",
+  "source": "portal_h10_disposable",
+  "restoreMatches": true,
+  "baselineSha256": "6C55D8E7604F4F5401EDECD21761EB95CDC8C7F02022361C9E5E1F2DBC1F70A0",
+  "baselineCandidateAbsent": true,
+  "date": "2026-10-25T09:25:57.3621761-06:00",
+  "restore": "portal_h10_restore_final"
+}

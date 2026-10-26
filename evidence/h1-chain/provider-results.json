@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-25T15:06:24.889Z",
+  "services": {
+    "postgres": "17.11",
+    "auth": "2.197.0",
+    "postgrest": "14.18",
+    "sdk": "2.118.0"
+  },
+  "scope": "local synthetic; actual GoTrue/JWT/PostgREST/SDK; no SMTP/OAuth/hosted configuration tested",
+  "checks": [
+    "Actual GoTrue signup/user; new profile has no authority",
+    "Pending authenticated user sees zero accounts through PostgREST",
+    "Signed JWT maps to exactly one tenant",
+    "Forged JWT rejected by real PostgREST",
+    "Direct REST role escalation denied",
+    "Real HTTP RPC: cross-tenant denied; own approval and replay canonical",
+    "Actual refresh token rotation",
+    "Still-valid real JWT loses business authority immediately after revocation",
+    "Provider logout prevents refresh reuse",
+    "Supabase 2.118 browser SDK: login/getUser and signout propagated across two real pages"
+  ]
+}

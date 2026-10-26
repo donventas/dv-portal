@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-25",
+  "scope": "local disposable Postgres 17.11, two actual sessions, synthetic core schema",
+  "database": "portal_h10_disposable",
+  "runner": "supabase/tests/run-h10-local.cjs --authorized-local-disposable --concurrency",
+  "observedResults": ["H10_SQL_NEGATIVE_PASS", "H10_SECURITY_MATRIX_PASS", "H10_TWO_SESSION_REPLAY_PASS"],
+  "assertions": ["second session waits on real row lock", "same idempotency key replays exact canonical result", "one version increment", "one command receipt", "one audit row"],
+  "limitation": "Receipt of tool-observed execution; not a hosted database certification. Re-run requires fresh disposable fixtures."
+}
