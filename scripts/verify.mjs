@@ -5,6 +5,8 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
+  'dv-shared/blocks.css',
+'app/appearance.css', 'app/appearance.js', 'app/brand-tokens.css', 'brand/appearance/bootstrap.js', 'brand/appearance/controller.js', 'brand/appearance/appearance.css', 'brand/donventas-wordmark-b6.svg', 'brand/donventas-wordmark-b6-reverse.svg', 'brand/donventas-symbol-bs.svg', 'brand/donventas-symbol-bs-reverse.svg', 'brand/fonts/LICENSE-Schibsted-Grotesk.txt', 'brand/fonts/LICENSE-Space-Mono.txt', 'brand/fonts/schibsted-grotesk-latin-normal.woff2', 'brand/fonts/space-mono-latin-400.woff2', 'brand/fonts/space-mono-latin-700.woff2', 'vercel.json', 'tests/browser/selector-release.spec.js',
   '.gitignore', '.nvmrc', '.github/workflows/portal-ci.yml', 'app/auth.js',
   'app/atomic-mutations.js', 'app/client.js', 'app/environment-indicator.js',
   'app/environment.js', 'app/portal.css', 'app/portal.js',

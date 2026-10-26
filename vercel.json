@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "codex/portal-h1-hardening": false,
+      "codex/portal-h12-drafts": false,
+      "codex/portal-selector-release": false
+    }
+  }
+}

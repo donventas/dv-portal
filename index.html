@@ -25,12 +25,32 @@
 <meta name="twitter:image:alt" content="Portal Don Ventas — la memoria de tu marca, lista para trabajar">
 <meta name="theme-color" content="#0E1117">
 <title>Próximamente · Portal Don Ventas</title>
+<meta name="color-scheme" content="light dark">
+<script src="brand/appearance/bootstrap.js"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="/favicon.svg">
 <link rel="stylesheet" href="dv-shared/blocks.css">
+<link rel="stylesheet" href="app/brand-tokens.css">
 <link rel="stylesheet" href="app/portal.css?v=34">
+<link rel="stylesheet" href="brand/appearance/appearance.css">
+<link rel="stylesheet" href="app/appearance.css">
+<script src="brand/appearance/controller.js" defer></script>
+<script src="app/appearance.js" defer></script>
 </head>
 <body>
+<div id="appearancePicker">
+    <span id="appearanceStatus" data-dv-appearance-status aria-live="polite">Apariencia del sistema</span>
+    <button id="portalAppearance" type="button" aria-label="Cambiar apariencia" aria-describedby="appearanceStatus" aria-haspopup="menu" aria-expanded="false" aria-controls="appearanceMenu" disabled>
+      <svg class="appearance-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      <svg class="appearance-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z"/></svg>
+    </button>
+    <div id="appearanceMenu" role="menu" aria-label="Apariencia" hidden>
+      <button type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-appearance-choice="light"><span>Claro</span><span class="appearance-check" aria-hidden="true">✓</span></button>
+      <button type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-appearance-choice="dark"><span>Oscuro</span><span class="appearance-check" aria-hidden="true">✓</span></button>
+      <button type="button" role="menuitemradio" aria-checked="true" tabindex="-1" data-appearance-choice="system"><span>Según tu dispositivo</span><span class="appearance-check" aria-hidden="true">✓</span></button>
+    </div>
+</div>
+
 <div id="environmentStatusMount"></div>
 <div id="environmentBlockedMount"></div>
 <div id="environmentGuardMount"></div>
