@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-25T20:32:43.364Z",
+  "scope": "Real adapter/guard/Store/SDK; local environment and sandbox confirmation fixtures; no full UI or hosted OAuth claim",
+  "sdk": "2.118.0",
+  "checks": [
+    "Portal adapter requests a real PKCE magic link; callback exchange hydrates only its tenant",
+    "Callback without a verifier cannot authenticate; completed callback retains no code or fragment",
+    "Real SDK session and token refresh work with the Portal Store in two browser pages",
+    "Provider sign-out clears Auth, business data and Store in both pages",
+    "Unknown email cannot create a user or dispatch a sign-in email through the Portal"
+  ],
+  "otpRequests": 2,
+  "pkceExchanges": 1,
+  "externalRequests": 0
+}

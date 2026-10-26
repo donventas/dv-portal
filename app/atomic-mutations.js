@@ -24,14 +24,15 @@
     if (pending.has(options.key)) return pending.get(options.key);
 
     var operationId = 'operation-' + (++sequence);
-    var task = Promise.resolve().then(options.execute).then(function (canonical) {
+    var task = Promise.resolve().then(function () { if (!sameIdentity(options)) { const stale = new Error('ATOMIC_IDENTITY_STALE'); stale.code = 'ATOMIC_IDENTITY_STALE'; throw stale; } return options.execute(); }).then(function (canonical) {
       if (!sameIdentity(options)) {
         return { status: 'STALE', code: 'ATOMIC_IDENTITY_STALE', committed: false, operationId: operationId };
       }
       options.commit(canonical);
       if (typeof options.success === 'function') options.success(canonical);
       return { status: 'SUCCEEDED', committed: true, value: canonical, operationId: operationId };
-    }, function (error) {
+    }).catch(function (error) {
+      if (error && error.code === 'ATOMIC_IDENTITY_STALE') return { status: 'STALE', code: 'ATOMIC_IDENTITY_STALE', committed: false, operationId: operationId };
       var cancelled = error && (error.name === 'AbortError' || error.code === 'WRITE_CANCELLED');
       var result = {
         status: cancelled ? 'CANCELLED' : 'FAILED',

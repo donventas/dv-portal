@@ -1,0 +1,8 @@
+# Preserve the exact bytes of canonical exports and upstream font licenses.
+brand/donventas-wordmark-b6-reverse.svg -text whitespace=cr-at-eol
+brand/donventas-symbol-bs-reverse.svg -text whitespace=cr-at-eol
+brand/don-ventas-icons-sprite.svg -text whitespace=cr-at-eol
+favicon.svg -text whitespace=cr-at-eol
+# The upstream license texts contain intentional trailing spaces; retain verbatim.
+brand/fonts/LICENSE-Schibsted-Grotesk.txt -text -whitespace
+brand/fonts/LICENSE-Space-Mono.txt -text -whitespace

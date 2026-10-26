@@ -1,0 +1,367 @@
+✔ 01 LIVE state is unchanged before backend resolution (4.8231ms)
+✔ 02 pending is true while backend is unresolved (0.5571ms)
+✔ 03 success applies canonical local state after resolution (0.2586ms)
+✔ 04 success signal occurs after local commit (0.1953ms)
+✔ 05 rejection leaves prior state unchanged (0.3922ms)
+✔ 06 sync throw leaves prior state unchanged (0.214ms)
+✔ 07 pending clears after success (0.2271ms)
+✔ 08 pending clears after failure (0.1947ms)
+✔ 09 duplicate submit is single-flight (0.3507ms)
+✔ 10 retry after failure creates exactly one new call (0.4819ms)
+✖ 11 old success cannot overwrite a newer identity (2.8765ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'FAILED'
+  - 'STALE'
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:58:136)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAILED',
+    expected: 'STALE',
+    operator: 'strictEqual'
+  }
+
+✖ 12 fingerprint change causes STALE (0.5248ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'FAILED'
+  - 'STALE'
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:61:115)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAILED',
+    expected: 'STALE',
+    operator: 'strictEqual'
+  }
+
+✖ 13 session change causes STALE (2.0246ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'FAILED'
+  - 'STALE'
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:64:115)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAILED',
+    expected: 'STALE',
+    operator: 'strictEqual'
+  }
+
+✖ 14 stale completion commits nothing (1.9654ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   'failure'
+  + ]
+  - []
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:67:123)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'failure' ],
+    expected: [],
+    operator: 'deepStrictEqual'
+  }
+
+✔ 15 canonical backend output replaces request data safely (0.256ms)
+✔ 16 no optimistic state requires rollback (0.2422ms)
+✔ 17 failure and success signals never coexist (0.3559ms)
+✔ 18 corrected UI callers await canonical Store results (3.6715ms)
+✔ 19 every LIVE adapter is awaited before commit (2.406ms)
+✔ 20 tests use deterministic mocks and no real network or credentials (0.4546ms)
+✔ 21 harness shell has a bounded maximum width (0.1507ms)
+✔ 22 harness shell is start-aligned under constrained visual conditions (0.104ms)
+✔ 23 control groups stack in one bounded column (0.0858ms)
+✔ 24 buttons occupy the available bounded width (0.0782ms)
+✔ 25 critical controls have no oversized fixed minimum width (0.1968ms)
+✔ 26 long status and error text wrap safely (0.1916ms)
+✔ 27 critical controls use neither ellipsis nor clipping (0.162ms)
+✔ 28 mutation feedback remains visible (0.1893ms)
+✔ 29 vertical scrolling remains allowed (0.1303ms)
+✔ 30 responsive rules do not change mutation semantics (0.1378ms)
+✔ 01 UNRESOLVED is transient and non-operational (1.875ms)
+✔ 02 VALIDATING presents persistent validation copy (0.3876ms)
+✔ 03 VALIDATING disables operational surfaces (0.2936ms)
+✔ 04 DEMO presents the approved label and synthetic copy (0.1636ms)
+✔ 05 DEMO mount exists before the auth surface (0.28ms)
+✔ 06 DEMO mount is outside and survives the app shell (0.2269ms)
+✔ 07 DEMO copy never implies production persistence (0.4399ms)
+✔ 08 SANDBOX presents isolated non-production copy (0.228ms)
+✔ 09 CONFIRM_SANDBOX has explicit confirmation UI (0.517ms)
+✔ 10 SANDBOX confirmation triggers a new full guard evaluation (0.3207ms)
+✔ 11 LIVE appears only for an explicit canonical LIVE snapshot (0.296ms)
+✔ 12 LIVE copy contains no demo or sandbox language (0.345ms)
+✔ 13 BLOCKED replaces normal navigation (0.2619ms)
+✔ 14 BLOCKED shows only a sanitized normalized code (0.2508ms)
+✔ 15 BLOCKED shows an opaque correlation ID (0.163ms)
+✔ 16 BLOCKED cannot create a backend client (0.1875ms)
+✔ 17 BLOCKED cannot load seed or application scripts (0.1628ms)
+✔ 18 retry calls canonical resolver revalidation (0.1108ms)
+✔ 19 retry contains no DEMO fallback (0.4394ms)
+✔ 20 unknown host resolves BLOCKED (9.9308ms)
+✔ 21 stale config resolves BLOCKED (2.4142ms)
+✔ 22 backend mismatch resolves BLOCKED (0.4869ms)
+✔ 23 REAUTH produces safe reauthentication guidance (0.2839ms)
+✔ 24 network failure preserves the resolved mode (0.2556ms)
+✔ 25 fingerprint remains part of every visual snapshot (0.2374ms)
+✔ 26 indicator has no dismiss control or preference storage (0.2767ms)
+✔ 27 visual state always equals the resolver snapshot (0.336ms)
+✔ 28 visible text is generated in markup, independent of CSS (0.2168ms)
+✔ 29 retry is a native keyboard-operable button (0.1224ms)
+✔ 30 correlation copy is a native keyboard-operable button (0.1034ms)
+✔ 31 reauth uses a native keyboard-operable button (0.1006ms)
+✔ 32 sandbox confirmation uses native keyboard controls (0.213ms)
+✔ 33 focus moves deliberately into BLOCKED (0.2027ms)
+✔ 34 screen-reader status and live region are present (0.1486ms)
+✔ 35 narrow viewport has explicit non-overlap layout rules (0.121ms)
+✔ 36 diagnostics expose no prohibited fields (1.9612ms)
+✔ 37 resolver interface is observable and revalidatable (0.2957ms)
+✔ 38 write guard outcomes remain unmodified by presentation (0.5055ms)
+✔ 39 DEMO loads no Supabase CDN and no client before demand (1.2645ms)
+✔ 40 presentation tests use no network, production credentials or heavy DOM framework (0.6075ms)
+✔ 41 BLOCKED critical controls use a constrained responsive surface (0.2299ms)
+✔ 42 BLOCKED correlation ID can wrap safely (0.2077ms)
+✔ 43 BLOCKED action group stacks at the scale-two layout breakpoint (0.1405ms)
+✔ 44 BLOCKED surface allows vertical access without horizontal overflow (0.1222ms)
+✔ 45 CONFIRM_SANDBOX surface stays width constrained (0.1544ms)
+✔ 46 CONFIRM_SANDBOX actions stack responsively (0.1093ms)
+✔ 47 confirm and cancel remain native keyboard-reachable buttons (0.274ms)
+✔ 48 critical environment text never uses ellipsis or clipping (0.2524ms)
+✔ 49 responsive environment surfaces define no fixed min-width (0.2522ms)
+✔ 50 responsive reflow does not hide the persistent indicator (0.3612ms)
+✔ 51 missing production config renders the approved editorial prelaunch (0.1824ms)
+✔ 52 the prelaunch remains fail closed and exposes no auth form (0.2679ms)
+✔ 53 unexpected BLOCKED diagnostics keep the safety-first screen (0.3051ms)
+✔ 54 prelaunch layout has explicit mobile reflow (0.374ms)
+✔ 55 only the editorial prelaunch removes the fixed BLOCKED banner (0.2793ms)
+✔ 56 prelaunch consumes the canonical reverse lockup without redrawing it (0.2474ms)
+✔ 01 production + valid production config => LIVE (3.1415ms)
+✔ 02 production + missing config => BLOCKED (4.5725ms)
+✔ 03 production + partial config => BLOCKED (0.4666ms)
+✔ 04 production + invalid config => BLOCKED (0.5765ms)
+✔ 05 production + DEMO => BLOCKED (0.3081ms)
+✔ 06 production + sandbox backend => BLOCKED (0.2673ms)
+✔ 07 preview + explicit sandbox => SANDBOX (0.2634ms)
+✔ 08 preview + explicit UI-only demo => DEMO (0.2529ms)
+✔ 09 preview + production backend => BLOCKED (0.3884ms)
+✔ 10 localhost + demo => DEMO (0.5347ms)
+✔ 11 localhost + allowlisted sandbox => SANDBOX (0.3285ms)
+✔ 12 localhost + production backend => BLOCKED (0.3344ms)
+✔ 13 unknown host => BLOCKED (0.2387ms)
+✔ 14 backend identity mismatch => BLOCKED (0.4237ms)
+✔ 15 stale config => BLOCKED (1.8137ms)
+✔ 16 no client before successful validation (0.4645ms)
+✔ 17 DEMO never initializes backend client (0.4516ms)
+✔ 18 mode change invalidates client (0.3502ms)
+✔ 19 backendId change invalidates session/cache namespace (0.7828ms)
+✔ 20 configVersion change invalidates prior state (0.3491ms)
+✔ environmentId change invalidates prior state (0.2903ms)
+✔ 21 cross-environment session => SESSION_ENV_MISMATCH (0.2948ms)
+✔ 22 network failure never falls back to DEMO (0.3552ms)
+✔ 23 URL without key => ENV_CONFIG_PARTIAL (0.2717ms)
+✔ 24 key without URL => ENV_CONFIG_PARTIAL (0.2031ms)
+✔ 25 sandbox backend used as LIVE => BLOCKED (0.2087ms)
+✔ sanitized diagnostics omit key and URL (0.2715ms)
+✔ privileged frontend fields are rejected (0.2302ms)
+✔ adapter + Store + client UI: zero rows never confirms approval (25.208ms)
+✔ adapter + Store + client UI: denial never confirms approval (6.3367ms)
+✔ adapter + Store + client UI: stale version never confirms approval (5.9317ms)
+✔ adapter + Store + client UI: wrong resource never confirms approval (3.9247ms)
+✔ canonical approval commits the returned version and UI success (3.6885ms)
+✔ unverified contract performs no RPC and no local write (3.6634ms)
+✔ demo-only mutations deny backend execution without changing state (4.9009ms)
+✔ legacy backend adapter paths reject instead of partially writing (5.4716ms)
+✔ timeout/rejection retry retains the same intent key (4.5521ms)
+✔ switching identity while a request is pending never commits the old response (4.935ms)
+✔ revoked actor fails before the command and clears data (5.2298ms)
+✔ auth signout from another tab clears local data and caches (3.7243ms)
+✔ DEMO cache is partitioned by user and tenant and purged on logout (4.0454ms)
+✔ environment validation clears existing backend state (4.0831ms)
+✔ fixture self-guard denies direct execution in every non-DEMO mode (5.857ms)
+✔ feedback returns a versioned event without fabricating a new round (3.6281ms)
+✔ BUG-001 permits anonymous inserts through an explicit RLS policy (2.4604ms)
+✔ BUG-001 requires consent and core contact fields but not a website (0.6862ms)
+✔ config VALID (2.5219ms)
+✔ config MISSING (0.2252ms)
+✔ config PARTIAL (0.132ms)
+✔ config MALFORMED (0.106ms)
+✔ config STALE (0.1521ms)
+✔ config BACKEND_MISMATCH (0.1549ms)
+✔ config ORIGIN_MISMATCH (0.1426ms)
+✔ config VERSION_UNSUPPORTED (0.1086ms)
+✔ config AMBIGUOUS (0.2023ms)
+✔ fingerprint contains all five governed inputs (0.2952ms)
+✔ session policy: no session (0.1659ms)
+✔ session policy: compatible session (0.099ms)
+✔ session policy: legacy unscoped session (0.0744ms)
+✔ session policy: another backend (0.1063ms)
+✔ session policy: another environment (0.0633ms)
+✔ session policy: stale fingerprint (1.2323ms)
+✔ session policy: expired session (0.1893ms)
+✔ session policy: malformed session (0.0827ms)
+✔ session policy: unsupported config (0.18ms)
+✔ session policy: logout (0.1339ms)
+✔ session policy: failed migration (0.0621ms)
+✔ session policy: environment transition (0.0513ms)
+✔ session policy: preview to production (0.0455ms)
+✔ session policy: production to preview (0.041ms)
+✔ session policy: SANDBOX to LIVE (0.0383ms)
+✔ adapter has no embedded active backend configuration (0.7689ms)
+✔ adapter returns guarded promises and uses fingerprint client lifecycle (0.4826ms)
+✔ boot order is config then resolver then guard then coordinator then adapter (1.0448ms)
+✔ production boot has no direct seed script or active config template (0.4374ms)
+✔ lead pipeline is admin-only and keeps anonymous inserts column-scoped (0.8216ms)
+✔ lead notifications keep provider credentials in environment secrets (1.0864ms)
+✔ 01 UNRESOLVED denies (4.0377ms)
+✔ 02 VALIDATING denies (0.1788ms)
+✔ 03 BLOCKED denies and logs (0.1219ms)
+✔ 04 DEMO local synthetic allows (0.1257ms)
+✔ 05 DEMO backend write denies (0.2098ms)
+✔ 06 DEMO auth mutation denies (0.1317ms)
+✔ 07 DEMO payment mutation denies (0.2012ms)
+✔ 08 SANDBOX matching session allows (0.1494ms)
+✔ 09 SANDBOX missing session reauths (0.1709ms)
+✔ 10 SANDBOX mismatched session reauths (0.2146ms)
+✔ 11 SANDBOX destructive requires confirmation (0.1918ms)
+✔ 12 SANDBOX confirmed destructive allows (0.186ms)
+✔ 13 SANDBOX production backend denies and logs (0.1024ms)
+✔ 14 LIVE valid context allows (0.1729ms)
+✔ 15 LIVE missing policy denies (0.0985ms)
+✔ 16 LIVE synthetic fixture denies and logs (0.0949ms)
+✔ 17 LIVE sandbox session reauths (0.1494ms)
+✔ 18 stale config/fingerprint denies (0.1001ms)
+✔ 19 backend identity class mismatch denies (0.1878ms)
+✔ 20 missing action is invalid (0.1432ms)
+✔ 21 unknown action denies (0.0868ms)
+✔ 22 direct adapter bypass has no policy (0.0755ms)
+✔ 23 denied executor is never called (0.1826ms)
+✔ 24 allowed executor is called exactly once (0.1534ms)
+✔ 25 executor failure is not success (0.1959ms)
+✔ 26 diagnostics omit prohibited fields (0.716ms)
+✔ 27 environment change invalidates context (0.1233ms)
+✔ 28 tests need no network or credentials (0.0638ms)
+✔ 29 unexpected payload field rejected (0.0853ms)
+✔ 30 full session field rejected (0.0825ms)
+✔ 31 wrong write policy denies (0.0636ms)
+✔ 32 DEMO backend identity is logged denial (0.1269ms)
+✔ 33 SANDBOX external write confirms (0.1608ms)
+✔ 34 LIVE external write does not use sandbox confirmation (0.089ms)
+✔ 35 result uses normalized fields only (0.2276ms)
+✔ 36 async executor called once (0.2086ms)
+✔ 37 supported backend commands use the guard and unsupported writes have no table fallback (0.8603ms)
+✔ 38 executable Store mutation inventory is centrally wrapped (3.4239ms)
+✔ 39 denied result is explicitly not executed (0.4714ms)
+✔ 40 allowed sync success is explicit and counted once (0.2001ms)
+✔ 41 allowed async success is explicit and counted once (0.1532ms)
+✔ 42 async rejection fails closed (0.3897ms)
+✔ 43 authorization remains distinct from execution (0.1575ms)
+✔ 44 missing executor fails closed without execution (0.0947ms)
+✔ 45 malformed executor cannot bypass (0.0765ms)
+✔ 46 safe thenable succeeds (0.1639ms)
+✔ 47 throwing then getter fails closed (0.1469ms)
+✔ 48 retry is a new guarded attempt (0.251ms)
+✔ 49 stale fingerprint returns STALE (0.2157ms)
+✔ 50 DENY executor remains zero (0.2065ms)
+✔ 51 DENY_AND_LOG executor remains zero (0.2364ms)
+✔ 52 REAUTH executor remains zero (0.1673ms)
+✔ 53 CONFIRM_SANDBOX executor remains zero before confirmation (0.1545ms)
+✔ 54 post-confirm rejection is FAILED (0.2212ms)
+✔ 55 pending duplicate shares one execution (0.2886ms)
+✔ 56 cancellation is distinct and clears pending (0.1902ms)
+✔ 57 failure clears pending (0.1761ms)
+✔ 58 diagnostics expose neither raw error nor prohibited fields (0.1907ms)
+✔ 59 success and failure flags never coexist (0.1274ms)
+✔ 60 explicit execution enum is complete (0.0916ms)
+✔ 61 no real network or credentials are used (0.2366ms)
+✔ 62 adapter errors are thrown rather than converted to success (0.552ms)
+ℹ tests 225
+ℹ suites 0
+ℹ pass 221
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262.9673
+
+✖ failing tests:
+
+test at tests\atomic-mutations.test.js:57:1
+✖ 11 old success cannot overwrite a newer identity (2.8765ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'FAILED'
+  - 'STALE'
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:58:136)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAILED',
+    expected: 'STALE',
+    operator: 'strictEqual'
+  }
+
+test at tests\atomic-mutations.test.js:60:1
+✖ 12 fingerprint change causes STALE (0.5248ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'FAILED'
+  - 'STALE'
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:61:115)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAILED',
+    expected: 'STALE',
+    operator: 'strictEqual'
+  }
+
+test at tests\atomic-mutations.test.js:63:1
+✖ 13 session change causes STALE (2.0246ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'FAILED'
+  - 'STALE'
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:64:115)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAILED',
+    expected: 'STALE',
+    operator: 'strictEqual'
+  }
+
+test at tests\atomic-mutations.test.js:66:1
+✖ 14 stale completion commits nothing (1.9654ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   'failure'
+  + ]
+  - []
+      at TestContext.<anonymous> (C:\Users\artur\OneDrive\Documentos\GitHub\Don-Ventas-Workspace\portal\tests\atomic-mutations.test.js:67:123)
+      at async Test.run (node:internal/test_runner/test:765:9)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:492:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'failure' ],
+    expected: [],
+    operator: 'deepStrictEqual'
+  }

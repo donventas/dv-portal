@@ -1,5 +1,6 @@
 /* Don Ventas — shared styles for brand-system block pages
    Dark premium system · Schibsted Grotesk + Space Mono · two switchable directions. */
+/* Portal serves licensed fonts locally through app/brand-tokens.css. */
 
 :root,
 :root[data-theme="negro-azul"],

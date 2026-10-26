@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-25T20:29:09.543Z",
+  "scope": "Local restored schema sanitized before services; real GoTrue/PostgREST/SMTP/TOTP; synthetic identities only",
+  "services": {
+    "postgres": "17.6",
+    "auth": "2.197.0",
+    "postgrest": "14.18",
+    "mailpit": "1.32.0"
+  },
+  "sanitation": {
+    "materializedOrForeign": 0,
+    "partitionedRoots": 1,
+    "ordinaryTables": 68,
+    "allNonLedgerTablesCheckedEmpty": true
+  },
+  "checks": [
+    "Actual local invitation and TOTP MFA; no authority before email confirmation",
+    "Explicit UUID provision, one-time invite, pending isolation, fresh sign-in and idempotent grant",
+    "Tenant isolation, no metadata adoption, no admin creation, direct privilege escalation blocked",
+    "Revoke and restore: old JWT and old refresh remain denied until a new sign-in",
+    "Concurrent owner provisioning admits exactly one owner",
+    "Restoring an owner cannot displace the replacement owner",
+    "Five active seats enforced on initial grants and restoration",
+    "Provisioning and audit roll back atomically; same intention safely retries",
+    "Expired links/JWT, tampered JWT, provider ban, logout and removed sessions fail closed",
+    "Administrator provider state revalidated before cached replies",
+    "Old administrator aal2 JWT cannot bypass downgraded or removed Auth sessions"
+  ],
+  "productionConnections": 0,
+  "externalEmails": 0
+}

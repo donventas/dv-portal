@@ -1,0 +1,18 @@
+
+> dv-portal@0.0.0 test:browser
+> playwright test
+
+
+Running 10 tests using 1 worker
+
+[1/10] tests\browser\foundation.spec.js:47:1 › desktop DEMO is synthetic, keyboard reachable and network silent
+[2/10] tests\browser\foundation.spec.js:57:1 › 320px and scale-two critical surfaces do not overflow
+[3/10] tests\browser\foundation.spec.js:68:1 › missing configuration is BLOCKED with no backend or app navigation
+[4/10] tests\browser\foundation.spec.js:96:1 › pending, failure and retry preserve atomic local state
+[5/10] tests\browser\foundation.spec.js:113:1 › SANDBOX confirmation is 0 before confirmation and 1 after it
+[6/10] tests\browser\foundation.spec.js:120:1 › admin prospect inbox is responsive and persists guarded follow-up state
+[7/10] tests\browser\h11.spec.js:14:1 › current brand assets load across shell, member view and access
+[8/10] tests\browser\h11.spec.js:31:1 › five surfaces complete a versioned journey and preserve failed draft
+[9/10] tests\browser\h11.spec.js:54:1 › analyst name cannot execute HTML or break admin with null
+[10/10] tests\browser\h11.spec.js:62:1 › guided selections preserve prose and only confirm active answers
+  10 passed (18.7s)

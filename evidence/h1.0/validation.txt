@@ -1,0 +1,97 @@
+{
+  "node": "v20.15.1",
+  "checks": [
+    {
+      "check": "syntax app/atomic-mutations.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/auth.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/client.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/config.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/environment-indicator.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/environment.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/free.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/portal.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/release-config.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/staff.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/store.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/supabase.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/util.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax app/write-guard.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax tests/h10-browser.cjs",
+      "exit": 0
+    },
+    {
+      "check": "syntax tests/h10-hardening.test.js",
+      "exit": 0
+    },
+    {
+      "check": "syntax supabase/tests/run-h10-local.cjs",
+      "exit": 0
+    },
+    {
+      "check": "verify paths",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "check": "verify bundle",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "check": "verify secrets",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "check": "git diff --check",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "check": "SQL runner refuses without authorization before connection",
+      "exit": 0
+    }
+  ]
+}

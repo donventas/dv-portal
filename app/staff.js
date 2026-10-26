@@ -3,8 +3,8 @@ window.DVStaff = (function () {
   const U = DVUtil, S = DVStore;
   let curBlock = null, iterN = 0, comments = [], chat = [], hasPreview = false;
   let _open = _loadOpen(), _route = 'cuentas', _cFocus = 'activas', _actSel = null, _leadStatus = 'todos', _leadQuery = '';
-  function _loadOpen() { try { return JSON.parse(DVEnv.storage.getItem('open-staff') || '{}'); } catch (e) { return {}; } }
-  function _saveOpen() { try { DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('open-staff', JSON.stringify(_open))); } catch (e) { } }
+  function _loadOpen() { try { return JSON.parse(S.getPreference('open-staff') || '{}'); } catch (e) { return {}; } }
+  function _saveOpen() { try { DVWriteGuard.run('ui.preference', 'ui-state', {}, () => S.savePreference('open-staff', JSON.stringify(_open))); } catch (e) { } }
   function activeSkill() { const all = S.skills(); return all.find(s => /brand system/i.test(s.n)) || all[0] || { n: 'Brand System Builder', v: '—' }; }
   function donOpen() { const sk = activeSkill(); return 'Soy El Don, tu copiloto de marca. Trabajo con los rieles cargados — Manual de Marca, tokens del sistema y la skill «' + sk.n + ' v' + sk.v + '» de este bloque. Platícame qué generamos o ajustamos y lo verás en el preview; me quedo dentro de la marca.'; }
   function donReply(userText) {
@@ -57,16 +57,16 @@ window.DVStaff = (function () {
     return '<div class="perbar"><div class="perseg" title="base de comparación">' + ['mensual', 'acumulado'].map(bbtn).join('') + '</div>' + spanSeg + monthSel +
       '<span class="perhint">Todas las cifras en esta base · <b>' + (p.base === 'mensual' ? 'flujo de un mes' : 'acumulado a la fecha') + '</b></span></div>';
   }
-  function setPeriod(base) { S.setPeriod({ base }); DVPortal.go(_curView); }
-  function setPeriodSpan(span) { S.setPeriod({ span }); DVPortal.go(_curView); }
-  function setPeriodAnchor(anchor) { S.setPeriod({ anchor: parseInt(anchor, 10) || 0 }); DVPortal.go(_curView); }
+  function setPeriod(base) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.setPeriod({ base }); DVPortal.go(_curView); }
+  function setPeriodSpan(span) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.setPeriod({ span }); DVPortal.go(_curView); }
+  function setPeriodAnchor(anchor) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.setPeriod({ anchor: parseInt(anchor, 10) || 0 }); DVPortal.go(_curView); }
 
   function render(route, host) {
     _route = route;
     const map = { cola: renderCola, bloque: renderBloque, bitacora: renderBitacora, skills: renderSkills, mejoras: renderMejoras, waitlist: renderWaitlist, capacidad: renderCapacidad, desempeno: renderDesempeno, resenas: renderResenas, equipo: renderEquipo, accesos: renderAccesos, facturacion: renderFacturacion, utilidad: renderUtilidad, valor: renderValor, prospectos: renderProspectos, aplicacion: renderAplicacion, impacto: renderImpacto, referidos: renderReferidos };
-    if (S.isAdmin()) S.sweepReassign();
+    if (DVEnv.isDemo() && S.isAdmin()) S.sweepReassign();
     // session time tracking: cuenta el tiempo solo mientras el bloque de un cliente está abierto
-    if (route === 'bloque' && curBlock) { const acc = S.accIdOfBlock(S.block(curBlock)); if (acc) S.startWork(acc); else S.stopWork(); } else S.stopWork();
+    if (DVEnv.isDemo()) { if (route === 'bloque' && curBlock) { const acc = S.accIdOfBlock(S.block(curBlock)); if (acc) S.startWork(acc); else S.stopWork(); } else S.stopWork(); }
     (map[route] || renderCuentas)(host);
   }
   function kpi(v, k) { return '<div class="kpi"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>'; }
@@ -111,8 +111,8 @@ window.DVStaff = (function () {
         '<button class="btn sm solid" onclick="DVStaff.aceptar(\'' + p.account.id + '\')">Aceptar</button>' +
         '<button class="btn sm" onclick="DVStaff.rechazar(\'' + p.account.id + '\')">Rechazar</button></div>').join('') + '</div></div>';
   }
-  function aceptar(accId) { S.acceptAssignment(accId); U.toast('Cuenta aceptada · queda a tu cargo'); DVPortal.go(_route); }
-  function rechazar(accId) { const m = window.prompt('Motivo del rechazo (queda registrado para respaldo):', ''); if (m === null) return; S.rejectAssignment(accId, m); U.toast('Rechazada · en cola por reasignar (8 h)'); DVPortal.go(_route); }
+  function aceptar(accId) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.acceptAssignment(accId); U.toast('Cuenta aceptada · queda a tu cargo'); DVPortal.go(_route); }
+  function rechazar(accId) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const m = window.prompt('Motivo del rechazo (queda registrado para respaldo):', ''); if (m === null) return; S.rejectAssignment(accId, m); U.toast('Rechazada · en cola por reasignar (8 h)'); DVPortal.go(_route); }
   function renderCuentas(host) {
     const admin = S.isAdmin();
     const activas = S.accounts(), wl = S.waitlist(), fin = S.finished();
@@ -137,7 +137,7 @@ window.DVStaff = (function () {
     const rv = S.reviewsOf(a.id)[0], ltv = S.ltvOf(a.id);
     const title = '<b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · cerrado ' + U.ago(a.finished_at) + '</small>';
     const count = rv ? ratingStars(rv.rating) : '<span class="fmeta">sin reseña</span>';
-    const cells = '<div class="findetail">' + finCell('Analista responsable', S.analystName(a.id)) + finCell('LTV · tiempo', ltv.months + ' meses') + finCell('LTV · valor', U.mxn(ltv.money)) + finCell('Tipo de cuenta', kindLabel(a.kind)) + '</div>';
+    const cells = '<div class="findetail">' + finCell('Analista responsable', U.esc(S.analystName(a.id))) + finCell('LTV · tiempo', ltv.months + ' meses') + finCell('LTV · valor', U.mxn(ltv.money)) + finCell('Tipo de cuenta', kindLabel(a.kind)) + '</div>';
     const review = rv ? '<div class="finreview"><div class="row spread"><b>Reseña del cliente</b>' + ratingStars(rv.rating) + '</div>' + (rv.feedback ? '<p class="quote">“' + U.esc(rv.feedback) + '”</p>' : '') + '<div class="finrev-ft">' + reviewStatusTag(rv) + testimonialAction(rv) + '</div></div>' : '<div class="finreview empty">Sin reseña del cliente todavía.</div>';
     const body = cells + review + '<div class="acts"><button class="btn sm" onclick="DVPortal.go(\'bitacora\')">Ver bitácora</button><button class="btn sm" onclick="DVPortal.go(\'resenas\')">Ir a Reseñas ↗</button></div>';
     return accordion('fin-' + a.id, false, title, count, body);
@@ -178,12 +178,12 @@ window.DVStaff = (function () {
     return '<div class="kbcard cli" onclick="DVPortal.go(\'cola\')"><div class="kt">' + U.esc(a.name) + '</div>' +
       '<div class="cmeta">' + U.esc(a.segment) + '</div>' +
       '<div class="crow">' + kindTag(a.kind) + '<span class="tag blue">' + open + ' en cola</span></div>' +
-      '<div class="cana">analista: ' + S.analystName(a.id) + '</div>' + U.prog(pct) + '</div>';
+      '<div class="cana">analista: ' + U.esc(S.analystName(a.id)) + '</div>' + U.prog(pct) + '</div>';
   }
   function activaRow(a) {
     const bs = S.blocksOf(a.id), open = bs.filter(b => ['en_curso', 'pendiente', 'en_revision'].indexOf(b.status) >= 0).length;
     const pct = Math.round(bs.reduce((s, b) => s + b.progress, 0) / (bs.length || 1));
-    return '<div class="li" style="cursor:pointer" onclick="DVPortal.go(\'cola\')"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + U.esc(a.pkg || '—') + ' · analista: ' + S.analystName(a.id) + '</small>' +
+    return '<div class="li" style="cursor:pointer" onclick="DVPortal.go(\'cola\')"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + U.esc(a.pkg || '—') + ' · analista: ' + U.esc(S.analystName(a.id)) + '</small>' +
       '<div class="prog" style="margin-top:8px;max-width:260px"><i style="width:' + pct + '%"></i></div></div>' +
       kindTag(a.kind) + '<span class="tag blue">' + open + ' en cola</span></div>';
   }
@@ -204,7 +204,7 @@ window.DVStaff = (function () {
       accToolbar('cola') +
       (accs.length ? accs.map(a => {
         const bs = S.blocksOf(a.id), pend = bs.filter(b => b.status !== 'cerrado').length;
-        const title = '<b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + bs.length + ' bloques · analista: ' + S.analystName(a.id) + '</small>';
+        const title = '<b>' + U.esc(a.name) + '</b><small>' + U.esc(a.segment) + ' · ' + bs.length + ' bloques · analista: ' + U.esc(S.analystName(a.id)) + '</small>';
         const count = '<span class="acount">' + pend + ' activos / ' + bs.length + '</span>';
         return accordion('cola-' + a.id, pend > 0, title, count, kanban(bs));
       }).join('') : '<div class="list"><div class="li"><div class="g"><small>Sin bloques en cola.</small></div></div></div>');
@@ -253,7 +253,7 @@ window.DVStaff = (function () {
       i.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
     }
   }
-  function send() {
+  function send() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const i = U.el('chatInput'); if (!i) return; const t = (i.value || '').trim(); if (!t) return U.toast('Escríbele algo a El Don');
     chat.push({ from: 'me', t }); S.saveChat(curBlock, chat); i.value = ''; i.style.height = 'auto'; renderChat();
     const host = U.el('chatThread');
@@ -287,10 +287,10 @@ window.DVStaff = (function () {
     host.innerHTML = rs.length ? rs.map(r => '<div class="li"><div class="g"><b>' + U.esc(r.title) + '</b><small>' + U.esc(r.deliverable) + ' · ' + U.ago(r.created_at) + '</small></div>' + U.resTag(r.result) + '</div>').join('')
       : '<div class="li"><div class="g"><small>Aún sin rondas. Genera o registra la primera.</small></div></div>';
   }
-  function iterar() { iterN++; const n = U.el('iterN'); if (n) n.textContent = iterN; U.toast('Preview actualizado en vivo · iteración ' + iterN); }
-  function validar() { const b = U.el('prodBtn'); if (b) b.disabled = false; const v = U.el('valBtn'); if (v) v.textContent = 'Validado ✓'; const nt = U.el('valNote'); if (nt) nt.textContent = 'Validado internamente ✓ · ya puedes solicitar producción.'; U.toast('Marcado como validado internamente'); }
+  function iterar() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } iterN++; const n = U.el('iterN'); if (n) n.textContent = iterN; U.toast('Preview actualizado en vivo · iteración ' + iterN); }
+  function validar() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const b = U.el('prodBtn'); if (b) b.disabled = false; const v = U.el('valBtn'); if (v) v.textContent = 'Validado ✓'; const nt = U.el('valNote'); if (nt) nt.textContent = 'Validado internamente ✓ · ya puedes solicitar producción.'; U.toast('Marcado como validado internamente'); }
   async function solicitar() { U.toast('Enviando solicitud…'); const r = await S.requestScope(curBlock); if (r.status !== 'SUCCEEDED') return U.toast('No se envió la solicitud · intenta de nuevo'); renderRounds(); U.toast('Solicitud enviada · pasa por checkpoint del cliente'); const b = S.block(curBlock); U.qsa('.vsub')[0].innerHTML = U.statusPill(b.status); }
-  function compartir() {
+  function compartir() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const rp = U.el('reviewPanel'); rp.style.display = 'block';
     rp.innerHTML = '<div class="row spread"><h3>Revisión del equipo</h3><span class="mono" style="font-size:11px;color:var(--fg-faint)">dentro del portal</span></div>' +
       '<p class="d">Todos abren el <b>mismo preview</b> y comentan aquí — sin capturas por fuera.</p>' +
@@ -299,7 +299,7 @@ window.DVStaff = (function () {
     renderThread(); U.toast('Equipo notificado · revisan el mismo preview');
   }
   function renderThread() { U.el('thread').innerHTML = comments.map(c => '<div class="cmt"><b>' + U.esc(c.who) + '</b><span class="tm">ahora</span><p>' + U.esc(c.t) + '</p></div>').join(''); }
-  function addComment() { const i = U.el('cmtInput'); const t = (i.value || '').trim(); if (!t) return U.toast('Escribe un comentario'); comments.push({ who: (S.me() || {}).name ? S.me().name.split(' ')[0] : 'Equipo', t }); i.value = ''; renderThread(); i.focus(); }
+  function addComment() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const i = U.el('cmtInput'); const t = (i.value || '').trim(); if (!t) return U.toast('Escribe un comentario'); comments.push({ who: (S.me() || {}).name ? S.me().name.split(' ')[0] : 'Equipo', t }); i.value = ''; renderThread(); i.focus(); }
   async function saveRound(deliv, note) { U.toast('Registrando ronda…'); const r = await S.addRound(curBlock, { title: 'Ronda registrada', deliverable: deliv || 'entregable sin título', feedback: note || '—', result: 'propuesto' }); if (r.status !== 'SUCCEEDED') { U.toast('No se registró la ronda · intenta de nuevo'); return false; } renderRounds(); const b = S.block(curBlock); U.qsa('.vsub')[0].innerHTML = U.statusPill(b.status); U.toast('Ronda registrada · el cliente ya la ve'); return true; }
 
   function renderBitacora(host) {
@@ -325,7 +325,7 @@ window.DVStaff = (function () {
   function renderResenas(host) {
     const rvs = S.reviews(), firm = S.firmRating();
     const head = firm ? '<div class="kpis">' + kpi(firm.avg.toFixed(1) + ' ★', 'Rating promedio') + kpi(firm.n, 'Reseñas') + kpi(firm.published, 'Publicadas en landing') + '</div>' : '';
-    const analystRows = S.staff().map(u => { const r = S.analystRating(u.id); return r ? '<div class="li"><div class="g"><b>' + U.esc(u.name.split(' ')[0]) + '</b><small>' + r.n + ' reseña' + (r.n > 1 ? 's' : '') + '</small></div>' + ratingStars(Math.round(r.avg)) + '<span class="fmeta">' + r.avg.toFixed(1) + '</span></div>' : ''; }).join('');
+    const analystRows = S.staff().map(u => { const r = S.analystRating(u.id); return r ? '<div class="li"><div class="g"><b>' + U.esc(String(u.name || '').split(' ')[0]) + '</b><small>' + r.n + ' reseña' + (r.n > 1 ? 's' : '') + '</small></div>' + ratingStars(Math.round(r.avg)) + '<span class="fmeta">' + r.avg.toFixed(1) + '</span></div>' : ''; }).join('');
     const list = rvs.map(r => { const a = S.account(r.account_id), ltv = S.ltvOf(r.account_id); const phL = { build: 'Cierre del build', capa3: 'Seguimiento · Capa 3' }[r.phase] || r.phase;
       return '<div class="rvcard"><div class="rvcard-h"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + phL + ' · ' + U.ago(r.submitted_at) + ' · analista: ' + U.esc((S.userName(r.analyst_id) || '—').split(' ')[0]) + '</small></div>' + ratingStars(r.rating) + '</div>' +
         (r.feedback ? '<p class="quote">“' + U.esc(r.feedback) + '”</p>' : '<p class="d">Sin comentario.</p>') +
@@ -338,9 +338,9 @@ window.DVStaff = (function () {
       feedBar + head + (analystRows ? '<div class="panel"><h3>Rating por analista</h3><div class="list">' + analystRows + '</div></div>' : '') +
       '<div class="rvlist">' + (list || '<div class="kbempty">Sin reseñas todavía.</div>') + '</div>';
   }
-  function publicarTestimonio(id) { if (!window.confirm('¿Publicar esta reseña como testimonio en la landing? El cliente ya dio su consentimiento y pasó la ventana de 48 h.')) return; S.publishTestimonial(id); U.toast('Testimonio publicado en la landing'); DVPortal.go(_route); }
-  function retirarTestimonio(id) { if (!window.confirm('¿Retirar este testimonio de la landing?')) return; S.unpublishTestimonial(id); U.toast('Testimonio retirado'); DVPortal.go(_route); }
-  function exportarFeed() { const feed = S.publishedFeed(); const json = JSON.stringify(feed, null, 2); try { navigator.clipboard.writeText(json); } catch (e) { } U.toast(feed.length ? feed.length + ' testimonio(s) copiados — pégalos en _deploy-repo/testimonios.json y despliega' : 'Sin testimonios publicados: se copió un feed vacío []'); }
+  function publicarTestimonio(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } if (!window.confirm('¿Publicar esta reseña como testimonio en la landing? El cliente ya dio su consentimiento y pasó la ventana de 48 h.')) return; S.publishTestimonial(id); U.toast('Testimonio publicado en la landing'); DVPortal.go(_route); }
+  function retirarTestimonio(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } if (!window.confirm('¿Retirar este testimonio de la landing?')) return; S.unpublishTestimonial(id); U.toast('Testimonio retirado'); DVPortal.go(_route); }
+  function exportarFeed() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const feed = S.publishedFeed(); const json = JSON.stringify(feed, null, 2); try { navigator.clipboard.writeText(json); } catch (e) { } U.toast(feed.length ? feed.length + ' testimonio(s) copiados — pégalos en _deploy-repo/testimonios.json y despliega' : 'Sin testimonios publicados: se copió un feed vacío []'); }
 
   function renderSkills(host) {
     const admin = S.isAdmin();
@@ -360,12 +360,12 @@ window.DVStaff = (function () {
       '<p class="hint">El contenido de las skills (el <b>secreto industrial</b>) no es visible para el staff: su Claude las <b>invoca</b> desde el portal, no las lee. El admin publica mejoras y se <b>heredan a todos</b>; el historial permite <b>revertir</b> si una versión salió peor.' +
       (admin ? ' Las mejoras que la skill propone sola desde el feedback viven en <b>Mejoras · backlog</b>.' : '') + '</p>';
   }
-  async function publish(id) {
+  async function publish(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const note = window.prompt('Nota de la nueva versión (qué mejora):', '');
     if (note === null) return;
     U.toast('Publicando versión…'); const r = await S.publishSkill(id, note); if (r.status !== 'SUCCEEDED') return U.toast('No se publicó la versión · intenta de nuevo'); U.toast('Versión publicada · heredada a todo el staff'); DVPortal.go('skills');
   }
-  async function revert(id, v) {
+  async function revert(id, v) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     if (!window.confirm('¿Revertir a la versión v' + v + '? Se hereda a todo el staff.')) return;
     U.toast('Revirtiendo versión…'); const r = await S.revertSkill(id, v); if (r.status !== 'SUCCEEDED') return U.toast('No se revirtió la versión · intenta de nuevo'); U.toast('Revertida a v' + v + ' · heredada al staff'); DVPortal.go('skills');
   }
@@ -406,9 +406,9 @@ window.DVStaff = (function () {
         : '<div class="li"><div class="g"><small>Backlog vacío. Aprueba una propuesta para poblarlo.</small></div></div>') + '</div>' +
       '<p class="hint">El contenido de las skills no se muestra: El Don <b>lee el feedback</b>, no expone la metodología. Publicar desde el backlog reutiliza el versionado del Motor (historial + reversión).</p>';
   }
-  function aprobarMejora(id) { S.approveProposal(id); U.toast('Propuesta aprobada · enviada al backlog'); DVPortal.go('mejoras'); }
-  function descartarMejora(id) { S.dismissProposal(id); U.toast('Propuesta descartada'); DVPortal.go('mejoras'); }
-  function publicarBacklog(itemId) { if (!window.confirm('¿Publicar esta mejora? Hace bump de versión y se hereda a todo el staff.')) return; S.shipBacklog(itemId); U.toast('Mejora publicada · versión heredada al staff'); DVPortal.go('mejoras'); }
+  function aprobarMejora(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.approveProposal(id); U.toast('Propuesta aprobada · enviada al backlog'); DVPortal.go('mejoras'); }
+  function descartarMejora(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.dismissProposal(id); U.toast('Propuesta descartada'); DVPortal.go('mejoras'); }
+  function publicarBacklog(itemId) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } if (!window.confirm('¿Publicar esta mejora? Hace bump de versión y se hereda a todo el staff.')) return; S.shipBacklog(itemId); U.toast('Mejora publicada · versión heredada al staff'); DVPortal.go('mejoras'); }
 
   function renderCapacidad(host) {
     const stats = S.analystStats(), q = S.reassignQueue(), mk = S.curMonthKey();
@@ -439,8 +439,8 @@ window.DVStaff = (function () {
       qHTML + '<div class="capgrid">' + cards + '</div>' +
       '<p class="hint">La cola avanza por <b>carga real y valor</b>, no por número de clientes. El fundador cuenta para desempeño pero siempre recibe. El detalle de cumplimiento vive en <b>Desempeño</b>.</p>';
   }
-  function setBase(uid, v) { S.setBase(uid, parseInt(v, 10) || 0); U.toast('Base actualizada'); DVPortal.go('capacidad'); }
-  function reasignarAhora(accId) { S.reassignNow(accId, null, true); U.toast('Reasignada al analista con menos carga'); DVPortal.go('capacidad'); }
+  function setBase(uid, v) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.setBase(uid, parseInt(v, 10) || 0); U.toast('Base actualizada'); DVPortal.go('capacidad'); }
+  function reasignarAhora(accId) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.reassignNow(accId, null, true); U.toast('Reasignada al analista con menos carga'); DVPortal.go('capacidad'); }
 
   function perfChip(r) {
     const cls = r.current ? 'cur' : (r.met ? 'met' : 'miss');
@@ -465,8 +465,8 @@ window.DVStaff = (function () {
       '<p class="vsub">Cierre mensual <b>atendidas vs. base</b> por persona, con avisos y reconocimientos fechados y la bitácora de asignaciones. Todo queda documentado para bono, vesting o para respaldar una terminación. El fundador cuenta para desempeño pero siempre recibe.</p>' +
       '<div class="perfgrid">' + cards + '</div>';
   }
-  function nuevoEvento(uid, type) { const label = type === 'recon' ? 'reconocimiento (criterio de bono / vesting)' : 'aviso (motivo)'; const t = window.prompt('Texto del ' + label + ':', ''); if (!t) return; S.addHrEvent(uid, type, t); U.toast(type === 'recon' ? 'Reconocimiento registrado' : 'Aviso registrado'); DVPortal.go('desempeno'); }
-  function quitarEvento(id) { if (!window.confirm('¿Quitar este registro del expediente?')) return; S.removeHrEvent(id); DVPortal.go('desempeno'); }
+  function nuevoEvento(uid, type) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const label = type === 'recon' ? 'reconocimiento (criterio de bono / vesting)' : 'aviso (motivo)'; const t = window.prompt('Texto del ' + label + ':', ''); if (!t) return; S.addHrEvent(uid, type, t); U.toast(type === 'recon' ? 'Reconocimiento registrado' : 'Aviso registrado'); DVPortal.go('desempeno'); }
+  function quitarEvento(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } if (!window.confirm('¿Quitar este registro del expediente?')) return; S.removeHrEvent(id); DVPortal.go('desempeno'); }
   function expediente(uid) {
     const p = S.perfSummary().find(x => x.id === uid); if (!p) return;
     const esc = U.esc;
@@ -548,19 +548,20 @@ window.DVStaff = (function () {
   }
 
   function renderEquipo(host) {
+    if (window.DVSupa && DVSupa.identity.enabled() && window.DVAdminInvitations) return DVAdminInvitations.render(host);
     host.innerHTML = '<div class="eyebrow">Administración</div><h2 class="vh">Equipo</h2>' +
       '<p class="vsub">Analistas y diseñadores. El staff entra <b>solo por invitación</b>.</p>' +
       '<div class="list">' + S.staff().map(s => '<div class="li"><div class="g"><b>' + U.esc(s.name) + '</b><small>' + U.esc(s.email) + '</small></div><span class="tag ' + (s.role === 'admin' ? 'blue' : '') + '">' + s.role + '</span></div>').join('') + '</div>' +
       '<div class="inviteform"><input id="staffEmail" type="email" placeholder="correo@disenador.mx"><button class="btn solid" onclick="DVStaff.inviteStaff()">Invitar al equipo →</button></div>';
   }
-  async function inviteStaff() { const i = U.el('staffEmail'); const e = (i.value || '').trim(); if (!e) return U.toast('Escribe un correo'); U.toast('Enviando invitación…'); const r = await S.inviteStaff(e); if (r.status !== 'SUCCEEDED') return U.toast('No se envió la invitación · intenta de nuevo'); i.value = ''; U.toast('Invitación de equipo enviada a ' + e); }
+  async function inviteStaff() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const i = U.el('staffEmail'); const e = (i.value || '').trim(); if (!e) return U.toast('Escribe un correo'); U.toast('Enviando invitación…'); const r = await S.inviteStaff(e); if (r.status !== 'SUCCEEDED') return U.toast('No se envió la invitación · intenta de nuevo'); i.value = ''; U.toast('Invitación de equipo enviada a ' + e); }
 
   const SECT_L = { tablero: 'Tablero', bitacora: 'Bitácora', previews: 'Previews', generadores: 'Generadores' };
   function renderAccesos(host) {
     host.innerHTML = '<div class="eyebrow">Administración</div><h2 class="vh">Accesos & asignación</h2>' +
       '<p class="vsub">Por cuenta: reclasifica el <b>tipo</b>, asigna el analista y controla las <b>capas de servicio contratadas</b>. El <b>tipo de cuenta</b> fija el techo de capas disponibles (Cliente = completo · Piloto = sin Activación · Demostración = solo Fundación); el botón <b>Capas</b> abre qué etapas tiene el cliente y qué secciones del portal le desbloquea cada una.</p>' +
       S.accounts().map(a => {
-        const opts = S.staff().map(s => { const n = s.name.split(' ')[0]; return '<option' + (S.analystName(a.id) === n ? ' selected' : '') + '>' + n + '</option>'; }).join('');
+        const opts = S.staff().map(s => { const n = String(s.name || '').split(' ')[0]; return '<option' + (S.analystName(a.id) === n ? ' selected' : '') + '>' + U.esc(n) + '</option>'; }).join('');
         const open = _isOpen('capas-' + a.id, false);
         const kopts = ACT_KINDS.map(x => '<option value="' + x.k + '"' + (a.kind === x.k ? ' selected' : '') + '>' + x.b + '</option>').join('');
         const row = '<div class="li"><div class="g"><b>' + U.esc(a.name) + '</b><small>' + U.esc(a.pkg || '—') + '</small></div>' +
@@ -583,9 +584,9 @@ window.DVStaff = (function () {
         '<div class="csec">Desbloquea: ' + secs + '</div>' + note + '</div>' + swi + '</div>';
     }).join('') + '<div class="csec" style="padding:12px 2px 4px;color:var(--fg-faint)">El cliente solo ve las secciones de las capas activadas · nunca operación ni estrategia interna del despacho.</div></div>';
   }
-  function toggleCapa(accId, name) { S.toggleCapa(accId, name); DVPortal.go('accesos'); U.toast('Capas de ' + S.account(accId).name + ' actualizadas'); }
-  async function assign(id, name) { U.toast('Asignando cuenta…'); const r = await S.assign(id, name); if (r.status !== 'SUCCEEDED') return U.toast('No se asignó la cuenta · intenta de nuevo'); U.toast('Cuenta ' + S.account(id).name + ' asignada a ' + name); }
-  function changeKind(id, k) { S.setAccountKind(id, k); DVPortal.go('accesos'); U.toast(S.account(id).name + ' reclasificada como ' + kindLabel(k).toLowerCase()); }
+  function toggleCapa(accId, name) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.toggleCapa(accId, name); DVPortal.go('accesos'); U.toast('Capas de ' + S.account(accId).name + ' actualizadas'); }
+  async function assign(id, name) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } U.toast('Asignando cuenta…'); const r = await S.assign(id, name); if (r.status !== 'SUCCEEDED') return U.toast('No se asignó la cuenta · intenta de nuevo'); U.toast('Cuenta ' + S.account(id).name + ' asignada a ' + name); }
+  function changeKind(id, k) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } S.setAccountKind(id, k); DVPortal.go('accesos'); U.toast(S.account(id).name + ' reclasificada como ' + kindLabel(k).toLowerCase()); }
 
   function renderFacturacion(host) {
     const all = S.billingAll();
@@ -597,7 +598,7 @@ window.DVStaff = (function () {
       '<div class="list">' + all.map(b => { const a = S.account(b.account_id); const cap = { fundacion: 'Fundación', sistema: 'Sistema', activacion: 'Activación' }[b.layer] || b.layer; return '<div class="li"><div class="g"><b>' + U.esc(a.name + ' · ' + b.concept) + '</b><small>capa: ' + U.esc(cap) + '</small></div>' + kindTag(a.kind) + '<span class="amt">' + U.mxn(b.amount) + '</span><span class="tag ' + (b.status === 'pagado' ? 'hi' : 'mid') + '">' + b.status + '</span>' +
         (b.status !== 'pagado' ? '<button class="btn solid sm" onclick="DVStaff.validatePay(\'' + b.id + '\')">Validar pago</button>' : '') + '</div>'; }).join('') + '</div>';
   }
-  async function validatePay(id) { U.toast('Validando pago…'); const r = await S.validatePayment(id); if (r.status !== 'SUCCEEDED') return U.toast('No se validó el pago · intenta de nuevo'); U.toast('Pago validado · marca de agua retirada y descargas habilitadas'); }
+  async function validatePay(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } U.toast('Validando pago…'); const r = await S.validatePayment(id); if (r.status !== 'SUCCEEDED') return U.toast('No se validó el pago · intenta de nuevo'); U.toast('Pago validado · marca de agua retirada y descargas habilitadas'); }
 
   function renderUtilidad(host) {
     _curView = 'utilidad';
@@ -637,7 +638,7 @@ window.DVStaff = (function () {
       }).join('') + '</div>' +
       '<p class="hint">El tiempo activo es un <b>piso</b> (subcuenta llamadas y trabajo sin sesión abierta): úsalo por tendencia, no por el número de un mes. En vivo, las horas vienen de <span class="mono">work_session</span> y el costo/utilidad de la vista <span class="mono">account_operating_margin</span> (RLS solo-admin). Falta por sumar para utilidad NETA: impuestos, herramientas y overhead fijo.</p>';
   }
-  function setLabor(userId, key, val) { const n = parseFloat(val); if (isNaN(n)) return; S.setTeamCost(userId, key === 'salary' ? { salary: n } : { hours: n }); U.toast('Actualizado · utilidad recalculada'); DVPortal.go('utilidad'); }
+  function setLabor(userId, key, val) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const n = parseFloat(val); if (isNaN(n)) return; S.setTeamCost(userId, key === 'salary' ? { salary: n } : { hours: n }); U.toast('Actualizado · utilidad recalculada'); DVPortal.go('utilidad'); }
 
   function renderValor(host) {
     _curView = 'valor';
@@ -709,9 +710,9 @@ window.DVStaff = (function () {
       }).join('') + '</div>' +
       '<p class="hint">El valor de aplicación no cambia lo que se cobra: hace <b>visible</b> el valor que ya entregamos y no se nombraba. En vivo, el volumen sale de <span class="mono">application_log</span>, el bono se calcula sobre valor <b>cobrado</b> (ratio de invoices pagadas) y se libera <b>post-cobro</b> (misma disciplina de caja que los referidos). Calibración pendiente: precios finales y umbrales de bono.</p>';
   }
-  function setCatPrice(code, val) { const n = parseFloat(val); if (isNaN(n)) return; S.setCatalogPrice(code, n); U.toast('Valor de lista actualizado'); DVPortal.go('aplicacion'); }
-  function setBonoPct(val) { const n = parseFloat(val); if (isNaN(n)) return; S.setIncentiveCfg({ bonoPct: n }); U.toast('Bono % actualizado'); DVPortal.go('aplicacion'); }
-  function setUmbral(userId, val) { const n = parseFloat(val); if (isNaN(n)) return; S.setUmbral(userId, n); U.toast('Umbral actualizado'); DVPortal.go('aplicacion'); }
+  function setCatPrice(code, val) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const n = parseFloat(val); if (isNaN(n)) return; S.setCatalogPrice(code, n); U.toast('Valor de lista actualizado'); DVPortal.go('aplicacion'); }
+  function setBonoPct(val) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const n = parseFloat(val); if (isNaN(n)) return; S.setIncentiveCfg({ bonoPct: n }); U.toast('Bono % actualizado'); DVPortal.go('aplicacion'); }
+  function setUmbral(userId, val) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } const n = parseFloat(val); if (isNaN(n)) return; S.setUmbral(userId, n); U.toast('Umbral actualizado'); DVPortal.go('aplicacion'); }
 
   /* ── Adquisición · prospectos capturados por las dos rutas comerciales ── */
   const LEAD_STAGES = [
@@ -764,12 +765,12 @@ window.DVStaff = (function () {
   }
   function setLeadFilter(status) { _leadStatus = status; DVPortal.go('prospectos'); }
   function setLeadQuery(value) { _leadQuery = value || ''; DVPortal.go('prospectos'); }
-  async function updateLeadStatus(id, status) {
+  async function updateLeadStatus(id, status) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     U.toast('Guardando etapa…'); const r = await S.updateLead(id, { status });
     if (r.status !== 'SUCCEEDED') return U.toast('No se actualizó la etapa · intenta de nuevo');
     U.toast('Prospecto · ' + leadStageLabel(status)); DVPortal.go('prospectos');
   }
-  async function saveLeadFollowup(id) {
+  async function saveLeadFollowup(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const note = U.el('lead-notes-' + id), next = U.el('lead-next-' + id);
     const patch = { notes: note ? note.value.trim() : '', next_action_at: next && next.value ? new Date(next.value).toISOString() : null };
     U.toast('Guardando seguimiento…'); const r = await S.updateLead(id, patch);
@@ -850,14 +851,15 @@ window.DVStaff = (function () {
       }).join('') : '<div class="li"><div class="g"><small>Sin referentes todavía. Genera el primer link arriba.</small></div></div>') + '</div>' +
       '<p class="hint">En vivo, el link (<span class="mono">donventas.mx/r/&lt;code&gt;</span>) escribe <span class="mono">referral.code</span> en el signup del prospecto; al contratar se enlaza <span class="mono">account_id</span> y al validar el pago pasa a <b>comisión exigible</b>. El pago se libera <b>post-cobro</b>, igual que el bono del equipo. Calibración pendiente: <b>% de comisión</b> por tipo de referente.</p>';
   }
-  function crearReferido() {
+  function crearReferido() { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; }
     const n = (U.el('refName').value || '').trim(); if (!n) return U.toast('Escribe el nombre del referente');
     const kind = U.el('refKind').value, pct = parseFloat(U.el('refPct').value) || 10;
     const code = S.addReferral(n, kind, pct);
     U.toast('Link generado · donventas.mx/r/' + code); DVPortal.go('referidos');
   }
-  function marcarReferido(id) { if (!window.confirm('¿Marcar la comisión como pagada? (post-cobro)')) return; S.markReferralPaid(id); U.toast('Comisión liquidada'); DVPortal.go('referidos'); }
+  function marcarReferido(id) { if (!DVEnv.isDemo()) { U.toast('Acción disponible solo en DEMO; no se guardó ni se envió nada'); return false; } if (!window.confirm('¿Marcar la comisión como pagada? (post-cobro)')) return; S.markReferralPaid(id); U.toast('Comisión liquidada'); DVPortal.go('referidos'); }
   function copiarLink(link) { try { navigator.clipboard.writeText('https://' + link); U.toast('Link copiado: ' + link); } catch (e) { U.toast(link); } }
 
-  return { nav, ctxLabel, render, open, send, iterar, validar, solicitar, compartir, addComment, saveRound, publish, revert, aprobarMejora, descartarMejora, publicarBacklog, exportarFeed, accToggle, focusCuentas, beginActivate, cancelActivate, setActKind, setActAnalyst, confirmActivate, toggleCapa, inviteStaff, assign, changeKind, expandAll, collapseAll, setBase, reasignarAhora, aceptar, rechazar, nuevoEvento, quitarEvento, expediente, publicarTestimonio, retirarTestimonio, validatePay, setLabor, setPeriod, setPeriodSpan, setPeriodAnchor, renderProspectos, setLeadFilter, setLeadQuery, updateLeadStatus, saveLeadFollowup, renderAplicacion, setCatPrice, setBonoPct, setUmbral, crearReferido, marcarReferido, copiarLink };
+  function resetTransient() { curBlock = null; iterN = 0; comments = []; chat = []; hasPreview = false; _open = {}; _route = 'cuentas'; _cFocus = 'activas'; _actSel = null; _leadStatus = 'todos'; _leadQuery = ''; }
+  return { demoOnly: ["setPeriod", "setPeriodSpan", "setPeriodAnchor", "aceptar", "rechazar", "send", "iterar", "validar", "compartir", "addComment", "publicarTestimonio", "retirarTestimonio", "exportarFeed", "publish", "revert", "aprobarMejora", "descartarMejora", "publicarBacklog", "setBase", "reasignarAhora", "nuevoEvento", "quitarEvento", "inviteStaff", "toggleCapa", "assign", "changeKind", "validatePay", "setLabor", "setCatPrice", "setBonoPct", "setUmbral", "updateLeadStatus", "saveLeadFollowup", "crearReferido", "marcarReferido"], resetTransient, nav, ctxLabel, render, open, send, iterar, validar, solicitar, compartir, addComment, saveRound, publish, revert, aprobarMejora, descartarMejora, publicarBacklog, exportarFeed, accToggle, focusCuentas, beginActivate, cancelActivate, setActKind, setActAnalyst, confirmActivate, toggleCapa, inviteStaff, assign, changeKind, expandAll, collapseAll, setBase, reasignarAhora, aceptar, rechazar, nuevoEvento, quitarEvento, expediente, publicarTestimonio, retirarTestimonio, validatePay, setLabor, setPeriod, setPeriodSpan, setPeriodAnchor, renderProspectos, setLeadFilter, setLeadQuery, updateLeadStatus, saveLeadFollowup, renderAplicacion, setCatPrice, setBonoPct, setUmbral, crearReferido, marcarReferido, copiarLink };
 })();

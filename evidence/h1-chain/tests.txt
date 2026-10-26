@@ -1,0 +1,1262 @@
+
+> dv-portal@0.0.0 test
+> npm run test:unit && npm run test:integration
+
+
+> dv-portal@0.0.0 test:unit
+> node --test tests/environment.test.js tests/write-guard.test.js tests/atomic-mutations.test.js tests/environment-indicator.test.js tests/lead-pipeline.test.js tests/h10-hardening.test.js tests/h11-workflow.test.js
+
+TAP version 13
+# Subtest: 01 LIVE state is unchanged before backend resolution
+ok 1 - 01 LIVE state is unchanged before backend resolution
+  ---
+  duration_ms: 4.2774
+  ...
+# Subtest: 02 pending is true while backend is unresolved
+ok 2 - 02 pending is true while backend is unresolved
+  ---
+  duration_ms: 0.2479
+  ...
+# Subtest: 03 success applies canonical local state after resolution
+ok 3 - 03 success applies canonical local state after resolution
+  ---
+  duration_ms: 0.2164
+  ...
+# Subtest: 04 success signal occurs after local commit
+ok 4 - 04 success signal occurs after local commit
+  ---
+  duration_ms: 0.1581
+  ...
+# Subtest: 05 rejection leaves prior state unchanged
+ok 5 - 05 rejection leaves prior state unchanged
+  ---
+  duration_ms: 0.3355
+  ...
+# Subtest: 06 sync throw leaves prior state unchanged
+ok 6 - 06 sync throw leaves prior state unchanged
+  ---
+  duration_ms: 0.2016
+  ...
+# Subtest: 07 pending clears after success
+ok 7 - 07 pending clears after success
+  ---
+  duration_ms: 0.1655
+  ...
+# Subtest: 08 pending clears after failure
+ok 8 - 08 pending clears after failure
+  ---
+  duration_ms: 0.1533
+  ...
+# Subtest: 09 duplicate submit is single-flight
+ok 9 - 09 duplicate submit is single-flight
+  ---
+  duration_ms: 0.2586
+  ...
+# Subtest: 10 retry after failure creates exactly one new call
+ok 10 - 10 retry after failure creates exactly one new call
+  ---
+  duration_ms: 0.3473
+  ...
+# Subtest: 11 old success cannot overwrite a newer identity
+ok 11 - 11 old success cannot overwrite a newer identity
+  ---
+  duration_ms: 0.1994
+  ...
+# Subtest: 12 fingerprint change causes STALE
+ok 12 - 12 fingerprint change causes STALE
+  ---
+  duration_ms: 0.1323
+  ...
+# Subtest: 13 session change causes STALE
+ok 13 - 13 session change causes STALE
+  ---
+  duration_ms: 1.1007
+  ...
+# Subtest: 14 stale completion commits nothing
+ok 14 - 14 stale completion commits nothing
+  ---
+  duration_ms: 0.3967
+  ...
+# Subtest: 15 canonical backend output replaces request data safely
+ok 15 - 15 canonical backend output replaces request data safely
+  ---
+  duration_ms: 0.2212
+  ...
+# Subtest: 16 no optimistic state requires rollback
+ok 16 - 16 no optimistic state requires rollback
+  ---
+  duration_ms: 0.3237
+  ...
+# Subtest: 17 failure and success signals never coexist
+ok 17 - 17 failure and success signals never coexist
+  ---
+  duration_ms: 0.2641
+  ...
+# Subtest: 18 corrected UI callers await canonical Store results
+ok 18 - 18 corrected UI callers await canonical Store results
+  ---
+  duration_ms: 4.1801
+  ...
+# Subtest: 19 every LIVE adapter is awaited before commit
+ok 19 - 19 every LIVE adapter is awaited before commit
+  ---
+  duration_ms: 2.9296
+  ...
+# Subtest: 20 tests use deterministic mocks and no real network or credentials
+ok 20 - 20 tests use deterministic mocks and no real network or credentials
+  ---
+  duration_ms: 0.3721
+  ...
+# Subtest: 21 harness shell has a bounded maximum width
+ok 21 - 21 harness shell has a bounded maximum width
+  ---
+  duration_ms: 0.1534
+  ...
+# Subtest: 22 harness shell is start-aligned under constrained visual conditions
+ok 22 - 22 harness shell is start-aligned under constrained visual conditions
+  ---
+  duration_ms: 0.1465
+  ...
+# Subtest: 23 control groups stack in one bounded column
+ok 23 - 23 control groups stack in one bounded column
+  ---
+  duration_ms: 0.1015
+  ...
+# Subtest: 24 buttons occupy the available bounded width
+ok 24 - 24 buttons occupy the available bounded width
+  ---
+  duration_ms: 0.0856
+  ...
+# Subtest: 25 critical controls have no oversized fixed minimum width
+ok 25 - 25 critical controls have no oversized fixed minimum width
+  ---
+  duration_ms: 0.146
+  ...
+# Subtest: 26 long status and error text wrap safely
+ok 26 - 26 long status and error text wrap safely
+  ---
+  duration_ms: 0.1345
+  ...
+# Subtest: 27 critical controls use neither ellipsis nor clipping
+ok 27 - 27 critical controls use neither ellipsis nor clipping
+  ---
+  duration_ms: 0.1426
+  ...
+# Subtest: 28 mutation feedback remains visible
+ok 28 - 28 mutation feedback remains visible
+  ---
+  duration_ms: 0.1729
+  ...
+# Subtest: 29 vertical scrolling remains allowed
+ok 29 - 29 vertical scrolling remains allowed
+  ---
+  duration_ms: 0.0872
+  ...
+# Subtest: 30 responsive rules do not change mutation semantics
+ok 30 - 30 responsive rules do not change mutation semantics
+  ---
+  duration_ms: 0.0977
+  ...
+# Subtest: 01 UNRESOLVED is transient and non-operational
+ok 31 - 01 UNRESOLVED is transient and non-operational
+  ---
+  duration_ms: 1.6275
+  ...
+# Subtest: 02 VALIDATING presents persistent validation copy
+ok 32 - 02 VALIDATING presents persistent validation copy
+  ---
+  duration_ms: 0.2275
+  ...
+# Subtest: 03 VALIDATING disables operational surfaces
+ok 33 - 03 VALIDATING disables operational surfaces
+  ---
+  duration_ms: 0.1136
+  ...
+# Subtest: 04 DEMO presents the approved label and synthetic copy
+ok 34 - 04 DEMO presents the approved label and synthetic copy
+  ---
+  duration_ms: 0.0901
+  ...
+# Subtest: 05 DEMO mount exists before the auth surface
+ok 35 - 05 DEMO mount exists before the auth surface
+  ---
+  duration_ms: 0.1465
+  ...
+# Subtest: 06 DEMO mount is outside and survives the app shell
+ok 36 - 06 DEMO mount is outside and survives the app shell
+  ---
+  duration_ms: 0.1335
+  ...
+# Subtest: 07 DEMO copy never implies production persistence
+ok 37 - 07 DEMO copy never implies production persistence
+  ---
+  duration_ms: 0.346
+  ...
+# Subtest: 08 SANDBOX presents isolated non-production copy
+ok 38 - 08 SANDBOX presents isolated non-production copy
+  ---
+  duration_ms: 0.1966
+  ...
+# Subtest: 09 CONFIRM_SANDBOX has explicit confirmation UI
+ok 39 - 09 CONFIRM_SANDBOX has explicit confirmation UI
+  ---
+  duration_ms: 0.3834
+  ...
+# Subtest: 10 SANDBOX confirmation triggers a new full guard evaluation
+ok 40 - 10 SANDBOX confirmation triggers a new full guard evaluation
+  ---
+  duration_ms: 0.2454
+  ...
+# Subtest: 11 LIVE appears only for an explicit canonical LIVE snapshot
+ok 41 - 11 LIVE appears only for an explicit canonical LIVE snapshot
+  ---
+  duration_ms: 0.1718
+  ...
+# Subtest: 12 LIVE copy contains no demo or sandbox language
+ok 42 - 12 LIVE copy contains no demo or sandbox language
+  ---
+  duration_ms: 0.263
+  ...
+# Subtest: 13 BLOCKED replaces normal navigation
+ok 43 - 13 BLOCKED replaces normal navigation
+  ---
+  duration_ms: 0.2096
+  ...
+# Subtest: 14 BLOCKED shows only a sanitized normalized code
+ok 44 - 14 BLOCKED shows only a sanitized normalized code
+  ---
+  duration_ms: 0.3356
+  ...
+# Subtest: 15 BLOCKED shows an opaque correlation ID
+ok 45 - 15 BLOCKED shows an opaque correlation ID
+  ---
+  duration_ms: 0.2543
+  ...
+# Subtest: 16 BLOCKED cannot create a backend client
+ok 46 - 16 BLOCKED cannot create a backend client
+  ---
+  duration_ms: 0.2351
+  ...
+# Subtest: 17 BLOCKED cannot load seed or application scripts
+ok 47 - 17 BLOCKED cannot load seed or application scripts
+  ---
+  duration_ms: 0.225
+  ...
+# Subtest: 18 retry calls canonical resolver revalidation
+ok 48 - 18 retry calls canonical resolver revalidation
+  ---
+  duration_ms: 0.123
+  ...
+# Subtest: 19 retry contains no DEMO fallback
+ok 49 - 19 retry contains no DEMO fallback
+  ---
+  duration_ms: 0.3307
+  ...
+# Subtest: 20 unknown host resolves BLOCKED
+ok 50 - 20 unknown host resolves BLOCKED
+  ---
+  duration_ms: 2.7057
+  ...
+# Subtest: 21 stale config resolves BLOCKED
+ok 51 - 21 stale config resolves BLOCKED
+  ---
+  duration_ms: 0.6736
+  ...
+# Subtest: 22 backend mismatch resolves BLOCKED
+ok 52 - 22 backend mismatch resolves BLOCKED
+  ---
+  duration_ms: 0.2824
+  ...
+# Subtest: 23 REAUTH produces safe reauthentication guidance
+ok 53 - 23 REAUTH produces safe reauthentication guidance
+  ---
+  duration_ms: 0.1373
+  ...
+# Subtest: 24 network failure preserves the resolved mode
+ok 54 - 24 network failure preserves the resolved mode
+  ---
+  duration_ms: 0.1086
+  ...
+# Subtest: 25 fingerprint remains part of every visual snapshot
+ok 55 - 25 fingerprint remains part of every visual snapshot
+  ---
+  duration_ms: 0.0943
+  ...
+# Subtest: 26 indicator has no dismiss control or preference storage
+ok 56 - 26 indicator has no dismiss control or preference storage
+  ---
+  duration_ms: 0.125
+  ...
+# Subtest: 27 visual state always equals the resolver snapshot
+ok 57 - 27 visual state always equals the resolver snapshot
+  ---
+  duration_ms: 0.0976
+  ...
+# Subtest: 28 visible text is generated in markup, independent of CSS
+ok 58 - 28 visible text is generated in markup, independent of CSS
+  ---
+  duration_ms: 0.6685
+  ...
+# Subtest: 29 retry is a native keyboard-operable button
+ok 59 - 29 retry is a native keyboard-operable button
+  ---
+  duration_ms: 0.0974
+  ...
+# Subtest: 30 correlation copy is a native keyboard-operable button
+ok 60 - 30 correlation copy is a native keyboard-operable button
+  ---
+  duration_ms: 0.0587
+  ...
+# Subtest: 31 reauth uses a native keyboard-operable button
+ok 61 - 31 reauth uses a native keyboard-operable button
+  ---
+  duration_ms: 0.0644
+  ...
+# Subtest: 32 sandbox confirmation uses native keyboard controls
+ok 62 - 32 sandbox confirmation uses native keyboard controls
+  ---
+  duration_ms: 0.1363
+  ...
+# Subtest: 33 focus moves deliberately into BLOCKED
+ok 63 - 33 focus moves deliberately into BLOCKED
+  ---
+  duration_ms: 0.1357
+  ...
+# Subtest: 34 screen-reader status and live region are present
+ok 64 - 34 screen-reader status and live region are present
+  ---
+  duration_ms: 0.0879
+  ...
+# Subtest: 35 narrow viewport has explicit non-overlap layout rules
+ok 65 - 35 narrow viewport has explicit non-overlap layout rules
+  ---
+  duration_ms: 0.0614
+  ...
+# Subtest: 36 diagnostics expose no prohibited fields
+ok 66 - 36 diagnostics expose no prohibited fields
+  ---
+  duration_ms: 0.8796
+  ...
+# Subtest: 37 resolver interface is observable and revalidatable
+ok 67 - 37 resolver interface is observable and revalidatable
+  ---
+  duration_ms: 0.128
+  ...
+# Subtest: 38 write guard outcomes remain unmodified by presentation
+ok 68 - 38 write guard outcomes remain unmodified by presentation
+  ---
+  duration_ms: 0.1318
+  ...
+# Subtest: 39 DEMO loads no Supabase CDN and no client before demand
+ok 69 - 39 DEMO loads no Supabase CDN and no client before demand
+  ---
+  duration_ms: 1.1925
+  ...
+# Subtest: 40 presentation tests use no network, production credentials or heavy DOM framework
+ok 70 - 40 presentation tests use no network, production credentials or heavy DOM framework
+  ---
+  duration_ms: 0.2242
+  ...
+# Subtest: 41 BLOCKED critical controls use a constrained responsive surface
+ok 71 - 41 BLOCKED critical controls use a constrained responsive surface
+  ---
+  duration_ms: 0.1827
+  ...
+# Subtest: 42 BLOCKED correlation ID can wrap safely
+ok 72 - 42 BLOCKED correlation ID can wrap safely
+  ---
+  duration_ms: 0.1492
+  ...
+# Subtest: 43 BLOCKED action group stacks at the scale-two layout breakpoint
+ok 73 - 43 BLOCKED action group stacks at the scale-two layout breakpoint
+  ---
+  duration_ms: 0.1079
+  ...
+# Subtest: 44 BLOCKED surface allows vertical access without horizontal overflow
+ok 74 - 44 BLOCKED surface allows vertical access without horizontal overflow
+  ---
+  duration_ms: 0.1146
+  ...
+# Subtest: 45 CONFIRM_SANDBOX surface stays width constrained
+ok 75 - 45 CONFIRM_SANDBOX surface stays width constrained
+  ---
+  duration_ms: 0.1074
+  ...
+# Subtest: 46 CONFIRM_SANDBOX actions stack responsively
+ok 76 - 46 CONFIRM_SANDBOX actions stack responsively
+  ---
+  duration_ms: 0.1098
+  ...
+# Subtest: 47 confirm and cancel remain native keyboard-reachable buttons
+ok 77 - 47 confirm and cancel remain native keyboard-reachable buttons
+  ---
+  duration_ms: 0.0762
+  ...
+# Subtest: 48 critical environment text never uses ellipsis or clipping
+ok 78 - 48 critical environment text never uses ellipsis or clipping
+  ---
+  duration_ms: 0.0987
+  ...
+# Subtest: 49 responsive environment surfaces define no fixed min-width
+ok 79 - 49 responsive environment surfaces define no fixed min-width
+  ---
+  duration_ms: 0.0892
+  ...
+# Subtest: 50 responsive reflow does not hide the persistent indicator
+ok 80 - 50 responsive reflow does not hide the persistent indicator
+  ---
+  duration_ms: 0.1795
+  ...
+# Subtest: 51 missing production config renders the approved editorial prelaunch
+ok 81 - 51 missing production config renders the approved editorial prelaunch
+  ---
+  duration_ms: 0.0825
+  ...
+# Subtest: 52 the prelaunch remains fail closed and exposes no auth form
+ok 82 - 52 the prelaunch remains fail closed and exposes no auth form
+  ---
+  duration_ms: 0.1046
+  ...
+# Subtest: 53 unexpected BLOCKED diagnostics keep the safety-first screen
+ok 83 - 53 unexpected BLOCKED diagnostics keep the safety-first screen
+  ---
+  duration_ms: 0.1425
+  ...
+# Subtest: 54 prelaunch layout has explicit mobile reflow
+ok 84 - 54 prelaunch layout has explicit mobile reflow
+  ---
+  duration_ms: 0.2943
+  ...
+# Subtest: 55 only the editorial prelaunch removes the fixed BLOCKED banner
+ok 85 - 55 only the editorial prelaunch removes the fixed BLOCKED banner
+  ---
+  duration_ms: 0.2897
+  ...
+# Subtest: 56 prelaunch consumes the canonical reverse lockup without redrawing it
+ok 86 - 56 prelaunch consumes the canonical reverse lockup without redrawing it
+  ---
+  duration_ms: 0.1939
+  ...
+# Subtest: 01 production + valid production config => LIVE
+ok 87 - 01 production + valid production config => LIVE
+  ---
+  duration_ms: 2.0052
+  ...
+# Subtest: 02 production + missing config => BLOCKED
+ok 88 - 02 production + missing config => BLOCKED
+  ---
+  duration_ms: 3.6543
+  ...
+# Subtest: 03 production + partial config => BLOCKED
+ok 89 - 03 production + partial config => BLOCKED
+  ---
+  duration_ms: 0.4717
+  ...
+# Subtest: 04 production + invalid config => BLOCKED
+ok 90 - 04 production + invalid config => BLOCKED
+  ---
+  duration_ms: 0.4023
+  ...
+# Subtest: 05 production + DEMO => BLOCKED
+ok 91 - 05 production + DEMO => BLOCKED
+  ---
+  duration_ms: 0.4007
+  ...
+# Subtest: 06 production + sandbox backend => BLOCKED
+ok 92 - 06 production + sandbox backend => BLOCKED
+  ---
+  duration_ms: 0.3188
+  ...
+# Subtest: 07 preview + explicit sandbox => SANDBOX
+ok 93 - 07 preview + explicit sandbox => SANDBOX
+  ---
+  duration_ms: 0.3889
+  ...
+# Subtest: 08 preview + explicit UI-only demo => DEMO
+ok 94 - 08 preview + explicit UI-only demo => DEMO
+  ---
+  duration_ms: 0.4046
+  ...
+# Subtest: 09 preview + production backend => BLOCKED
+ok 95 - 09 preview + production backend => BLOCKED
+  ---
+  duration_ms: 0.4486
+  ...
+# Subtest: 10 localhost + demo => DEMO
+ok 96 - 10 localhost + demo => DEMO
+  ---
+  duration_ms: 0.513
+  ...
+# Subtest: 11 localhost + allowlisted sandbox => SANDBOX
+ok 97 - 11 localhost + allowlisted sandbox => SANDBOX
+  ---
+  duration_ms: 0.409
+  ...
+# Subtest: 12 localhost + production backend => BLOCKED
+ok 98 - 12 localhost + production backend => BLOCKED
+  ---
+  duration_ms: 0.2614
+  ...
+# Subtest: 13 unknown host => BLOCKED
+ok 99 - 13 unknown host => BLOCKED
+  ---
+  duration_ms: 0.1596
+  ...
+# Subtest: 14 backend identity mismatch => BLOCKED
+ok 100 - 14 backend identity mismatch => BLOCKED
+  ---
+  duration_ms: 1.4016
+  ...
+# Subtest: 15 stale config => BLOCKED
+ok 101 - 15 stale config => BLOCKED
+  ---
+  duration_ms: 0.27
+  ...
+# Subtest: 16 no client before successful validation
+ok 102 - 16 no client before successful validation
+  ---
+  duration_ms: 0.2805
+  ...
+# Subtest: 17 DEMO never initializes backend client
+ok 103 - 17 DEMO never initializes backend client
+  ---
+  duration_ms: 0.2527
+  ...
+# Subtest: 18 mode change invalidates client
+ok 104 - 18 mode change invalidates client
+  ---
+  duration_ms: 0.3758
+  ...
+# Subtest: 19 backendId change invalidates session/cache namespace
+ok 105 - 19 backendId change invalidates session/cache namespace
+  ---
+  duration_ms: 0.5032
+  ...
+# Subtest: 20 configVersion change invalidates prior state
+ok 106 - 20 configVersion change invalidates prior state
+  ---
+  duration_ms: 0.2447
+  ...
+# Subtest: environmentId change invalidates prior state
+ok 107 - environmentId change invalidates prior state
+  ---
+  duration_ms: 0.1779
+  ...
+# Subtest: 21 cross-environment session => SESSION_ENV_MISMATCH
+ok 108 - 21 cross-environment session => SESSION_ENV_MISMATCH
+  ---
+  duration_ms: 0.2635
+  ...
+# Subtest: 22 network failure never falls back to DEMO
+ok 109 - 22 network failure never falls back to DEMO
+  ---
+  duration_ms: 0.2567
+  ...
+# Subtest: 23 URL without key => ENV_CONFIG_PARTIAL
+ok 110 - 23 URL without key => ENV_CONFIG_PARTIAL
+  ---
+  duration_ms: 0.2633
+  ...
+# Subtest: 24 key without URL => ENV_CONFIG_PARTIAL
+ok 111 - 24 key without URL => ENV_CONFIG_PARTIAL
+  ---
+  duration_ms: 0.2075
+  ...
+# Subtest: 25 sandbox backend used as LIVE => BLOCKED
+ok 112 - 25 sandbox backend used as LIVE => BLOCKED
+  ---
+  duration_ms: 0.1754
+  ...
+# Subtest: sanitized diagnostics omit key and URL
+ok 113 - sanitized diagnostics omit key and URL
+  ---
+  duration_ms: 0.2111
+  ...
+# Subtest: privileged frontend fields are rejected
+ok 114 - privileged frontend fields are rejected
+  ---
+  duration_ms: 0.1809
+  ...
+# Subtest: adapter + Store + client UI: zero rows never confirms approval
+ok 115 - adapter + Store + client UI: zero rows never confirms approval
+  ---
+  duration_ms: 23.3095
+  ...
+# Subtest: adapter + Store + client UI: denial never confirms approval
+ok 116 - adapter + Store + client UI: denial never confirms approval
+  ---
+  duration_ms: 5.3341
+  ...
+# Subtest: adapter + Store + client UI: stale version never confirms approval
+ok 117 - adapter + Store + client UI: stale version never confirms approval
+  ---
+  duration_ms: 7.222
+  ...
+# Subtest: adapter + Store + client UI: wrong resource never confirms approval
+ok 118 - adapter + Store + client UI: wrong resource never confirms approval
+  ---
+  duration_ms: 5.5514
+  ...
+# Subtest: canonical approval commits the returned version and UI success
+ok 119 - canonical approval commits the returned version and UI success
+  ---
+  duration_ms: 5.1907
+  ...
+# Subtest: unverified contract performs no RPC and no local write
+ok 120 - unverified contract performs no RPC and no local write
+  ---
+  duration_ms: 5.6669
+  ...
+# Subtest: demo-only mutations deny backend execution without changing state
+ok 121 - demo-only mutations deny backend execution without changing state
+  ---
+  duration_ms: 5.6852
+  ...
+# Subtest: legacy backend adapter paths reject instead of partially writing
+ok 122 - legacy backend adapter paths reject instead of partially writing
+  ---
+  duration_ms: 5.5178
+  ...
+# Subtest: timeout/rejection retry retains the same intent key
+ok 123 - timeout/rejection retry retains the same intent key
+  ---
+  duration_ms: 4.3939
+  ...
+# Subtest: switching identity while a request is pending never commits the old response
+ok 124 - switching identity while a request is pending never commits the old response
+  ---
+  duration_ms: 4.0129
+  ...
+# Subtest: revoked actor fails before the command and clears data
+ok 125 - revoked actor fails before the command and clears data
+  ---
+  duration_ms: 3.7039
+  ...
+# Subtest: auth signout from another tab clears local data and caches
+ok 126 - auth signout from another tab clears local data and caches
+  ---
+  duration_ms: 3.2416
+  ...
+# Subtest: DEMO cache is partitioned by user and tenant and purged on logout
+ok 127 - DEMO cache is partitioned by user and tenant and purged on logout
+  ---
+  duration_ms: 3.6618
+  ...
+# Subtest: environment validation clears existing backend state
+ok 128 - environment validation clears existing backend state
+  ---
+  duration_ms: 3.1269
+  ...
+# Subtest: fixture self-guard denies direct execution in every non-DEMO mode
+ok 129 - fixture self-guard denies direct execution in every non-DEMO mode
+  ---
+  duration_ms: 3.9902
+  ...
+# Subtest: feedback returns a versioned event without fabricating a new round
+ok 130 - feedback returns a versioned event without fabricating a new round
+  ---
+  duration_ms: 3.5383
+  ...
+# Subtest: round rejection never leaves a fabricated round or changes the block
+ok 131 - round rejection never leaves a fabricated round or changes the block
+  ---
+  duration_ms: 3.1518
+  ...
+# Subtest: real timeout path fails closed and reuses the key on retry
+ok 132 - real timeout path fails closed and reuses the key on retry
+  ---
+  duration_ms: 4.2067
+  ...
+# Subtest: unsupported UI actions never announce success or send external requests
+ok 133 - unsupported UI actions never announce success or send external requests
+  ---
+  duration_ms: 2.9461
+  ...
+# Subtest: profile authority drift invalidates actor state before RPC
+ok 134 - profile authority drift invalidates actor state before RPC
+  ---
+  duration_ms: 2.8457
+  ...
+# Subtest: pending actor cannot submit a command
+ok 135 - pending actor cannot submit a command
+  ---
+  duration_ms: 2.7408
+  ...
+# Subtest: identity switch resets client transient drafts and backend preferences stay ephemeral
+ok 136 - identity switch resets client transient drafts and backend preferences stay ephemeral
+  ---
+  duration_ms: 3.3092
+  ...
+# Subtest: signout can finish after intentional local session purge and needs no business row
+ok 137 - signout can finish after intentional local session purge and needs no business row
+  ---
+  duration_ms: 2.5435
+  ...
+# Subtest: versioned complete journey keeps acceptance separate from publication
+ok 138 - versioned complete journey keeps acceptance separate from publication
+  ---
+  duration_ms: 4.1713
+  ...
+# Subtest: cross-workspace specialist and owner cannot mutate another tenant
+ok 139 - cross-workspace specialist and owner cannot mutate another tenant
+  ---
+  duration_ms: 2.8461
+  ...
+# Subtest: staff cannot substitute owner acceptance
+ok 140 - staff cannot substitute owner acceptance
+  ---
+  duration_ms: 0.5182
+  ...
+# Subtest: stale operation and simulated failure do not mutate input
+ok 141 - stale operation and simulated failure do not mutate input
+  ---
+  duration_ms: 0.4726
+  ...
+# Subtest: same-key replay is idempotent and changed payload is rejected
+ok 142 - same-key replay is idempotent and changed payload is rejected
+  ---
+  duration_ms: 1.0363
+  ...
+# Subtest: revert creates a new version without rewriting history
+ok 143 - revert creates a new version without rewriting history
+  ---
+  duration_ms: 0.5003
+  ...
+# Subtest: editorial request requires provenance and rights
+ok 144 - editorial request requires provenance and rights
+  ---
+  duration_ms: 0.4842
+  ...
+# Subtest: context and artifact snapshots freeze when help is requested
+ok 145 - context and artifact snapshots freeze when help is requested
+  ---
+  duration_ms: 0.7054
+  ...
+# Subtest: scope and delivery acceptance require exact versions
+ok 146 - scope and delivery acceptance require exact versions
+  ---
+  duration_ms: 1.6721
+  ...
+# Subtest: cancel preserves versions and prevents further fulfillment
+ok 147 - cancel preserves versions and prevents further fulfillment
+  ---
+  duration_ms: 0.7734
+  ...
+# Subtest: included revisions cannot be exceeded silently
+ok 148 - included revisions cannot be exceeded silently
+  ---
+  duration_ms: 1.1835
+  ...
+# Subtest: manual questionnaire preserves multiple options and explicit evidence basis
+ok 149 - manual questionnaire preserves multiple options and explicit evidence basis
+  ---
+  duration_ms: 0.6683
+  ...
+# Subtest: malformed or oversized questionnaire fails atomically
+ok 150 - malformed or oversized questionnaire fails atomically
+  ---
+  duration_ms: 0.5319
+  ...
+# Subtest: feedback requires explicit consent in the command
+ok 151 - feedback requires explicit consent in the command
+  ---
+  duration_ms: 0.3719
+  ...
+# Subtest: BUG-001 permits anonymous inserts through an explicit RLS policy
+ok 152 - BUG-001 permits anonymous inserts through an explicit RLS policy
+  ---
+  duration_ms: 2.0511
+  ...
+# Subtest: BUG-001 requires consent and core contact fields but not a website
+ok 153 - BUG-001 requires consent and core contact fields but not a website
+  ---
+  duration_ms: 0.5862
+  ...
+# Subtest: 01 UNRESOLVED denies
+ok 154 - 01 UNRESOLVED denies
+  ---
+  duration_ms: 5.8694
+  ...
+# Subtest: 02 VALIDATING denies
+ok 155 - 02 VALIDATING denies
+  ---
+  duration_ms: 0.3063
+  ...
+# Subtest: 03 BLOCKED denies and logs
+ok 156 - 03 BLOCKED denies and logs
+  ---
+  duration_ms: 0.2217
+  ...
+# Subtest: 04 DEMO local synthetic allows
+ok 157 - 04 DEMO local synthetic allows
+  ---
+  duration_ms: 0.1885
+  ...
+# Subtest: 05 DEMO backend write denies
+ok 158 - 05 DEMO backend write denies
+  ---
+  duration_ms: 1.3342
+  ...
+# Subtest: 06 DEMO auth mutation denies
+ok 159 - 06 DEMO auth mutation denies
+  ---
+  duration_ms: 0.2381
+  ...
+# Subtest: 07 DEMO payment mutation denies
+ok 160 - 07 DEMO payment mutation denies
+  ---
+  duration_ms: 0.307
+  ...
+# Subtest: 08 SANDBOX matching session allows
+ok 161 - 08 SANDBOX matching session allows
+  ---
+  duration_ms: 0.2612
+  ...
+# Subtest: 09 SANDBOX missing session reauths
+ok 162 - 09 SANDBOX missing session reauths
+  ---
+  duration_ms: 0.3102
+  ...
+# Subtest: 10 SANDBOX mismatched session reauths
+ok 163 - 10 SANDBOX mismatched session reauths
+  ---
+  duration_ms: 0.2404
+  ...
+# Subtest: 11 SANDBOX destructive requires confirmation
+ok 164 - 11 SANDBOX destructive requires confirmation
+  ---
+  duration_ms: 0.2481
+  ...
+# Subtest: 12 SANDBOX confirmed destructive allows
+ok 165 - 12 SANDBOX confirmed destructive allows
+  ---
+  duration_ms: 0.231
+  ...
+# Subtest: 13 SANDBOX production backend denies and logs
+ok 166 - 13 SANDBOX production backend denies and logs
+  ---
+  duration_ms: 0.1884
+  ...
+# Subtest: 14 LIVE valid context allows
+ok 167 - 14 LIVE valid context allows
+  ---
+  duration_ms: 0.3537
+  ...
+# Subtest: 15 LIVE missing policy denies
+ok 168 - 15 LIVE missing policy denies
+  ---
+  duration_ms: 0.1391
+  ...
+# Subtest: 16 LIVE synthetic fixture denies and logs
+ok 169 - 16 LIVE synthetic fixture denies and logs
+  ---
+  duration_ms: 0.16
+  ...
+# Subtest: 17 LIVE sandbox session reauths
+ok 170 - 17 LIVE sandbox session reauths
+  ---
+  duration_ms: 0.206
+  ...
+# Subtest: 18 stale config/fingerprint denies
+ok 171 - 18 stale config/fingerprint denies
+  ---
+  duration_ms: 0.1622
+  ...
+# Subtest: 19 backend identity class mismatch denies
+ok 172 - 19 backend identity class mismatch denies
+  ---
+  duration_ms: 0.2228
+  ...
+# Subtest: 20 missing action is invalid
+ok 173 - 20 missing action is invalid
+  ---
+  duration_ms: 0.1738
+  ...
+# Subtest: 21 unknown action denies
+ok 174 - 21 unknown action denies
+  ---
+  duration_ms: 0.1083
+  ...
+# Subtest: 22 direct adapter bypass has no policy
+ok 175 - 22 direct adapter bypass has no policy
+  ---
+  duration_ms: 0.0984
+  ...
+# Subtest: 23 denied executor is never called
+ok 176 - 23 denied executor is never called
+  ---
+  duration_ms: 0.2379
+  ...
+# Subtest: 24 allowed executor is called exactly once
+ok 177 - 24 allowed executor is called exactly once
+  ---
+  duration_ms: 0.2367
+  ...
+# Subtest: 25 executor failure is not success
+ok 178 - 25 executor failure is not success
+  ---
+  duration_ms: 0.1885
+  ...
+# Subtest: 26 diagnostics omit prohibited fields
+ok 179 - 26 diagnostics omit prohibited fields
+  ---
+  duration_ms: 0.7694
+  ...
+# Subtest: 27 environment change invalidates context
+ok 180 - 27 environment change invalidates context
+  ---
+  duration_ms: 0.1461
+  ...
+# Subtest: 28 tests need no network or credentials
+ok 181 - 28 tests need no network or credentials
+  ---
+  duration_ms: 0.1208
+  ...
+# Subtest: 29 unexpected payload field rejected
+ok 182 - 29 unexpected payload field rejected
+  ---
+  duration_ms: 0.197
+  ...
+# Subtest: 30 full session field rejected
+ok 183 - 30 full session field rejected
+  ---
+  duration_ms: 0.1921
+  ...
+# Subtest: 31 wrong write policy denies
+ok 184 - 31 wrong write policy denies
+  ---
+  duration_ms: 0.1532
+  ...
+# Subtest: 32 DEMO backend identity is logged denial
+ok 185 - 32 DEMO backend identity is logged denial
+  ---
+  duration_ms: 0.231
+  ...
+# Subtest: 33 SANDBOX external write confirms
+ok 186 - 33 SANDBOX external write confirms
+  ---
+  duration_ms: 0.295
+  ...
+# Subtest: 34 LIVE external write does not use sandbox confirmation
+ok 187 - 34 LIVE external write does not use sandbox confirmation
+  ---
+  duration_ms: 0.1899
+  ...
+# Subtest: 35 result uses normalized fields only
+ok 188 - 35 result uses normalized fields only
+  ---
+  duration_ms: 0.298
+  ...
+# Subtest: 36 async executor called once
+ok 189 - 36 async executor called once
+  ---
+  duration_ms: 0.2478
+  ...
+# Subtest: 37 supported backend commands use the guard and unsupported writes have no table fallback
+ok 190 - 37 supported backend commands use the guard and unsupported writes have no table fallback
+  ---
+  duration_ms: 0.8822
+  ...
+# Subtest: 38 executable Store mutation inventory is centrally wrapped
+ok 191 - 38 executable Store mutation inventory is centrally wrapped
+  ---
+  duration_ms: 2.2334
+  ...
+# Subtest: 39 denied result is explicitly not executed
+ok 192 - 39 denied result is explicitly not executed
+  ---
+  duration_ms: 1.249
+  ...
+# Subtest: 40 allowed sync success is explicit and counted once
+ok 193 - 40 allowed sync success is explicit and counted once
+  ---
+  duration_ms: 0.3685
+  ...
+# Subtest: 41 allowed async success is explicit and counted once
+ok 194 - 41 allowed async success is explicit and counted once
+  ---
+  duration_ms: 0.2623
+  ...
+# Subtest: 42 async rejection fails closed
+ok 195 - 42 async rejection fails closed
+  ---
+  duration_ms: 0.5113
+  ...
+# Subtest: 43 authorization remains distinct from execution
+ok 196 - 43 authorization remains distinct from execution
+  ---
+  duration_ms: 0.2159
+  ...
+# Subtest: 44 missing executor fails closed without execution
+ok 197 - 44 missing executor fails closed without execution
+  ---
+  duration_ms: 0.1791
+  ...
+# Subtest: 45 malformed executor cannot bypass
+ok 198 - 45 malformed executor cannot bypass
+  ---
+  duration_ms: 0.1464
+  ...
+# Subtest: 46 safe thenable succeeds
+ok 199 - 46 safe thenable succeeds
+  ---
+  duration_ms: 0.1832
+  ...
+# Subtest: 47 throwing then getter fails closed
+ok 200 - 47 throwing then getter fails closed
+  ---
+  duration_ms: 0.2909
+  ...
+# Subtest: 48 retry is a new guarded attempt
+ok 201 - 48 retry is a new guarded attempt
+  ---
+  duration_ms: 0.2628
+  ...
+# Subtest: 49 stale fingerprint returns STALE
+ok 202 - 49 stale fingerprint returns STALE
+  ---
+  duration_ms: 0.272
+  ...
+# Subtest: 50 DENY executor remains zero
+ok 203 - 50 DENY executor remains zero
+  ---
+  duration_ms: 0.1964
+  ...
+# Subtest: 51 DENY_AND_LOG executor remains zero
+ok 204 - 51 DENY_AND_LOG executor remains zero
+  ---
+  duration_ms: 0.0743
+  ...
+# Subtest: 52 REAUTH executor remains zero
+ok 205 - 52 REAUTH executor remains zero
+  ---
+  duration_ms: 0.0832
+  ...
+# Subtest: 53 CONFIRM_SANDBOX executor remains zero before confirmation
+ok 206 - 53 CONFIRM_SANDBOX executor remains zero before confirmation
+  ---
+  duration_ms: 0.1304
+  ...
+# Subtest: 54 post-confirm rejection is FAILED
+ok 207 - 54 post-confirm rejection is FAILED
+  ---
+  duration_ms: 0.2113
+  ...
+# Subtest: 55 pending duplicate shares one execution
+ok 208 - 55 pending duplicate shares one execution
+  ---
+  duration_ms: 0.1563
+  ...
+# Subtest: 56 cancellation is distinct and clears pending
+ok 209 - 56 cancellation is distinct and clears pending
+  ---
+  duration_ms: 0.2366
+  ...
+# Subtest: 57 failure clears pending
+ok 210 - 57 failure clears pending
+  ---
+  duration_ms: 0.2105
+  ...
+# Subtest: 58 diagnostics expose neither raw error nor prohibited fields
+ok 211 - 58 diagnostics expose neither raw error nor prohibited fields
+  ---
+  duration_ms: 0.221
+  ...
+# Subtest: 59 success and failure flags never coexist
+ok 212 - 59 success and failure flags never coexist
+  ---
+  duration_ms: 0.158
+  ...
+# Subtest: 60 explicit execution enum is complete
+ok 213 - 60 explicit execution enum is complete
+  ---
+  duration_ms: 0.0756
+  ...
+# Subtest: 61 no real network or credentials are used
+ok 214 - 61 no real network or credentials are used
+  ---
+  duration_ms: 0.1733
+  ...
+# Subtest: 62 adapter errors are thrown rather than converted to success
+ok 215 - 62 adapter errors are thrown rather than converted to success
+  ---
+  duration_ms: 0.5242
+  ...
+1..215
+# tests 215
+# suites 0
+# pass 215
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 254.7184
+
+> dv-portal@0.0.0 test:integration
+> node --test tests/product-foundation.test.js
+
+TAP version 13
+# Subtest: config VALID
+ok 1 - config VALID
+  ---
+  duration_ms: 1.2221
+  ...
+# Subtest: config MISSING
+ok 2 - config MISSING
+  ---
+  duration_ms: 0.1376
+  ...
+# Subtest: config PARTIAL
+ok 3 - config PARTIAL
+  ---
+  duration_ms: 0.0817
+  ...
+# Subtest: config MALFORMED
+ok 4 - config MALFORMED
+  ---
+  duration_ms: 0.0665
+  ...
+# Subtest: config STALE
+ok 5 - config STALE
+  ---
+  duration_ms: 0.1075
+  ...
+# Subtest: config BACKEND_MISMATCH
+ok 6 - config BACKEND_MISMATCH
+  ---
+  duration_ms: 0.116
+  ...
+# Subtest: config ORIGIN_MISMATCH
+ok 7 - config ORIGIN_MISMATCH
+  ---
+  duration_ms: 0.0981
+  ...
+# Subtest: config VERSION_UNSUPPORTED
+ok 8 - config VERSION_UNSUPPORTED
+  ---
+  duration_ms: 0.0759
+  ...
+# Subtest: config AMBIGUOUS
+ok 9 - config AMBIGUOUS
+  ---
+  duration_ms: 0.1426
+  ...
+# Subtest: fingerprint contains all five governed inputs
+ok 10 - fingerprint contains all five governed inputs
+  ---
+  duration_ms: 0.1935
+  ...
+# Subtest: session policy: no session
+ok 11 - session policy: no session
+  ---
+  duration_ms: 0.0949
+  ...
+# Subtest: session policy: compatible session
+ok 12 - session policy: compatible session
+  ---
+  duration_ms: 0.0814
+  ...
+# Subtest: session policy: legacy unscoped session
+ok 13 - session policy: legacy unscoped session
+  ---
+  duration_ms: 0.0445
+  ...
+# Subtest: session policy: another backend
+ok 14 - session policy: another backend
+  ---
+  duration_ms: 0.0776
+  ...
+# Subtest: session policy: another environment
+ok 15 - session policy: another environment
+  ---
+  duration_ms: 0.623
+  ...
+# Subtest: session policy: stale fingerprint
+ok 16 - session policy: stale fingerprint
+  ---
+  duration_ms: 0.0718
+  ...
+# Subtest: session policy: expired session
+ok 17 - session policy: expired session
+  ---
+  duration_ms: 0.0937
+  ...
+# Subtest: session policy: malformed session
+ok 18 - session policy: malformed session
+  ---
+  duration_ms: 0.0493
+  ...
+# Subtest: session policy: unsupported config
+ok 19 - session policy: unsupported config
+  ---
+  duration_ms: 0.1157
+  ...
+# Subtest: session policy: logout
+ok 20 - session policy: logout
+  ---
+  duration_ms: 0.0857
+  ...
+# Subtest: session policy: failed migration
+ok 21 - session policy: failed migration
+  ---
+  duration_ms: 0.047
+  ...
+# Subtest: session policy: environment transition
+ok 22 - session policy: environment transition
+  ---
+  duration_ms: 0.0357
+  ...
+# Subtest: session policy: preview to production
+ok 23 - session policy: preview to production
+  ---
+  duration_ms: 0.0302
+  ...
+# Subtest: session policy: production to preview
+ok 24 - session policy: production to preview
+  ---
+  duration_ms: 0.0277
+  ...
+# Subtest: session policy: SANDBOX to LIVE
+ok 25 - session policy: SANDBOX to LIVE
+  ---
+  duration_ms: 0.0272
+  ...
+# Subtest: adapter has no embedded active backend configuration
+ok 26 - adapter has no embedded active backend configuration
+  ---
+  duration_ms: 0.5684
+  ...
+# Subtest: adapter returns guarded promises and uses fingerprint client lifecycle
+ok 27 - adapter returns guarded promises and uses fingerprint client lifecycle
+  ---
+  duration_ms: 0.3298
+  ...
+# Subtest: boot order is config then resolver then guard then coordinator then adapter
+ok 28 - boot order is config then resolver then guard then coordinator then adapter
+  ---
+  duration_ms: 0.7973
+  ...
+# Subtest: production boot has no direct seed script or active config template
+ok 29 - production boot has no direct seed script or active config template
+  ---
+  duration_ms: 0.3171
+  ...
+# Subtest: lead pipeline is admin-only and keeps anonymous inserts column-scoped
+ok 30 - lead pipeline is admin-only and keeps anonymous inserts column-scoped
+  ---
+  duration_ms: 0.9075
+  ...
+# Subtest: lead notifications keep provider credentials in environment secrets
+ok 31 - lead notifications keep provider credentials in environment secrets
+  ---
+  duration_ms: 1.5774
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 96.8886

@@ -1,0 +1,65 @@
+[
+  {
+    "target": "brand/fonts/LICENSE-Schibsted-Grotesk.txt",
+    "source": "landing/assets/fonts/LICENSE-Schibsted-Grotesk.txt",
+    "sourceCommit": "c487c25184ec05feed526e36572d274acb9d4eb0",
+    "sha256": "18852241dc5c083d426ff47301f53fa96a4d3d456dc061d20646c0b9ffd80744",
+    "bytes": 4499
+  },
+  {
+    "target": "brand/fonts/LICENSE-Space-Mono.txt",
+    "source": "landing/assets/fonts/LICENSE-Space-Mono.txt",
+    "sourceCommit": "c487c25184ec05feed526e36572d274acb9d4eb0",
+    "sha256": "a73c20d6b38329c23a89570c7e16373a9100976fef58deb5a8f2a867ee332496",
+    "bytes": 4485
+  },
+  {
+    "target": "brand/fonts/schibsted-grotesk-latin-normal.woff2",
+    "source": "landing/assets/fonts/schibsted-grotesk-latin-normal.woff2",
+    "sourceCommit": "c487c25184ec05feed526e36572d274acb9d4eb0",
+    "sha256": "4c8b93f431d462c696e12b9d6a033feb3394d36e66e781357c496b95d8a75e05",
+    "bytes": 46752
+  },
+  {
+    "target": "brand/fonts/space-mono-latin-400.woff2",
+    "source": "landing/assets/fonts/space-mono-latin-400.woff2",
+    "sourceCommit": "c487c25184ec05feed526e36572d274acb9d4eb0",
+    "sha256": "fb4a81a2d0a893e5c38c394a7e716a1cef0b24610a0af49c96f6d529bd66bf2b",
+    "bytes": 16520
+  },
+  {
+    "target": "brand/fonts/space-mono-latin-700.woff2",
+    "source": "landing/assets/fonts/space-mono-latin-700.woff2",
+    "sourceCommit": "c487c25184ec05feed526e36572d274acb9d4eb0",
+    "sha256": "2d46bd159b53f55c41167a4f1540a074649464194fd1e416f5b4694a6c0f282c",
+    "bytes": 16724
+  },
+  {
+    "target": "brand/donventas-wordmark-b6-reverse.svg",
+    "source": "don-ventas-runtime/logos/pack/donventas-wordmark-b6-reverse.svg",
+    "sourceCommit": "f01d471bc4aab1c6fdc9010d76d4ec188504919d",
+    "sha256": "c3a0810940289164ff5a40b3ac2524de10d43d12c98743ad41c4089aedb8a90a",
+    "bytes": 2721
+  },
+  {
+    "target": "brand/donventas-symbol-bs-reverse.svg",
+    "source": "don-ventas-runtime/logos/pack/donventas-symbol-bs-reverse.svg",
+    "sourceCommit": "f01d471bc4aab1c6fdc9010d76d4ec188504919d",
+    "sha256": "28f701d69d0e31c2f636fc0c775a1f851cb106af1cb1873ca783772c1dae5bed",
+    "bytes": 640
+  },
+  {
+    "target": "favicon.svg",
+    "source": "don-ventas-runtime/logos/pack/donventas-symbol-bs-reverse.svg",
+    "sourceCommit": "f01d471bc4aab1c6fdc9010d76d4ec188504919d",
+    "sha256": "28f701d69d0e31c2f636fc0c775a1f851cb106af1cb1873ca783772c1dae5bed",
+    "bytes": 640
+  },
+  {
+    "target": "brand/don-ventas-icons-sprite.svg",
+    "source": "don-ventas-runtime/icons/don-ventas-icons-sprite.svg",
+    "sourceCommit": "f01d471bc4aab1c6fdc9010d76d4ec188504919d",
+    "sha256": "5a8b11e2c75167d6d8eee4737ad4e49cb1ed9268eacf6ff3fcf50173e42c91c4",
+    "bytes": 41127
+  }
+]

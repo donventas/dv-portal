@@ -12,56 +12,89 @@ window.DVPortal = (function () {
     route = defaultRoute();
     buildShell();
     go(route);
-    try { const v = DVEnv.storage.getItem('view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
+    try { const v = S.getPreference('view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
   }
-  function hasRoute(v) { return mod().nav().some(n => n.route === v); }
+  function hasRoute(v) { return (v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) || mod().nav().some(n => n.route === v); }
 
   function buildShell() {
     const s = S.session(), m = mod();
     const me = S.me() || {};
-    const roleSeg = s.actor === 'freemium' ? ''
+    const roleSeg = (!DVEnv.isDemo() || s.actor === 'freemium') ? ''
       : s.actor === 'cliente'
       ? '<span class="roleseg"><button id="rgA" class="' + (S.isOwner() ? 'on' : '') + '" onclick="DVPortal.role(\'owner\')">Owner</button><button id="rgB" class="' + (S.isOwner() ? '' : 'on') + '" onclick="DVPortal.role(\'miembro\')">Miembro</button></span>'
       : '<span class="roleseg"><button id="rgA" class="' + (S.isAdmin() ? '' : 'on') + '" onclick="DVPortal.role(\'analista\')">Analista</button><button id="rgB" class="' + (S.isAdmin() ? 'on' : '') + '" onclick="DVPortal.role(\'admin\')">Admin</button></span>';
     U.el('topBar').innerHTML =
-      U.MARK + '<span class="brand">DON<i>·</i>VENTAS</span>' +
+      '<button id="mobileNavToggle" class="mobile-nav-toggle" aria-controls="side" aria-expanded="false">Menú</button>' + U.WORDMARK +
       '<span class="ctx">' + m.ctxLabel() + '</span>' +
       '<span class="who">' + roleSeg +
-      '<div class="popwrap" onmouseenter="DVPortal.renderNoti()"><button class="iconbtn" onclick="DVPortal.pin(\'noti\')" aria-label="Notificaciones">🔔<span class="ndot"></span></button>' +
+      '<div class="popwrap" onmouseenter="DVPortal.renderNoti()"><button class="iconbtn" onclick="DVPortal.pin(\'noti\')" aria-label="Notificaciones">' + U.icon('message') + '<span class="ndot"></span></button>' +
       '<div class="pop" id="notiPop"><div class="ph">Notificaciones</div><div id="notiBody"></div></div></div>' +
       '<div class="popwrap" onmouseenter="DVPortal.renderGloss()"><button class="iconbtn" onclick="DVPortal.pin(\'gloss\')" aria-label="Glosario">?</button>' +
       '<div class="pop" id="glossPop"><div class="ph">Glosario</div><div class="ghead" id="glossHead"></div><div id="glossBody"></div></div></div>' +
-      '<span class="pill" id="rolePill"></span><span class="av">' + (me.name ? me.name[0] : '·') + '</span>' +
+      '<span class="pill" id="rolePill"></span><span class="av">' + U.esc(me.name ? me.name[0] : '·') + '</span>' +
       '<button class="iconbtn" title="Salir" onclick="DVPortal.logout()" aria-label="Salir">⎋</button></span>';
     U.el('rolePill').textContent = s.actor === 'freemium' ? 'Cuenta gratis' : s.actor === 'cliente' ? (S.isOwner() ? 'Owner' : 'Miembro') : (S.isAdmin() ? 'Admin' : 'Analista');
     buildNav();
+    U.el('app').classList.remove('nav-open');
+    U.el('mobileNavToggle').onclick = () => {
+      const open = U.el('app').classList.toggle('nav-open');
+      U.el('mobileNavToggle').setAttribute('aria-expanded', String(open));
+    };
+    U.el('app').onkeydown = e => { if(e.key==='Escape' && U.el('app').classList.contains('nav-open')) { U.el('app').classList.remove('nav-open');U.el('mobileNavToggle').setAttribute('aria-expanded','false');U.el('mobileNavToggle').focus(); } };
   }
 
   function buildNav() {
-    U.el('side').innerHTML = mod().nav().map(n => {
+    const icons = { tablero:'layers', impacto:'target', bitacora:'article', archivos:'order', cuenta:'coins', miembros:'users', cuentas:'layers', cola:'order', skills:'zap', mejoras:'bulb', waitlist:'calendar', capacidad:'chart', desempeno:'trending', resenas:'message', equipo:'users', accesos:'shield', facturacion:'coins', utilidad:'chart', valor:'target', prospectos:'search', aplicacion:'website', referidos:'users', diagnostico:'diagnosis' };
+    U.el('side').innerHTML = (DVEnv.isDemo() && window.DVHybridDemo ? '<button class="nav" data-nav="hybrid" onclick="DVPortal.go(\'hybrid\')">' + U.icon('compass') + 'Recorrido de marca · DEMO</button>' : '') + mod().nav().map(n => {
       if (n.group) return '<div class="lbl">' + n.group + '</div>';
-      if (n.static) return '<div class="nav locked"' + (n.title ? ' title="' + U.esc(n.title) + '"' : '') + '><span class="i">' + n.icon + '</span> ' + n.label + ' ' + (n.badge || '') + '</div>';
-      return '<button class="nav" data-nav="' + n.route + '" onclick="DVPortal.go(\'' + n.route + '\')"><span class="i">' + n.icon + '</span> ' + n.label + ' ' + (n.badge || '') + '</button>';
+      if (n.static) return '<div class="nav locked"' + (n.title ? ' title="' + U.esc(n.title) + '"' : '') + '>' + U.icon(n.locked ? 'shield' : 'tag') + ' ' + n.label + ' ' + (n.badge || '') + '</div>';
+      return '<button class="nav" data-nav="' + n.route + '" onclick="DVPortal.go(\'' + n.route + '\')">' + U.icon(icons[n.route] || 'layers') + ' ' + n.label + ' ' + (n.badge || '') + '</button>';
     }).join('');
     markNav();
   }
   function markNav() { U.qsa('#side .nav[data-nav]').forEach(b => b.classList.toggle('on', b.dataset.nav === route)); }
 
   function go(v) {
+    const menuWasOpen=U.el('app').classList.contains('nav-open');
+    U.el('app').classList.remove('nav-open');
+    U.el('mobileNavToggle')?.setAttribute('aria-expanded','false');
     route = v;
-    mod().render(v, U.el('viewHost'));
+    if(v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) DVHybridDemo.render(U.el('viewHost'));
+    else mod().render(v, U.el('viewHost'));
+    applyCapabilities();
     markNav();
     const main = U.el('main'); if (main) main.scrollTop = 0;
-    try { if (v !== 'bloque') DVWriteGuard.run('ui.preference', 'ui-state', {}, () => DVEnv.storage.setItem('view-' + S.session().actor, v)); } catch (e) { }
+    if(menuWasOpen){U.el('viewHost').tabIndex=-1;U.el('viewHost').focus({preventScroll:true});}
+    try { if (v !== 'bloque') DVWriteGuard.run('ui.preference', 'ui-state', {}, () => S.savePreference('view-' + S.session().actor, v)); } catch (e) { }
   }
 
+  function applyCapabilities() {
+    if (DVEnv.isDemo()) return;
+    document.querySelectorAll('[onclick],[onchange],[oninput]').forEach(el => {
+      const handlers = ['onclick','onchange','oninput'].map(a => el.getAttribute(a) || '').join(' ');
+      const matches = handlers.matchAll(/(DVClient|DVStaff|DVFree|DVAuth)\.(\w+)\(/g);
+      for (const match of matches) {
+        const target = window[match[1]];
+        if (target && target.demoOnly && target.demoOnly.includes(match[2])) {
+          el.disabled = true; el.setAttribute('aria-disabled','true'); el.title = 'Disponible solo en DEMO';
+        }
+      }
+    });
+  }
   function role(r) {
     S.setRole(r);
     buildShell();
     if (!hasRoute(route)) route = defaultRoute();
     go(route);
   }
-  function logout() { if (window.DVSupa && DVSupa.BACKEND()) { try { DVSupa.signOut(); } catch (e) { } } S.logout(); U.el('app').classList.remove('on'); U.el('side').innerHTML = ''; U.el('topBar').innerHTML = ''; U.el('auth').style.display = 'grid'; DVAuth.render(); }
+  async function logout() {
+    const signingOut = window.DVSupa && DVSupa.BACKEND() ? DVSupa.signOut() : null;
+    S.logout();
+    ['side','topBar','viewHost','modalHost'].forEach(id => { U.el(id).innerHTML = ''; });
+    U.el('app').classList.remove('on'); U.el('auth').style.display = 'grid'; DVAuth.render();
+    U.el('auth').inert = !!signingOut;
+    if (signingOut) { try { await signingOut; } catch (_) { U.toast('No se pudo confirmar el cierre remoto'); } finally { U.el('auth').inert = false; } }
+  }
 
   /* ── glosario ── */
   const GLOSS_C = {
@@ -107,7 +140,7 @@ window.DVPortal = (function () {
   const NOTI_F = [{ t: 'Tu diagnóstico está listo', d: 'Revísalo y da el siguiente paso', go: () => go('diagnostico') }, { t: 'Aparta tu lugar', d: 'Arranca con Fundación', go: () => go('contratar') }];
   function renderNoti() {
     const act = S.session().actor;
-    const list = act === 'cliente' ? NOTI_C : act === 'freemium' ? NOTI_F : NOTI_S;
+    const list = !DVEnv.isDemo() ? [] : act === 'cliente' ? NOTI_C : act === 'freemium' ? NOTI_F : NOTI_S;
     window.__noti = list;
     U.el('notiBody').innerHTML = list.map((n, i) => '<div class="noti" onclick="DVPortal.notiGo(' + i + ')" style="cursor:pointer"><b>' + n.t + '</b><p>' + n.d + '</p></div>').join('');
   }
@@ -129,7 +162,7 @@ window.DVPortal = (function () {
       const b = DVClient.curBlockObj(), pv = S.previewOf(b.id), acc = S.account(S.session().accountId);
       const wm = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='140'%3E%3Ctext x='6' y='86' font-family='monospace' font-size='15' fill='%23F0C674' fill-opacity='0.13' transform='rotate(-20 120 70)'%3EBORRADOR %C2%B7 " + encodeURIComponent(acc.name.toUpperCase()) + "%3C/text%3E%3C/svg%3E";
       host.innerHTML = '<div class="modal sec-modal on" onclick="if(event.target===this)DVPortal.closeModal()"><div class="mbox">' +
-        '<div class="sec-hd"><span style="color:#7DE0A6">🔒</span> Vista segura · dentro del portal <span class="x2" onclick="DVPortal.closeModal()">Cerrar ✕</span></div>' +
+        '<div class="sec-hd"><span style="color:var(--fg)">🔒</span> Vista segura · dentro del portal <span class="x2" onclick="DVPortal.closeModal()">Cerrar ✕</span></div>' +
         '<div class="sec-body"><div class="sec-stage"><div class="mono" style="font-size:10px;letter-spacing:.14em;color:var(--fg-faint)">PREVIEW · ' + b.code + ' · ' + U.esc(b.title.toUpperCase()) + '</div>' +
         '<div style="font-size:28px;font-weight:800;letter-spacing:-.02em;margin-top:10px;line-height:1.05">Tu marca<br>es tu <span style="color:var(--accent)">ventaja.</span></div>' +
         '<div class="mono" style="color:var(--fg-soft);font-size:12px;margin-top:10px">rama · ' + U.esc(pv.branch) + '</div></div>' +
@@ -151,13 +184,23 @@ window.DVPortal = (function () {
     if (!(e.target.closest && e.target.closest('.popwrap'))) U.qsa('.pop').forEach(p => p.classList.remove('pin'));
   });
 
-  return { boot, go, role, logout, renderGloss, renderNoti, notiGo, pin, modal, closeModal, doComment, doRound };
+  return { applyCapabilities, boot, go, role, logout, renderGloss, renderNoti, notiGo, pin, modal, closeModal, doComment, doRound };
 })();
 
 /* arranque */
 (function () {
   const BACKEND = window.DVSupa && DVSupa.BACKEND();
   if (BACKEND) {
+    if (DVSupa.captureInvitation()) {
+      const host = document.getElementById('auth');
+      host.innerHTML = '<div class="acard"><h1>Confirma tu invitación</h1><p class="lead">Revisaremos la verificación de tu correo. El administrador debe conceder el acceso antes de que puedas entrar.</p><button class="btn solid full" id="acceptInvitation">Continuar</button><p id="invitationResult" role="status"></p></div>';
+      document.getElementById('acceptInvitation').onclick = async function () {
+        this.disabled = true;
+        try { await DVSupa.acceptInvitation(); document.getElementById('invitationResult').textContent = 'Correo verificado. Cuando el administrador conceda tu acceso, solicita un enlace nuevo para entrar.'; }
+        catch (_) { document.getElementById('invitationResult').textContent = 'No se pudo completar la confirmación. Pide al administrador revisar tu invitación.'; }
+      };
+      return;
+    }
     // EN VIVO: la sesión se deriva de Supabase Auth (no de localStorage).
     U_boot();
     return;
@@ -178,14 +221,13 @@ window.DVPortal = (function () {
       if (uid) {
         await DVSupa.hydrate();
         const u = window.DV_SEED.users.find(x => x.id === uid);
-        if (u) { DVStore.loginAs(u); DVPortal.boot(); return; }
-        // huérfano (sin app_user / sin cuenta) → vista freemium (D-07)
-        let email = '';
-        try { email = (await DVSupa.authEmail()) || ''; } catch (e) { }
-        DVStore.loginFree({ email: email });
-        DVPortal.boot(); return;
+        if (u && !u.pending) { DVStore.loginAs(u); DVPortal.boot(); return; }
+        DVStore.logout();
+        DVAuth.render();
+        DVUtil.toast('No hay un perfil operativo autorizado para esta sesión');
+        return;
       }
-    } catch (e) { console.error('[portal] boot en vivo', e); if (window.DVUtil) DVUtil.toast('No se pudo cargar tu portal'); }
+    } catch (e) { console.error('[portal] BACKEND_BOOT_FAILED'); if (window.DVUtil) DVUtil.toast('No se pudo cargar tu portal'); }
     DVAuth.render();
   }
 })();

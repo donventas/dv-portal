@@ -12,7 +12,7 @@ window.DVSupa = (function () {
   const guarded = (action, resourceType, options, executor) => {
     if (!window.DVWriteGuard) return Promise.reject(new Error('WRITE_DIRECT_BYPASS_BLOCKED'));
     const value = DVWriteGuard.run(action, resourceType, options || {}, executor);
-    return value && typeof value.then === 'function' ? value : Promise.resolve(value);
+    return Promise.resolve(value).then(result => { if (result && result.authorized === false) throw new Error('WRITE_DENIED'); return result; });
   };
 
   let _client = null;
@@ -29,7 +29,9 @@ window.DVSupa = (function () {
     if (!window.supabase) {
       await new Promise((res, rej) => {
         const s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+        s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js';
+        s.integrity = 'sha384-UagCvVPT5XXA0Hx+nJYUAGBFseHT9zBgpJMSebsAxl9lciTwbT+39j5VfRjdP5Tp';
+        s.crossOrigin = 'anonymous';
         s.onload = res; s.onerror = () => rej(new Error('No se pudo cargar supabase-js'));
         document.head.appendChild(s);
       });
@@ -37,10 +39,14 @@ window.DVSupa = (function () {
     _client = window.supabase.createClient(CFG.URL, CFG.ANON, {
       auth: {
         persistSession: true,
+        flowType: 'pkce',
         detectSessionInUrl: true,
         autoRefreshToken: true,
         storageKey: DVEnv.storageKey('supabase-auth')
       }
+    });
+    if (_client.auth.onAuthStateChange) _client.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'SIGNED_IN') clearIdentity();
     });
     _clientFingerprint = resolution.fingerprint;
     return _client;
@@ -52,7 +58,7 @@ window.DVSupa = (function () {
       const c = await client();
       const { error } = await c.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: location.href.split('#')[0] }
+        options: { shouldCreateUser: false, emailRedirectTo: new URL(location.href).origin + new URL(location.href).pathname }
       });
       if (error) throw error;
       return true;
@@ -63,7 +69,7 @@ window.DVSupa = (function () {
       const c = await client();
       const { error } = await c.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: location.href.split('#')[0] }
+        options: { redirectTo: new URL(location.href).origin + new URL(location.href).pathname }
       });
       if (error) throw error;
       return true;
@@ -81,16 +87,19 @@ window.DVSupa = (function () {
   }
   async function signOut() {
     return guarded('auth.signout', 'auth-session', { requiresAuth: true }, async () => {
-      const c = await client(); checked(await c.auth.signOut()); return true;
+      const c = await client(); const result = await c.auth.signOut(); if (!result || result.error) throw new Error('AUTH_SIGNOUT_FAILED'); return true;
     });
   }
 
   /* ── Lectura: hidrata window.DV_SEED con la forma del schema ───── */
   async function hydrate() {
     const c = await client();
+    const startEpoch = epoch, fingerprint = DVEnv.fingerprint();
+    const uid = await authUid();
+    if (!uid) throw new Error('AUTH_REVALIDATION_REQUIRED');
     const T = async (name) => {
       const { data, error } = await c.from(name).select('*');
-      if (error) throw new Error(name + ': ' + error.message);
+      if (error) throw new Error('BACKEND_READ_FAILED');
       return data || [];
     };
     const [account, app_user, assignment, package_access, brand, project,
@@ -112,79 +121,123 @@ window.DVSupa = (function () {
         created_at: r.created_at, author: r.author
       }));
 
+    const feedback = DVEnv.resolution().config.features.h10Commands === 'verified-v1' ? await T('portal_feedback') : [];
     const CAPAS = (window.DV_SEED && window.DV_SEED.CAPAS) || [];
     const nextSeed = {
-      accounts: account, users, assignments: assignment, package_access,
+      feedback, accounts: account, users, assignments: assignment, package_access,
       brands: brand, projects: project, blocks: block, rounds,
       previews: preview, assets: asset, invoices: invoice, skills: skill, leads: lead, CAPAS
     };
+    if (startEpoch !== epoch || fingerprint !== DVEnv.fingerprint() || uid !== await authUid()) throw new Error('IDENTITY_STALE');
     Object.keys(window.DV_SEED).forEach(k => delete window.DV_SEED[k]);
     Object.assign(window.DV_SEED, nextSeed);
     return window.DV_SEED;
   }
 
-  /* ── Escritura: persiste las mutaciones (el optimismo lo hace store.js) ─
-       Fire-and-forget con manejo de error → toast. El RLS decide si procede. */
+  /* H1 commands fail closed until the versioned backend contract is verified.
+     No legacy multi-request mutation is a fallback. */
   function checked(result) {
-    if (result && result.error) {
-      const safe = new Error('BACKEND_WRITE_FAILED');
-      safe.code = 'BACKEND_WRITE_FAILED';
-      throw safe;
-    }
-    return result && result.data !== undefined ? result.data : true;
+    if (!result || result.error || result.data == null) { const safe = new Error('BACKEND_RESULT_REQUIRED'); throw safe; }
+    return result.data;
   }
-  async function _c() { return client(); }
-
-  const write = {
-    approve(blockId) { return guarded('block.backend.approve', 'block', { resourceId: blockId, requiresAuth: true }, async () => checked(await (await _c()).from('block').update({ status: 'cerrado', progress: 100 }).eq('id', blockId).select().maybeSingle())); },
-
-    addRound(blockId, seqInt, patch) {
-      return guarded('round.backend.create', 'round', { resourceId: blockId, requiresAuth: true }, () => _c().then(async c => {
-        const row = Object.assign({ block_id: blockId, seq: seqInt, result: 'propuesto' }, patch);
-        checked(await c.from('round').insert(row));
-        checked(await c.from('block').update({ status: 'en_revision' }).eq('id', blockId));
-        return row;
-      }));
-    },
-
-    invite(accId, email) { return guarded('invitation.backend.create', 'invitation', { resourceId: accId, requiresAuth: true, externallyVisible: true }, async () => checked(await (await _c()).from('invitation').insert({ account_id: accId, email, role: 'miembro' }).select().maybeSingle())); },
-    inviteStaff(email) { return guarded('staff.backend.invite', 'invitation', { requiresAuth: true, externallyVisible: true }, async () => checked(await (await _c()).from('invitation').insert({ account_id: null, email, role: 'analista' }).select().maybeSingle())); },
-
-    assign(accId, analystId) {
-      return guarded('assignment.backend.upsert', 'assignment', { resourceId: accId, requiresAuth: true }, () => _c().then(async c => {
-        const ex = await c.from('assignment').select('id').eq('account_id', accId).maybeSingle();
-        checked(ex);
-        if (ex.data) return checked(await c.from('assignment').update({ analyst_id: analystId }).eq('id', ex.data.id).select().maybeSingle());
-        return checked(await c.from('assignment').insert({ account_id: accId, analyst_id: analystId }).select().maybeSingle());
-      }));
-    },
-
-    validatePayment(invoiceId, accountId) {
-      return guarded('payment.backend.validate', 'payment', { resourceId: invoiceId, requiresAuth: true, destructive: true, externallyVisible: true }, () => _c().then(async c => {
-        const r1 = await c.from('invoice').update({ status: 'pagado', paid_at: new Date().toISOString() }).eq('id', invoiceId).select().maybeSingle();
-        checked(r1);
-        if (r1.data) checked(await c.from('payment').insert({ invoice_id: invoiceId, amount: r1.data.amount, provider: 'manual' }));
-        return r1.data;
-      }));
-    },
-
-    publishSkill(id, v) { return guarded('skill.backend.publish', 'skill', { resourceId: id, requiresAuth: true, externallyVisible: true }, async () => checked(await (await _c()).from('skill').update({ v }).eq('id', id).select().maybeSingle())); },
-
-    register(name, segment, fit, queuePos) {
-      return guarded('account.backend.register', 'account', { requiresAuth: true }, async () => checked(await (await _c()).from('account').insert({ name, segment, status: 'waitlist', queue_position: queuePos, fit, diag: 'hecho' }).select().maybeSingle()));
-    },
-
-    // Multi-fila y transaccional → RPC (04_rpc.sql). Devuelve el nuevo account_id.
-    activate(accId, analystId) {
-      return guarded('account.backend.activate', 'account', { resourceId: accId, requiresAuth: true, destructive: true, externallyVisible: true }, async () =>
-        checked(await (await _c()).rpc('activate_account', { p_account: accId, p_analyst: analystId })));
-    },
-
-    updateLead(leadId, patch) {
-      return guarded('lead.backend.update', 'lead', { resourceId: leadId, requiresAuth: true }, async () =>
-        checked(await (await _c()).from('lead').update(patch).eq('id', leadId).select().maybeSingle()));
-    }
+  const intentions = new Map();
+  let epoch = 0;
+  function clearIdentity() {
+    epoch++; intentions.clear();
+    if (window.DVStore) DVStore.logout();
+    ['viewHost','modalHost','topBar','side'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
+    const app = document.getElementById('app'); if (app) app.classList.remove('on');
+  }
+  async function command(kind, resource, version, revision, payload) {
+    return guarded(kind === 'approve' ? 'block.backend.approve' : kind === 'activate' ? 'account.backend.activate' : 'round.backend.create', kind === 'activate' ? 'account' : 'block', { resourceId: resource, requiresAuth: true }, async () => {
+      const resolution = DVEnv.resolution();
+      if (!resolution.config || !resolution.config.features || resolution.config.features.h10Commands !== 'verified-v1') throw new Error('BACKEND_CONTRACT_UNVERIFIED');
+      if (!Number.isInteger(version) || version < 0 || (kind !== 'activate' && !revision)) throw new Error('EXPECTED_REVISION_REQUIRED');
+      const c = await client();
+      const startEpoch = epoch, fingerprint = DVEnv.fingerprint();
+      const userResult = await c.auth.getUser();
+      const user = userResult && !userResult.error && userResult.data && userResult.data.user;
+      if (!user) { clearIdentity(); throw new Error('AUTH_REVALIDATION_REQUIRED'); }
+      const actorResult = await c.from('app_user').select('*').eq('id', user.id).single();
+      if (!actorResult || actorResult.error || !actorResult.data) { clearIdentity(); throw new Error('AUTH_REVALIDATION_REQUIRED'); }
+      const actor = actorResult.data;
+      const session = window.DVStore && DVStore.session();
+      if (!session || actor.pending || actor.id !== session.userId || actor.account_id !== session.accountId || actor.role !== session.role || actor.member_role !== session.memberRole) {
+        clearIdentity(); throw new Error('AUTH_REVALIDATION_REQUIRED');
+      }
+      const signature = JSON.stringify([fingerprint, user.id, actor.account_id, kind, resource, version, revision, payload]);
+      if (!intentions.has(signature)) intentions.set(signature, crypto.randomUUID());
+      let timer;
+      const result = checked(await Promise.race([c.rpc('portal_command_v1', { p_key: intentions.get(signature), p_kind: kind, p_resource: resource, p_version: version, p_revision: revision, p_payload: payload }), new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('COMMAND_TIMEOUT')), 15000); })]).finally(() => clearTimeout(timer)));
+      if (epoch !== startEpoch || fingerprint !== DVEnv.fingerprint()) throw new Error('IDENTITY_STALE');
+      const row = kind === 'activate' ? result.account : result.block;
+      if (result.contract !== 'portal-command-v1' || result.actor !== user.id || result.resource !== resource || !row || row.id !== resource || row.version !== version + 1 || (kind === 'approve' && row.status !== 'cerrado') || (kind === 'round' && (!result.round || result.round.block_id !== resource)) || (kind === 'feedback' && (!result.feedback || result.feedback.block_id !== resource || result.feedback.revision_id !== revision))) throw new Error('CANONICAL_RESULT_INVALID');
+      return result;
+    });
+  }
+  const unsupported = () => Promise.reject(new Error('BACKEND_ACTION_UNSUPPORTED'));
+  let invitationToken = null;
+  function captureInvitation() {
+    if (!identity.enabled()) return false;
+    const fragment = new URLSearchParams(location.hash.slice(1));
+    if (fragment.get('type') !== 'invite') return false;
+    invitationToken = fragment.get('access_token');
+    history.replaceState(null, '', location.pathname);
+    return true;
+  }
+  function acceptInvitation() {
+    return guarded('auth.invitation', 'auth-session', {}, async () => {
+      identityGate(); const token = invitationToken; invitationToken = null;
+      if (!token) throw new Error('INVITATION_INVALID');
+      // Provider invites use a one-time implicit callback, not PKCE. Do not install
+      // that bearer session in the SDK/Store; verify and close it, then use PKCE login.
+      const headers = { apikey: CFG.ANON, Authorization: 'Bearer ' + token };
+      const r = await fetch(CFG.URL + '/auth/v1/user', { headers, signal: AbortSignal.timeout(10000) });
+      const user = await r.json();
+      if (!r.ok || !user.email_confirmed_at) throw new Error('INVITATION_INVALID');
+      const logout = await fetch(CFG.URL + '/auth/v1/logout?scope=local', { method: 'POST', headers, signal: AbortSignal.timeout(10000) });
+      if (!logout.ok) throw new Error('INVITATION_CLOSE_UNCONFIRMED');
+      return true;
+    });
+  }
+  function identityGate() {
+    if (!BACKEND() || DVEnv.state() !== 'SANDBOX' || location.hostname !== '127.0.0.1' ||
+        DVEnv.resolution().config.features.identityInvitations !== 'isolated-v1') throw new Error('IDENTITY_CONTRACT_UNVERIFIED');
+  }
+  const identity = {
+    enabled: () => { try { identityGate(); return true; } catch (_) { return false; } },
+    directory: async (kind, after) => { identityGate(); const c = await client(); return checked(await c.rpc('portal_identity_directory_v1', { p_kind: kind, p_after: after || null })); },
+    factors: async () => { identityGate(); const c = await client(); const r = await c.auth.mfa.listFactors(); if (r.error) throw new Error('MFA_REQUIRED'); return r.data.totp.filter(f => f.status === 'verified'); },
+    verify: (factorId, code) => guarded('identity.mfa', 'auth-session', { requiresAuth: true }, async () => {
+      identityGate(); const c = await client(); const r = await c.auth.mfa.challengeAndVerify({ factorId, code });
+      if (r.error) throw new Error('MFA_REQUIRED'); return true;
+    }),
+    invite: (key, email, reason) => guarded('identity.invite', 'invitation', { requiresAuth: true, externallyVisible: true }, async () => {
+      identityGate(); const c = await client(), session = await c.auth.getSession();
+      const token = session.data?.session?.access_token; if (!token) throw new Error('AUTH_REVALIDATION_REQUIRED');
+      const r = await fetch('/api/admin/invitations', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({ key, email, reason }), signal: AbortSignal.timeout(25000) });
+      const data = await r.json(); if (!r.ok || !data.id || !['queued','dispatching','uncertain','sent','failed','cancelled'].includes(data.state)) throw new Error('INVITATION_NOT_CONFIRMED');
+      return data;
+    }),
+    cancel: id => guarded('identity.cancel', 'invitation', { resourceId: id, requiresAuth: true }, async () => {
+      identityGate(); const c = await client(); return checked(await c.rpc('portal_invitation_cancel_v1', { p_id: id }));
+    }),
+    command: params => guarded('identity.access', 'identity', { resourceId: params.p_target, requiresAuth: true }, async () => {
+      identityGate(); const c = await client(); const result = checked(await c.rpc('portal_identity_command_v1', params));
+      if (result.target !== params.p_target || result.contract !== 'portal-identity-v1' || result.version !== params.p_version + 1) throw new Error('CANONICAL_RESULT_INVALID');
+      return result;
+    })
   };
-
-  return { LIVE, BACKEND, client, signIn, signInWithGoogle, authUid, authEmail, signOut, hydrate, write };
+  const write = {
+    approve: (id, version, revision) => command('approve', id, version, revision, {}),
+    addRound: (id, seq, patch, version, revision) => command(patch.result === 'ajustes' ? 'feedback' : 'round', id, version, revision, { title: patch.title, deliverable: patch.deliverable, feedback: patch.feedback }),
+    activate: (id, analyst, version) => command('activate', id, version, null, { analyst_id: analyst }),
+    invite: unsupported, inviteStaff: unsupported, assign: unsupported,
+    validatePayment: unsupported, publishSkill: unsupported, register: unsupported, updateLead: unsupported
+  };
+  if (window.DVEnv && DVEnv.subscribe) DVEnv.subscribe(snapshot => {
+    if (snapshot.state === 'VALIDATING' || snapshot.state === 'BLOCKED') { epoch++; intentions.clear(); if (_client && _client.removeAllChannels) _client.removeAllChannels(); _client = null; _clientFingerprint = null; }
+  });
+  return { LIVE, BACKEND, client, signIn, signInWithGoogle, authUid, authEmail, signOut, hydrate, write, identity, captureInvitation, acceptInvitation };
 })();

@@ -46,7 +46,13 @@ window.DVUtil = (function () {
     tmr = setTimeout(() => t.classList.remove('on'), 2800);
   }
 
-  const MARK = '<svg class="mk" viewBox="0 0 100 100" fill="none"><path d="M22 16 L22 84 L58 50 Z" stroke="#F2F5F9" stroke-width="9" stroke-linejoin="round"></path><path d="M54 20 L84 50 L54 80" stroke="#3B74F2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+  const MARK = '<img class="mk" src="brand/donventas-symbol-bs-reverse.svg" width="49" height="46" alt="Don Ventas">';
+  const WORDMARK = '<img class="brand-wordmark" src="brand/donventas-wordmark-b6-reverse.svg" width="210" height="130" alt="Don Ventas">';
+  // Exact Block 05 exports: monochrome at rest; one canonical accent when active.
+  function icon(name) {
+    const base = 'brand/don-ventas-icons-sprite.svg#dv-' + name + '-p';
+    return '<svg class="dv-icon" viewBox="0 0 24 24" aria-hidden="true"><use class="icon-rest" href="' + base + '-mono"></use><use class="icon-active" href="' + base + '"></use></svg>';
+  }
 
   /* El Don · emblema del monóculo (mínimo) con expresión vía ceja. Avatar del copiloto. */
   function elDon(o) {
@@ -66,5 +72,5 @@ window.DVUtil = (function () {
     return '<svg viewBox="0 0 120 120" role="img" aria-label="El Don">' + brow + eye + monocle + '</svg>';
   }
 
-  return { el, qsa, esc, mxn, statusPill, resTag, fitTag, prog, ago, toast, ST_LABEL, MARK, elDon, CANON_STATES, blockState, roundState, stateLabel, statePill, CHEVRON };
+  return { el, qsa, esc, mxn, statusPill, resTag, fitTag, prog, ago, toast, ST_LABEL, MARK, WORDMARK, icon, elDon, CANON_STATES, blockState, roundState, stateLabel, statePill, CHEVRON };
 })();
