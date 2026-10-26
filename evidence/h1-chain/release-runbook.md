@@ -79,6 +79,13 @@ evaluar reconciliación y restaurar el backup del destino autorizado en aislamie
 antes de cambiar tráfico. No revocar políticas o reabrir grants como atajo.
 
 La integración existente Vercel intentó un preview con el primer push de H1.0 y
-reportó fallo. vercel.json deshabilita deployments solo para codex/portal-h1-hardening;
-verificar el efecto tras push. No ejecutar vercel deploy, migraciones remotas ni merge
-por el hecho de tener el paquete listo. Otras ramas conservan su configuración.
+reportó fallo. La preparación del PR6 añade un bloqueo explícito de Git deployments
+para `main`, además de `codex/portal-h1-hardening`, en vercel.json. La integración
+de código queda separada de publicación; otras ramas conservan su configuración.
+La revisión del panel y los límites de esta comprobación constan en
+[REVIEW.md](../pr6-integration/REVIEW.md). No ejecutar vercel deploy, migraciones
+remotas ni merge por el hecho de tener el paquete listo. Rehabilitar despliegues
+requiere un cambio revisado y autorización de publicación separados.
+
+Aceptación humana H1.1 atendida en [ACCEPTANCE.md](../h11-appearance/ACCEPTANCE.md).
+Los 39 flujos operativos y la admisión LIVE siguen pendientes.

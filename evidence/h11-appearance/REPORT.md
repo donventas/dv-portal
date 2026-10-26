@@ -1,7 +1,9 @@
 # H1.1 — apariencia y responsividad del Portal
 
-Fecha: 2026-10-25. Implementación local preparada para aceptación visual de Arturo.
-**No constituye cierre de aceptación humana, release alojado ni operación H1.2.**
+Fecha: 2026-10-25. **Diseño y recorrido funcional aceptados por Arturo** sobre
+`6f69bcf`; véase [acta de aceptación](ACCEPTANCE.md). Las secciones siguientes
+conservan la historia de implementación y pruebas anterior a esa aceptación.
+**No constituye release alojado ni operación H1.2.**
 Los flujos operativos conservan su estado pendiente en el [backlog](../operational-backlog.md).
 
 ## Revisión editorial 02 — contraste y personalidad
@@ -169,12 +171,13 @@ dependencias, fuentes remotas, imágenes raster de producto ni servicios de terc
 Implementación visual y QA técnica local: preparadas para revisión de Arturo.
 Revisión independiente: bordes/foco y contraste del interruptor corregidos; sin
 bloqueantes adicionales observados en el diff y capturas dentro de su alcance.
-La aceptación visual del Portal integrado permanece pendiente y no se hereda de
-la aprobación del sistema de marca. No se declara H1.2 ni preparación productiva.
+La aceptación visual y funcional del Portal integrado fue otorgada expresamente
+por Arturo y está registrada en [ACCEPTANCE.md](ACCEPTANCE.md). No se declara
+H1.2 ni preparación productiva.
 
 Preview de revisión: http://127.0.0.1:8011/ (servidor DEMO preexistente, no iniciado
 ni detenido por esta ronda). Servidor de pruebas 8002 temporal cerrado por Playwright.
 Rollback: revertir el commit de esta integración mediante cambio revisado; no
 reset/clean, no datos de BD que recuperar. Retirar el consumo derivado no modifica
-los maestros Runtime. Próxima decisión humana: aceptar o señalar ajustes de la
-DEMO en ambos temas para registrar el cierre de diseño H1.1.
+los maestros Runtime. El cierre de diseño H1.1 ya está registrado; la integración
+del PR y cualquier habilitación alojada conservan decisiones separadas.

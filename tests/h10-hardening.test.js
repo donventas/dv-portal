@@ -7,6 +7,16 @@ const { randomUUID } = require('node:crypto');
 const Env = require('../app/environment.js');
 const source = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 
+test('integration into the production branch does not enable Vercel Git deployments', () => {
+  const config = JSON.parse(source('vercel.json'));
+  // Vercel defaults unspecified branches to enabled; any matching true rule wins.
+  // Keep the reviewed main/PR deny map exact so a wildcard cannot override it.
+  assert.deepEqual(config.git.deploymentEnabled, {
+    main: false,
+    'codex/portal-h1-hardening': false
+  });
+});
+
 function harness({ mode = 'LIVE', enabled = true, rpc } = {}) {
   const calls = [], notices = [], routes = [], subscriptions = [];
   let authCallback, actor = { id: 'synthetic-owner-a', account_id: 'synthetic-a', name: 'Synthetic owner', role: 'cliente', member_role: 'owner', pending: false };

@@ -86,13 +86,16 @@ a IAM/AUTH. Esto cubre también las superficies de sesión del inventario origin
 
 Avance local posterior: [apariencia H1.1 integrada](h11-appearance/REPORT.md).
 La dependencia de recibir la variante de Runtime está atendida y Portal ya la
-consume en DEMO. UX-01/BRAND-01 conservan pendiente la aceptación visual y la
-habilitación alojada; SITE-01 pertenece al chat del sitio. Esto no activa flujos operativos.
+consume en DEMO. Arturo aprobó el diseño y recorrido funcional H1.1 en ambos
+modos sobre `6f69bcf`: [acta](h11-appearance/ACCEPTANCE.md). Se atiende ese
+subcriterio de UX-01/BRAND-01; los 39 IDs conservan su estado operativo pendiente.
+La habilitación alojada y el alcance H1.2 siguen separados; SITE-01 pertenece al
+chat del sitio. Esto no activa flujos operativos.
 
 | ID / orden | Corresponde a | Pendiente y criterio de cierre |
 |---|---|---|
-| UX-01 · G | Producto / aceptación | Aceptación funcional y visual de la DEMO revisada, incluyendo contexto libre por selección, accesibilidad y responsividad; decidir funciones que entran a H1.2. Pruebas automáticas no sustituyen aceptación humana. |
-| BRAND-01 · D | Sistema de marca / variante clara | Recibir de Runtime tokens y activos claros aprobados, implementar consumo en Portal y comprobar contraste, estados, responsive y preferencia de tema. Mandato ya canalizado al chat de marca; no inventar canon aquí. |
+| UX-01 · G | Producto / aceptación | DEMO H1.1 aceptada por Arturo; pendientes definición de funciones H1.2 y aceptación de su comportamiento operativo, con los límites de accesibilidad y responsividad declarados. No se cierra este flujo por la aprobación de la DEMO. |
+| BRAND-01 · D | Sistema de marca / variante clara | Tokens/activos Runtime consumidos y apariencia H1.1 aceptada; pendiente comprobar su consumo y estados en el entorno alojado cuando se autorice. Mantener la fuente Runtime; no inventar canon aquí. |
 | SITE-01 · D | Sitio público / integración | El chat del sitio debe aplicar la variante aprobada a todas sus páginas, blogs y políticas; coordinar con Portal enlaces de entrada, captura de leads y testimonios publicados según alcance. Landing permanece solo referencia en esta tarea. |
 
 ## Fuentes y límites de evidencia

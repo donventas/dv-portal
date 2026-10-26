@@ -80,5 +80,7 @@ sin reset/clean ni descarte de trabajo ajeno. SQL sigue en proposals, fuera de
 migrations; no hay rollback remoto que ejecutar. Procedimiento futuro y
 condiciones de recuperación en release-runbook.md.
 
-Próxima decisión humana: aceptación visual/funcional de la DEMO revisada y alcance
-de H1.2; cualquier habilitación alojada requiere gates y autorización separados.
+Aceptación visual/funcional H1.1 registrada en
+[acta](../h11-appearance/ACCEPTANCE.md). Próximas decisiones humanas: integración
+del PR y alcance de H1.2; cualquier habilitación alojada requiere gates y
+autorización separados.
