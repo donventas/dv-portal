@@ -11,14 +11,17 @@ async function boot(page){
  await page.goto('/');await page.waitForFunction(()=>window.DVPortal&&window.DVHybridDemo);
  await page.evaluate(()=>{DVStore.loginAs(DV_SEED.users.find(u=>u.role==='cliente'));DVPortal.boot();DVPortal.go('hybrid');});
 }
-async function theme(page,value){await page.getByLabel('Apariencia',{exact:true}).selectOption(value);}
+async function theme(page,value){
+ await page.getByRole('button',{name:'Cambiar apariencia',exact:true}).click();
+ await page.getByRole('menuitemradio',{name:{light:'Claro',dark:'Oscuro',system:'Según tu dispositivo'}[value],exact:true}).click();
+}
 async function capture(page,name){if(evidence){fs.mkdirSync(evidence,{recursive:true});await page.screenshot({path:path.join(evidence,name+'.png')});}}
 async function fits(page,label){
  const failures=await page.evaluate(()=>{
   const bad=[];const main=document.getElementById('main');
   if(document.documentElement.scrollWidth>innerWidth+1)bad.push('document');
   if(main && main.scrollWidth>main.clientWidth+1){bad.push('main');for(const el of main.querySelectorAll('*')){const r=el.getBoundingClientRect();if(r.width&&r.right>innerWidth+1)bad.push(el.tagName+'.'+el.className);if(bad.length>8)break;}}
-  for(const s of ['#appearanceBar','#topBar','.hy-body','.acard']){const e=document.querySelector(s);if(e&&e.getClientRects().length&&e.scrollWidth>e.clientWidth+1)bad.push(s);}
+  for(const s of ['#topBar','.hy-body','.acard']){const e=document.querySelector(s);if(e&&e.getClientRects().length&&e.scrollWidth>e.clientWidth+1)bad.push(s);}
   return bad;
  });expect(failures,label).toEqual([]);
 }
@@ -48,13 +51,13 @@ test('appearance keeps edited context, resolves system changes and persists acro
  await theme(page,'system');await page.emulateMedia({colorScheme:'dark'});await expect(page.locator('html')).toHaveAttribute('data-dv-appearance','dark');
  await page.emulateMedia({colorScheme:'light'});await expect(page.locator('html')).toHaveAttribute('data-dv-appearance','light');
  await theme(page,'dark');await page.emulateMedia({colorScheme:'light'});await expect(page.locator('html')).toHaveAttribute('data-dv-appearance','dark');
- await page.reload();await expect(page.getByLabel('Apariencia',{exact:true})).toHaveValue('dark');
+ await page.reload();await expect(page.locator('html')).toHaveAttribute('data-dv-preference','dark');
  await page.waitForFunction(()=>window.DVPortal);await page.evaluate(()=>DVPortal.logout());
- await expect(page.getByLabel('Apariencia',{exact:true})).toHaveValue('dark');
+ await expect(page.locator('html')).toHaveAttribute('data-dv-preference','dark');
  await theme(page,'light');await expect(page.locator('.acard .mk')).toHaveAttribute('src','brand/donventas-symbol-bs.svg');
  await capture(page,'access-light');
  const sibling=await page.context().newPage();await sibling.goto('/');
- await sibling.getByLabel('Apariencia',{exact:true}).selectOption('dark');
+ await theme(sibling,'dark');
  await expect(page.locator('html')).toHaveAttribute('data-dv-appearance','dark');
  await sibling.close();
 });
@@ -114,19 +117,19 @@ test('mobile navigation, modal and equivalent zoom reflow remain reachable',asyn
 test('representative text and control contrast meets thresholds in light and dark',async({page})=>{
  await boot(page);
  for(const mode of ['light','dark']){
-  await theme(page,mode);await page.getByLabel('Apariencia',{exact:true}).focus();await page.keyboard.press('Tab');
+  await theme(page,mode);await page.getByRole('button',{name:'Cambiar apariencia',exact:true}).focus();await page.keyboard.press('Tab');
   expect(await page.evaluate(()=>document.activeElement!==document.body)).toBeTruthy();
   const checks=await page.evaluate(()=>{
    const rgb=s=>s.match(/[\d.]+/g).slice(0,3).map(Number);
    const lum=s=>rgb(s).map(c=>{c/=255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4}).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);
    const ratio=(a,b)=>{a=lum(a);b=lum(b);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)};
-   return ['#appearanceBar select','.hy-demo input[name="name"]','.hy-body .btn.solid','.hy-opening h1','.hy-opening h1 em','.hy-lead','.hy-editorial-note p','.hy-editorial-note em','.hy-editorial-note small','.hy-editorial-note .hy-eyebrow','.hy-edition','.hy-number','.hy-question>p','.hy-choice span','.hy-demo nav .btn.solid','.hy-demo nav .btn:not(.solid)'].map(selector=>{
+   return ['#portalAppearance','.hy-demo input[name="name"]','.hy-body .btn.solid','.hy-opening h1','.hy-opening h1 em','.hy-lead','.hy-editorial-note p','.hy-editorial-note em','.hy-editorial-note small','.hy-editorial-note .hy-eyebrow','.hy-edition','.hy-number','.hy-question>p','.hy-choice span','.hy-demo nav .btn.solid','.hy-demo nav .btn:not(.solid)'].map(selector=>{
     const el=document.querySelector(selector);if(!el)return {selector,missing:true};const s=getComputedStyle(el);
     let parent=el,background=s.backgroundColor;while(parent && (background==='rgba(0, 0, 0, 0)'||background==='transparent')){parent=parent.parentElement;if(parent)background=getComputedStyle(parent).backgroundColor;}
     return {selector,color:s.color,background,text:ratio(s.color,background),border:ratio(s.borderTopColor,background)};
    });
   });
-  for(const c of checks){expect(c.missing,JSON.stringify(c)).toBeFalsy();expect(c.text,JSON.stringify(c)).toBeGreaterThanOrEqual(4.5);if(c.selector==='#appearanceBar select'||c.selector.includes('input['))expect(c.border,JSON.stringify(c)).toBeGreaterThanOrEqual(3);}
+  for(const c of checks){expect(c.missing,JSON.stringify(c)).toBeFalsy();expect(c.text,JSON.stringify(c)).toBeGreaterThanOrEqual(4.5);if(c.selector==='#portalAppearance'||c.selector.includes('input['))expect(c.border,JSON.stringify(c)).toBeGreaterThanOrEqual(3);}
   const note=page.locator('.hy-editorial-note');
   const textFits=await note.evaluate(el=>{const small=el.querySelector('small'),r=document.createRange();r.selectNodeContents(small);const text=r.getBoundingClientRect(),box=el.getBoundingClientRect();return text.bottom<=box.bottom&&text.right<=box.right;});
   expect(textFits,'Editorial note text must fit its own surface').toBeTruthy();
@@ -136,7 +139,7 @@ test('representative text and control contrast meets thresholds in light and dar
 test('without JavaScript appearance follows the device and selector remains disabled',async({browser})=>{
  const context=await browser.newContext({javaScriptEnabled:false,colorScheme:'dark'});
  const page=await context.newPage();await page.goto('/');
- await expect(page.getByLabel('Apariencia',{exact:true})).toBeDisabled();
+ await expect(page.getByRole('button',{name:'Cambiar apariencia',exact:true})).toBeDisabled();
  expect(await page.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(14, 17, 23)');
  await page.emulateMedia({colorScheme:'light'});
  expect(await page.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(238, 241, 246)');
@@ -203,4 +206,128 @@ test('blocked/prelaunch retains selector and no backend; storage denial degrades
  await expect(page.locator('html')).toHaveAttribute('data-dv-appearance','dark');await expect(page.locator('.prelaunch-brand img')).toHaveAttribute('src','brand/donventas-wordmark-b6-reverse.svg');
  await theme(page,'light');await expect(page.locator('.prelaunch-brand img')).toHaveAttribute('src','brand/donventas-wordmark-b6.svg');
  expect(external).toEqual([]);expect(await page.evaluate(()=>DVEnv.state())).toBe('BLOCKED');
+});
+
+test('compact picker preserves form identity, selection, stage and deep scroll',async({page})=>{
+ await boot(page);
+ await page.locator('[name="q_needs_launch"]').check();
+ const note=page.locator('[name="qnote_needs_launch"]');
+ await note.fill('  Contexto exacto\nsegunda línea  ');
+ await note.evaluate(el=>el.setSelectionRange(2,10));
+ const node=await note.elementHandle();
+ await page.locator('[name="offer"]').fill('Oferta conservada');
+ await page.locator('[data-tab="contexto"]').click();
+ const stage=await page.locator('[aria-current="step"]').getAttribute('data-tab');
+ await page.evaluate(()=>{document.getElementById('main').scrollTop=400;});
+ const before=await page.locator('#main').evaluate(el=>el.scrollTop);
+ expect(before,'Exercise a genuinely scrolled form').toBeGreaterThan(0);
+ await theme(page,'dark');await theme(page,'light');
+ expect(await page.locator('#main').evaluate(el=>el.scrollTop)).toBe(before);
+ await expect(page.locator('[aria-current="step"]')).toHaveAttribute('data-tab',stage);
+ await page.locator('[data-tab="marca"]').click();
+ await expect(note).toHaveValue('  Contexto exacto\nsegunda línea  ');
+ await expect(page.locator('[name="offer"]')).toHaveValue('Oferta conservada');
+ // Stage changes may render new nodes; the appearance change itself may not.
+ const current=await note.elementHandle();await note.evaluate(el=>el.setSelectionRange(2,10));
+ await theme(page,'dark');expect(await current.evaluate(el=>el.isConnected)).toBe(true);
+ expect(await note.evaluate(el=>[el.selectionStart,el.selectionEnd])).toEqual([2,10]);
+ await expect(page.locator('[name="q_needs_launch"]')).toBeChecked();
+ await node.dispose();await current.dispose();
+});
+
+test('compact picker keyboard, dismissal, selected preference and effective icon',async({page})=>{
+ await page.emulateMedia({colorScheme:'light'});await boot(page);
+ const trigger=page.getByRole('button',{name:'Cambiar apariencia',exact:true});
+ const menu=page.getByRole('menu',{name:'Apariencia',exact:true});
+ const system=page.getByRole('menuitemradio',{name:'Según tu dispositivo',exact:true});
+ await expect(page.locator('.appearance-sun')).toBeVisible();
+ await trigger.focus();await page.keyboard.press('Enter');await expect(system).toBeFocused();
+ await expect(system).toHaveAttribute('aria-checked','true');
+ await page.keyboard.press('Home');await expect(page.getByRole('menuitemradio',{name:'Claro',exact:true})).toBeFocused();
+ await page.keyboard.press('ArrowDown');await expect(page.getByRole('menuitemradio',{name:'Oscuro',exact:true})).toBeFocused();
+ await page.keyboard.press('End');await expect(system).toBeFocused();
+ await page.emulateMedia({colorScheme:'dark'});await expect(page.locator('.appearance-moon')).toBeVisible();
+ await expect(system).toHaveAttribute('aria-checked','true');
+ await page.keyboard.press('Escape');await expect(menu).toBeHidden();await expect(trigger).toBeFocused();
+ await page.keyboard.press('Space');await expect(menu).toBeVisible();
+ await page.keyboard.press('Tab');await expect(menu).toBeHidden();await expect(trigger).not.toBeFocused();
+ await trigger.press('ArrowDown');await expect(system).toBeFocused();
+ await page.keyboard.press('Escape');await trigger.press('ArrowUp');await expect(system).toBeFocused();
+ await page.keyboard.press('Shift+Tab');await expect(menu).toBeHidden();
+ await trigger.click();await page.locator('.hy-opening h1').click();await expect(menu).toBeHidden();
+ await trigger.click();await page.locator('[name="name"]').focus();await expect(menu).toBeHidden();
+ await trigger.click();await page.getByRole('menuitemradio',{name:'Claro',exact:true}).press('Space');
+ await expect(menu).toBeHidden();await expect(trigger).toBeFocused();
+ await page.emulateMedia({colorScheme:'dark'});await expect(page.locator('.appearance-sun')).toBeVisible();
+ await page.reload();await expect(page.locator('html')).toHaveAttribute('data-dv-preference','light');
+});
+
+test('compact picker fits narrow and wide, touch and reduced motion with state contrast',async({browser})=>{
+ const results=[];
+ for(const touch of [false,true]){
+  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:touch,hasTouch:touch});
+  const page=await context.newPage();await boot(page);
+  const trigger=page.getByRole('button',{name:'Cambiar apariencia',exact:true});
+  for(const width of [320,390,768,1280])for(const mode of ['light','dark']){
+   await page.setViewportSize({width,height:844});await theme(page,mode);
+   await page.emulateMedia({reducedMotion:'reduce'});
+   if(touch)await trigger.tap();else await trigger.click();
+   const menu=page.locator('#appearanceMenu'),box=await menu.boundingBox(),button=await trigger.boundingBox();
+   expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(width);
+   expect(button.width).toBeGreaterThanOrEqual(44);expect(button.height).toBeGreaterThanOrEqual(44);
+   const choices=page.getByRole('menuitemradio');
+   for(const choice of await choices.all())expect((await choice.boundingBox()).height).toBeGreaterThanOrEqual(44);
+   await expect(choices.first()).toHaveCSS('transition-duration','0s');
+   const item=page.getByRole('menuitemradio',{name:mode==='light'?'Oscuro':'Claro',exact:true});
+   if(!touch)await item.hover();else await item.focus();
+   const colors=await item.evaluate(el=>{const s=getComputedStyle(el);return {fg:s.color,bg:s.backgroundColor,focus:s.outlineColor};});
+   const lum=s=>s.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>{c/=255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4}).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);
+   const ratio=(a,b)=>(Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05);
+   expect(ratio(colors.fg,colors.bg)).toBeGreaterThanOrEqual(4.5);
+   await page.keyboard.press('Home');if(mode==='light')await page.keyboard.press('ArrowDown');
+   await expect(item).toBeFocused();await expect(item).toHaveCSS('outline-style','solid');
+   const focus=await item.evaluate(el=>{const s=getComputedStyle(el);return {fg:s.outlineColor,bg:s.backgroundColor};});
+   expect(ratio(focus.fg,focus.bg)).toBeGreaterThanOrEqual(3);
+   if(!touch){await item.hover();await page.mouse.down();await expect(item).toHaveCSS('box-shadow',/inset/);await page.mouse.move(0,0);await page.mouse.up();}
+   results.push({width,mode,touch,button:{width:button.width,height:button.height},menu:{left:box.x,right:box.x+box.width},contrast:ratio(colors.fg,colors.bg)});
+   if(evidence&&[390,1280].includes(width)&&!touch)await capture(page,'picker-'+mode+'-'+width);
+   await page.keyboard.press('Escape');
+   if(touch){await trigger.tap();await item.tap();await expect(menu).toBeHidden();}
+  }
+  await context.close();
+ }
+ if(evidence)fs.writeFileSync(path.join(evidence,'picker-matrix.json'),JSON.stringify({at:new Date().toISOString(),results,limit:'Edge touch emulation; no physical-device or screen-reader certification'},null,2));
+});
+
+test('picker shares existing headers without a separate row and survives shell rebuilds',async({page})=>{
+ await boot(page);
+ await expect(page.locator('#appearanceBar')).toHaveCount(0);
+ expect(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--appearance-h').trim())).toBe('0px');
+ await expect(page.locator('#topBar > #appearancePicker')).toHaveCount(1);
+ for(const width of [320,390,1280]){
+  await page.setViewportSize({width,height:844});
+  const header=await page.locator('#topBar').boundingBox(),button=await page.locator('#portalAppearance').boundingBox();
+  expect(button.y-header.y).toBeLessThanOrEqual(20);
+ }
+ await page.evaluate(()=>DVPortal.role('miembro'));
+ await expect(page.locator('#topBar > #appearancePicker')).toHaveCount(1);
+ await page.evaluate(()=>DVPortal.role('owner'));
+ await expect(page.locator('#appearancePicker')).toHaveCount(1);
+ await page.evaluate(()=>DVPortal.modal('comment'));
+ await expect(page.locator('#modalHost .mbox > #appearancePicker')).toHaveCount(1);
+ await page.locator('#commentText').fill('Conservar edición del modal');await theme(page,'dark');
+ await expect(page.locator('#commentText')).toHaveValue('Conservar edición del modal');
+ await page.getByRole('button',{name:'Cancelar',exact:true}).click();
+ await expect(page.locator('#topBar > #appearancePicker')).toHaveCount(1);
+ await page.evaluate(()=>DVPortal.logout());
+ await expect(page.locator('#auth .acard > #appearancePicker')).toHaveCount(1);
+ await page.setViewportSize({width:320,height:360});
+ await page.getByRole('button',{name:'Cambiar apariencia',exact:true}).click();
+ const box=await page.locator('#appearanceMenu').boundingBox();
+ expect(box.x).toBeGreaterThanOrEqual(0);expect(box.y).toBeGreaterThanOrEqual(0);
+ expect(box.x+box.width).toBeLessThanOrEqual(320);expect(box.y+box.height).toBeLessThanOrEqual(360);
+ const oldScroll=await page.locator('#auth').evaluate(el=>el.scrollTop);
+ await page.locator('#auth').evaluate(el=>{el.scrollTop+=40;});
+ expect(await page.locator('#auth').evaluate(el=>el.scrollTop)).toBeGreaterThan(oldScroll);
+ await expect(page.locator('#appearanceMenu')).toBeHidden();
 });

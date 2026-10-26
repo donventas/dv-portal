@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
+  'tests/browser/selector-release.spec.js',
   'evidence/h11-appearance/ACCEPTANCE.md', 'evidence/pr6-integration/REVIEW.md',
   'evidence/h11-appearance/form-light-390.png', 'evidence/h11-appearance/form-light-1280.png',
   'evidence/h11-appearance/form-dark-390.png', 'evidence/h11-appearance/form-dark-1280.png',

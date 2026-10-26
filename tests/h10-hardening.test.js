@@ -13,7 +13,9 @@ test('integration into the production branch does not enable Vercel Git deployme
   // Keep the reviewed main/PR deny map exact so a wildcard cannot override it.
   assert.deepEqual(config.git.deploymentEnabled, {
     main: false,
-    'codex/portal-h1-hardening': false
+    'codex/portal-h1-hardening': false,
+    'codex/portal-h12-drafts': false,
+    'codex/portal-selector-release': false
   });
 });
 

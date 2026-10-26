@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "engines": {
-    "node": ">=20 <21"
+    "node": "24.x"
   },
   "scripts": {
     "test:unit": "node --test tests/environment.test.js tests/write-guard.test.js tests/atomic-mutations.test.js tests/environment-indicator.test.js tests/lead-pipeline.test.js tests/h10-hardening.test.js tests/h11-workflow.test.js tests/auth-contract.test.js tests/invitations.test.js",
