@@ -45,8 +45,29 @@ window.DVSupa = (function () {
         storageKey: DVEnv.storageKey('supabase-auth')
       }
     });
-    if (_client.auth.onAuthStateChange) _client.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'SIGNED_IN') clearIdentity();
+    let observedAuthUser = null;
+    function authSessionIdentity(value) {
+      if (!value?.user?.id) return null;
+      // This key only invalidates UI caches; the server validates JWT/authority.
+      try {
+        const encoded = value.access_token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+        const claims = JSON.parse(atob(encoded));
+        return value.user.id + ':' + (claims.session_id || 'unknown');
+      } catch (_) { return value.user.id + ':unknown'; }
+    }
+    if (_client.auth.onAuthStateChange) _client.auth.onAuthStateChange((event, authSession) => {
+      const nextUser = authSessionIdentity(authSession);
+      if (event === 'INITIAL_SESSION') observedAuthUser = nextUser;
+      // Supabase also emits SIGNED_IN when an existing tab regains focus.
+      // Reconfirmation of the same user must not erase an unsaved form.
+      if (event === 'SIGNED_IN') {
+        if (!nextUser || observedAuthUser !== nextUser) clearIdentity(nextUser);
+        observedAuthUser = nextUser;
+      }
+      if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+        if (event === 'SIGNED_OUT') observedAuthUser = null;
+        clearIdentity();
+      }
     });
     _clientFingerprint = resolution.fingerprint;
     return _client;
@@ -93,6 +114,7 @@ window.DVSupa = (function () {
 
   /* ── Lectura: hidrata window.DV_SEED con la forma del schema ───── */
   async function hydrate() {
+    if (window.DVDrafts?.enabled()) return DVWorkflowUI.bootstrap();
     const c = await client();
     const startEpoch = epoch, fingerprint = DVEnv.fingerprint();
     const uid = await authUid();
@@ -142,7 +164,9 @@ window.DVSupa = (function () {
   }
   const intentions = new Map();
   let epoch = 0;
-  function clearIdentity() {
+  function clearIdentity(resumedSession = null) {
+    window.DVImprovementsUI?.reset(resumedSession);
+    window.DVProfessionalUI?.reset(resumedSession);
     epoch++; intentions.clear();
     if (window.DVStore) DVStore.logout();
     ['viewHost','modalHost','topBar','side'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
@@ -239,5 +263,5 @@ window.DVSupa = (function () {
   if (window.DVEnv && DVEnv.subscribe) DVEnv.subscribe(snapshot => {
     if (snapshot.state === 'VALIDATING' || snapshot.state === 'BLOCKED') { epoch++; intentions.clear(); if (_client && _client.removeAllChannels) _client.removeAllChannels(); _client = null; _clientFingerprint = null; }
   });
-  return { LIVE, BACKEND, client, signIn, signInWithGoogle, authUid, authEmail, signOut, hydrate, write, identity, captureInvitation, acceptInvitation };
+  return { LIVE, BACKEND, client, signIn, signInWithGoogle, authUid, authEmail, signOut, hydrate, write, identity, captureInvitation, acceptInvitation, invalidateIdentity: clearIdentity };
 })();

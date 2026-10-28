@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "date": "2026-10-26T17:40:31.166Z",
+  "checks": [
+    "Client confirms submission; persistent message renders as text, internal controls absent",
+    "Light/dark 1280/390 without horizontal overflow; theme preserves unsent text",
+    "Team reads internal analysis; UI publication requires explicit approval",
+    "Accepted collaborator accesses restricted assignment conversation",
+    "Native step 5 uses central guard; lost response retries without duplicate and leaves saved draft unchanged"
+  ],
+  "consoleErrors": []
+}

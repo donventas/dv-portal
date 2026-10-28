@@ -1,0 +1,43 @@
+/* El Don inhabits container edges. No floating assistant card or click interception. */
+.hy-demo.draft-welcome .draft-toolbar{display:block;position:relative;min-height:96px;padding-right:120px;margin-top:8px}
+.draft-toolbar .draft-actions{min-height:80px;align-content:center}
+.don-welcome-slot{position:absolute;right:12px;bottom:-16px;width:108px;height:116px;overflow:hidden;pointer-events:none}
+.don-actor{display:block;pointer-events:none!important;user-select:none;position:absolute;z-index:2}
+.don-actor img,.don-actor canvas{display:block;width:100%;height:auto;pointer-events:none!important}
+.don-wave{width:108px;bottom:-46px;right:0}
+.draft-panel{position:relative}
+.don-seat{width:112px;right:14px;top:-116px}
+.hy-demo.draft-welcome[data-view=panel] #draft-body>h2,.hy-demo.draft-welcome[data-view=panel] #draft-body>p:not(.hy-note){padding-right:128px;max-width:none}
+.hy-demo.draft-welcome[data-view=panel] #draft-body>p:not(.hy-note):not(.hy-eyebrow){min-height:70px}
+.draft-panel .draft-card:nth-child(-n+2)>.hy-eyebrow{padding-right:70px}
+.don-settings{margin-top:16px}.don-settings p{font-size:13px}
+.hy-demo.draft-welcome .don-settings button{font-size:12px}
+@media(max-width:640px){
+ .hy-demo.draft-welcome .draft-toolbar{padding-right:88px;min-height:92px}
+ .draft-toolbar .draft-actions{gap:6px}
+ .hy-demo.draft-welcome header .draft-actions>.btn{flex:1 1 86px;min-width:0}
+ .don-welcome-slot{width:80px;height:92px;right:0}
+ .don-wave{width:80px;bottom:-28px}
+ .don-seat{width:88px;top:-91px;right:4px}
+ .hy-demo.draft-welcome[data-view=panel] #draft-body>h2,.hy-demo.draft-welcome[data-view=panel] #draft-body>p:not(.hy-note){padding-right:92px}
+ .draft-panel .draft-card:nth-child(-n+2)>.hy-eyebrow{padding-right:50px}
+}
+@media(prefers-reduced-motion:reduce){.don-actor{animation:none!important;transition:none!important}}
+/* Static illustrative pilot: full scene, no click interception or essential text. */
+.don-pilot{display:flex;justify-content:flex-end;align-items:flex-end;min-width:0;pointer-events:none}
+.don-pilot[hidden]{display:none!important}
+.don-pilot img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;user-select:none}
+.connected-service .service-editorial-head:has([data-don-pilot=client]:not([hidden])){position:relative;overflow:visible;margin-top:90px;padding-right:230px}
+.don-pilot[data-don-pilot=client]{position:absolute;right:20px;top:-88px;width:196px;height:130px}
+.professional-welcome .don-pilot{width:200px;height:110px;margin:4px 0 -8px auto}
+.workflow article[data-delivery-id]:has([data-don-pilot=delivery]:not([hidden])){position:relative;overflow:visible;margin-top:116px}
+.workflow article[data-delivery-id]>.don-pilot{position:absolute;right:20px;top:-115px;width:170px;height:116px}
+#appearanceMenu [data-don-pilot-preference]{border-top:1px solid var(--dv-control-border);margin-top:4px}
+@media(max-width:700px){
+ .connected-service .service-editorial-head:has([data-don-pilot=client]:not([hidden])){margin-top:0;padding-right:18px}
+ .don-pilot[data-don-pilot=client]{position:static;width:136px;height:80px;margin:2px 0 -10px auto}
+ .professional-welcome .don-pilot{width:146px;height:82px;margin:4px 0 -8px auto}
+ .workflow article[data-delivery-id]:has([data-don-pilot=delivery]:not([hidden])){margin-top:0}
+ .workflow article[data-delivery-id]>.don-pilot{position:static;width:105px;height:80px;margin:0 0 -8px auto}
+}
+@media(prefers-reduced-motion:reduce){.don-pilot *{animation:none!important;transition:none!important}}

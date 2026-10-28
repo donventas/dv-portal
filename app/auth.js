@@ -17,6 +17,21 @@ window.DVAuth = (function () {
 
   function render() {
     const host = U.el('auth');
+    if(window.DVDrafts?.enabled()){
+      host.innerHTML='<div class="acard">'+U.MARK+'<p class="hy-eyebrow">PORTAL / REVISIÓN AISLADA</p><h1>Tu espacio de trabajo.</h1><p class="lead">Entra con tu cuenta de prueba. Verás únicamente las solicitudes y encargos que tienes autorizados.</p><form id="labLogin"><label for="labEmail">Correo de prueba</label><input id="labEmail" name="email" type="email" autocomplete="username" required><label for="labPassword">Contraseña de prueba</label><input id="labPassword" name="password" type="password" autocomplete="current-password" required><button class="btn solid full" type="submit">Entrar al portal</button><p id="labStatus" role="status"></p></form><p class="note">Entorno aislado. El análisis sigue simulado y no se envían correos reales.</p></div>';
+      host.querySelector('form').onsubmit=async e=>{
+        e.preventDefault();const button=e.target.querySelector('button'),status=U.el('labStatus');button.disabled=true;status.textContent='Verificando tu acceso…';
+        try{
+          const c=await DVSupa.client(),email=U.el('labEmail').value,password=U.el('labPassword').value;
+          const result=await DVWriteGuard.run('auth.local','auth-session',{},()=>c.auth.signInWithPassword({email,password}));
+          U.el('labPassword').value='';
+          if(!result||result.authorized===false||result.error){console.warn('[portal] LOCAL_REVIEW_LOGIN_RESULT',result?.outcome||result?.error?.code||'UNCONFIRMED');throw Error('LOCAL_LOGIN_FAILED');}
+          await DVSupa.hydrate();const user=DVStore.userByEmail(email);if(!user)throw Error('LOCAL_LOGIN_FAILED');DVStore.loginAs(user);DVPortal.boot();
+        }catch(error){console.warn('[portal] LOCAL_REVIEW_LOGIN',error.message);if(status.isConnected)status.textContent='No pudimos confirmar tu acceso. Revisa tu cuenta de prueba e inténtalo de nuevo.';}
+        finally{if(button.isConnected)button.disabled=false;}
+      };
+      return;
+    }
     host.innerHTML =
       '<div class="acard">' + U.MARK +
       '<div class="tabs">' +
@@ -69,6 +84,11 @@ window.DVAuth = (function () {
     renderSuggest();
     if (window.DVPortal && DVPortal.applyCapabilities) DVPortal.applyCapabilities();
     if (LIVE()) { U.el('tabNew').disabled = true; }
+    if (window.DVDrafts?.enabled()) {
+      U.el('tabNew').hidden = true; U.el('tabTeam').hidden = true;
+      host.querySelectorAll('[onclick="DVAuth.google()"],.orsep').forEach(el => { el.hidden = true; });
+      host.querySelector('#paneCli .lead').textContent = 'Acceso aislado para propietarios de prueba. El correo se captura solo en el laboratorio local.';
+    }
   }
 
   function renderSuggest() {

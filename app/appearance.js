@@ -67,10 +67,12 @@
         closePicker(true);
       } else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
         event.preventDefault();
-        const index = choices.indexOf(document.activeElement);
-        const next = event.key === 'Home' ? 0 : event.key === 'End' ? choices.length - 1
-          : (index + (event.key === 'ArrowUp' ? -1 : 1) + choices.length) % choices.length;
-        choices[next].focus({ preventScroll: true });
+        const pilot = menu.querySelector('[data-don-pilot-preference]');
+        const options = pilot ? [...choices, pilot] : choices;
+        const index = options.indexOf(document.activeElement);
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1
+          : (index + (event.key === 'ArrowUp' ? -1 : 1) + options.length) % options.length;
+        options[next].focus({ preventScroll: true });
       }
     });
     document.addEventListener('pointerdown', event => { if (!picker.contains(event.target)) closePicker(false); });

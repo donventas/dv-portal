@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "date": "2026-10-26T17:39:22.650Z",
+  "mcp": "stdio initialized, tools discovered, leased request completed through simulator",
+  "email": {
+    "captured": 27,
+    "uncertainFailureNotRetried": true,
+    "syntheticRecipientsOnly": true
+  },
+  "noRealModel": true,
+  "noProduction": true
+}

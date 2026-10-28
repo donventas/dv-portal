@@ -216,6 +216,9 @@
     policies[action] = { modes: ['SANDBOX'], origins: ['LOCAL'], writePolicy: 'rls', requiresAuth: true,
       confirmSandbox: action !== 'identity.mfa' };
   });
+  policies['draft.save'] = { modes: ['SANDBOX'], origins: ['LOCAL'], writePolicy: 'rls', requiresAuth: true };
+  policies['workflow.command'] = { modes: ['SANDBOX'], origins: ['LOCAL'], writePolicy: 'rls', requiresAuth: true };
+    policies['auth.local'] = { modes: ['SANDBOX'], origins: ['LOCAL'], writePolicy: 'rls', requiresAuth: false };
   policies['auth.invitation'] = { modes: ['SANDBOX'], origins: ['LOCAL'], writePolicy: 'rls', requiresAuth: false };
   function context(action, resourceType, options) {
     options = options || {};
