@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = path.resolve('.');
 const mode = process.argv[2];
 const allowed = [
+  'supabase/tests/h12-inbox-pagination.cjs',
   'tests/browser/selector-release.spec.js',
   'brand/el-don-pilot-client-v1.png','brand/el-don-pilot-collab-v1.png','brand/el-don-pilot-delivery-v1.png',
  'app/professional-space.js','app/professional-space.css','app/recommendations.js','supabase/proposals/h12-recommendations.sql','supabase/tests/h12-recommendations.cjs','supabase/tests/h12-recommendations-browser.cjs',
@@ -134,6 +135,7 @@ const forbidden = [
   /stripe|payment|webhook|edge.?function/i
 ];
 const governedBackend = new Set([
+  'supabase/tests/h12-inbox-pagination.cjs',
  'supabase/proposals/h12-recommendations.sql','supabase/tests/h12-recommendations.cjs','supabase/tests/h12-recommendations-browser.cjs',
   'supabase/proposals/h12-portfolio-images.sql','supabase/tests/h12-galleries.cjs','supabase/tests/h12-galleries-browser.cjs',
   'supabase/proposals/h12-professional-profiles.sql','supabase/tests/h12-profiles.cjs','supabase/tests/h12-profiles-browser.cjs',

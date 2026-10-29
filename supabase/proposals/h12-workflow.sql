@@ -151,7 +151,7 @@ declare actor public.app_user; r public.portal_request; x public.portal_request_
  delivery_row public.portal_request_delivery; response_row public.portal_delivery_response;
  scope_row public.portal_request_scope; scope_version integer; delivery date; valid date; today date;
  old public.portal_request_receipt; d public.portal_brand_draft; fields jsonb; chosen jsonb;
- result jsonb; cmd jsonb; staff boolean; client boolean; allowed boolean; mid uuid; k text; v jsonb; cursor bigint;
+ result jsonb; cmd jsonb; staff boolean; client boolean; allowed boolean; mid uuid; k text; v jsonb; cursor bigint; inbox_cursor_time timestamptz;
 begin
  perform pg_advisory_xact_lock(hashtextextended('portal-identity-v1',0));
  today:=(clock_timestamp() at time zone 'America/Mexico_City')::date;
@@ -160,11 +160,16 @@ begin
  if p_data is null or jsonb_typeof(p_data)<>'object' or octet_length(p_data::text)>100000 then
   raise exception 'WORKFLOW_INVALID' using errcode='22023'; end if;
  if p_action='inbox' then
+  if p_id is not null then
+   select created_at into inbox_cursor_time from public.portal_request
+    where id=p_id and (auth_dv.review_staff(account_id,actor.id) or auth_dv.review_client(account_id,actor.id));
+   if not found then raise exception 'WORKFLOW_FORBIDDEN' using errcode='42501'; end if;
+  end if;
   return jsonb_build_object('contract','portal-workflow-v1','actor',jsonb_build_object('id',actor.id,'name',actor.name),
-   'requests',(select coalesce(jsonb_agg(z order by z.created_at desc,z.id),'[]') from (
+   'requests',(select coalesce(jsonb_agg(z order by z.created_at desc,z.id desc),'[]') from (
     select id,draft_version,state,revision,created_at,responsible,snapshot->>'improvement_category' as category,snapshot->>'improvement_need' as need,auth_dv.review_staff(account_id,actor.id) as staff
     from public.portal_request where (auth_dv.review_staff(account_id,actor.id) or auth_dv.review_client(account_id,actor.id))
-    and (p_id is null or id>p_id) order by id limit 50) z),
+    and (p_id is null or (created_at,id)<(inbox_cursor_time,p_id)) order by created_at desc,id desc limit 50) z),
    'invitations',(select coalesce(jsonb_agg(jsonb_build_object('id',a.id,'requestId',a.request_id,'mode',a.mode,
     'scopeVersion',a.scope_version,'brief',case when a.state in ('invited','accepted') and a.expires_at>now() and (q.consent<>'improvement-v1' or auth_dv.review_scope_current(q.id,a.scope_version)) then a.brief end,'dueOn',a.due_on,
     'state',case when a.expires_at<=now() then 'expired' when q.consent='improvement-v1' and not auth_dv.review_scope_current(q.id,a.scope_version) then 'outdated' else a.state end,'expiresAt',a.expires_at)), '[]')
