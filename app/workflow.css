@@ -1,0 +1,190 @@
+.workflow{color:var(--dv-text);font-family:'Schibsted Grotesk',sans-serif;line-height:1.6;min-width:0}
+.workflow [hidden]{display:none!important}
+.workflow section,.workflow article,.workflow details{border:1px solid var(--dv-line);background:var(--dv-surface);padding:20px;margin:16px 0;border-radius:5px}
+.workflow h3,.workflow h4{letter-spacing:-.025em;margin:16px 0 8px}.workflow label{display:block;margin:12px 0}.workflow select,.workflow textarea{display:block;width:100%;box-sizing:border-box;padding:12px;font:inherit;color:var(--dv-text);background:var(--dv-control);border:1px solid var(--dv-control-border);border-radius:5px}
+.workflow textarea{min-height:110px;resize:vertical}.workflow input[type=checkbox]{width:20px;height:20px;vertical-align:middle;accent-color:var(--dv-action)}
+.workflow .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;margin:6px 8px 6px 0;font:600 13px 'Space Mono',monospace;white-space:normal;color:var(--dv-text);background:var(--dv-control);border:1px solid var(--dv-control-border);border-radius:5px;cursor:pointer}
+.workflow :is(button,input,select,textarea,summary):focus-visible{outline:3px solid var(--dv-focus);outline-offset:3px}
+.workflow .btn:active{background:var(--dv-selected);border-color:var(--dv-selected-border)}.workflow :disabled{background:var(--dv-disabled);color:var(--dv-disabled-text);cursor:default}
+.workflow dd,.workflow p,.workflow pre{overflow-wrap:anywhere;white-space:pre-wrap}.workflow pre{font:12px/1.6 'Space Mono',monospace}.workflow dd{margin:0 0 14px}.workflow dt{font-weight:700}.workflow small{display:block;color:var(--dv-muted)}
+.workflow [data-status]{border-left:3px solid var(--dv-emphasis);padding-left:12px}.workflow summary{cursor:pointer;min-height:44px;font-weight:600}.workflow fieldset{border:1px solid var(--dv-line);min-width:0}.workflow [data-message] p{margin-bottom:0}
+@media(hover:hover) and (pointer:fine){.workflow .btn:not(:disabled):hover{background:var(--dv-selected);border-color:var(--dv-selected-border)}}
+@media(max-width:600px){.workflow section,.workflow article,.workflow details{padding:14px}.workflow .btn{max-width:100%}}
+
+.workflow-page{max-width:1100px;margin:auto;padding:24px clamp(16px,3vw,36px)}
+.workflow-page h1{font-size:clamp(24px,2.4vw,32px);line-height:1.12;letter-spacing:-.04em;margin:8px 0 12px}
+.workflow-lead{max-width:78ch;color:var(--dv-muted);font-size:15px;line-height:1.6;margin-block:8px 18px}
+.workflow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.workflow .workflow-card{display:flex;flex-direction:column;margin:0;border-top:3px solid var(--dv-emphasis);min-width:0}
+.workflow-card:has([data-open]){position:relative}
+.workflow-card [data-open]::after{content:'';position:absolute;inset:0}
+.workflow-card:has([data-open]:focus-visible){outline:3px solid var(--dv-focus);outline-offset:3px}
+@media(hover:hover) and (pointer:fine){.workflow-card:has([data-open]):hover{background:var(--dv-selected);border-color:var(--dv-selected-border)}}
+.workflow-page:has([data-message]){padding-top:24px}
+.workflow-page:has([data-message]) h1{font-size:clamp(24px,2.4vw,32px);max-width:none;margin-bottom:12px}
+.workflow-page:has([data-message]) .workflow-lead{font-size:15px;margin-block:8px 18px}
+.workflow-card h4{font-size:22px}.workflow .workflow-card .btn{align-self:flex-start;margin-top:auto}
+.workflow .workflow-card-copy{color:var(--dv-muted);margin:0 0 20px;font-size:15px}
+.workflow :is(select,textarea){border-width:1px;outline:none}
+.workflow select{min-height:48px;accent-color:var(--dv-action)}
+.workflow .btn:not(:disabled){transition:background-color 140ms,border-color 140ms,box-shadow 140ms}
+.workflow .btn:not(:disabled):is(:hover,:active){color:var(--dv-text)}
+.workflow .btn:not(:disabled):active{box-shadow:inset 0 -3px 0 var(--dv-emphasis)}
+.workflow details[open]>summary{color:var(--dv-emphasis);margin-bottom:12px}
+.workflow [data-status]{background:var(--dv-notice);color:var(--dv-notice-text);padding:10px 14px}
+.workflow [data-message] strong{font-size:14px}.workflow [data-message] small{font-size:12px}
+.workflow [data-publish],.workflow [data-submit]{background:var(--dv-action);color:var(--dv-on-action)}
+.workflow :is([data-publish],[data-submit]):not(:disabled):is(:hover,:active){background:var(--dv-action-hover);color:var(--dv-on-action)}
+.workflow .btn:disabled{background:var(--dv-disabled);color:var(--dv-disabled-text);border-color:var(--dv-control-border);box-shadow:none;transform:none;cursor:default}
+@media(max-width:700px){.workflow-grid{grid-template-columns:1fr}.workflow-page{padding:20px 16px}.workflow-page h1{max-width:none}.workflow .btn{width:100%;margin-right:0}.workflow .draft-actions{display:grid;grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.workflow .btn{transition:none;transform:none!important}}
+
+/* Scope/date controls retain the same semantic surfaces and touch targets. */
+.workflow input:is([type=date],[type=number]){display:block;width:100%;min-width:0;box-sizing:border-box;min-height:48px;padding:12px;font:inherit;color:var(--dv-text);background:var(--dv-control);border:1px solid var(--dv-control-border);border-radius:5px}
+.workflow :is([data-scope-propose],[data-scope-accept]){background:var(--dv-action);color:var(--dv-on-action)}
+.workflow :is([data-scope-propose],[data-scope-accept]):not(:disabled):is(:hover,:active){background:var(--dv-action-hover);color:var(--dv-on-action)}
+.workflow [data-scope-current]{border-top:3px solid var(--dv-emphasis)}
+.workflow input:disabled{background:var(--dv-disabled);color:var(--dv-disabled-text)}
+
+.workflow :is([data-work-assign],[data-delivery-submit],[data-delivery-review-action=publish]){background:var(--dv-action);color:var(--dv-on-action)}
+.workflow :is([data-work-assign],[data-delivery-submit],[data-delivery-review-action=publish]):not(:disabled):is(:hover,:active){background:var(--dv-action-hover);color:var(--dv-on-action)}
+.workflow [data-delivery-id]{border-top:3px solid var(--dv-emphasis)}
+.workflow :is([data-response-kind],[data-response-decision=accepted]){background:var(--dv-action);color:var(--dv-on-action)}
+.workflow :is([data-response-kind],[data-response-decision=accepted]):not(:disabled):is(:hover,:active){background:var(--dv-action-hover);color:var(--dv-on-action)}
+.workflow .response-options label{padding:12px;background:var(--dv-control);border:1px solid var(--dv-control-border);border-radius:5px;min-height:48px;cursor:pointer}
+.workflow .response-options label:has(input:checked){background:var(--dv-selected);border-color:var(--dv-selected-border)}
+.workflow .response-options label:focus-within{outline:2px solid var(--dv-focus);outline-offset:2px}
+.workflow [data-response-status],.workflow [data-revision-instruction]{border-left:3px solid var(--dv-emphasis);padding:16px}
+
+.workflow .delivery-file{display:grid;gap:8px;padding:16px;border:1px solid var(--dv-control-border);margin:12px 0;overflow-wrap:anywhere}
+.workflow input[type=file]{display:block;max-width:100%;min-height:48px;color:var(--dv-text);font:inherit;margin:12px 0}
+.workflow input[type=file]::file-selector-button{min-height:44px;padding:10px 14px;background:var(--dv-control);color:var(--dv-text);border:1px solid var(--dv-control-border);border-radius:5px;font:inherit;cursor:pointer}
+.workflow input[type=file]::file-selector-button:hover{background:var(--dv-selected)}
+.workflow input[type=file]:focus-visible{outline:2px solid var(--dv-focus);outline-offset:3px}
+
+/* Connected request: one summary, one next action, details on demand. */
+.workflow .request-overview{border-top:3px solid var(--dv-emphasis);padding:22px;background:var(--dv-surface);margin:18px 0}
+.workflow .request-kicker{font:12px 'Space Mono',monospace;color:var(--dv-muted)}
+.workflow .request-overview h2{font-size:clamp(23px,3vw,32px);line-height:1.18;margin:12px 0}
+.workflow .request-state{font-weight:700;color:var(--dv-emphasis);font-size:18px}
+.workflow .request-owner{font-size:14px}.workflow .request-overview p{max-width:70ch}
+.workflow [data-primary]{background:var(--dv-action);color:var(--dv-on-action)}
+.workflow [data-primary]:not(:disabled):is(:hover,:active){background:var(--dv-action-hover);color:var(--dv-on-action)}
+.workflow details.request-section{border:1px solid var(--dv-control-border);border-radius:4px;margin:12px 0;padding:0;background:var(--dv-surface)}
+.workflow .request-section>summary{font-weight:600;min-height:52px;padding:14px 18px;cursor:pointer;color:var(--dv-text);margin:0}
+.workflow .request-section>summary:hover{background:var(--dv-selected)}
+.workflow .request-section>summary:focus-visible{outline:3px solid var(--dv-focus);outline-offset:2px}
+.workflow .request-section>section{margin:0;border:0}.workflow .request-section[open]>summary{border-bottom:1px solid var(--dv-line)}
+.workflow .request-section[data-request-context][open]{padding:0 18px 18px}
+.workflow-page:has([data-request-overview])>h1,.workflow-page:has([data-request-overview])>.workflow-lead{display:none}
+.workflow .request-section{scroll-margin-top:18px}
+@media(max-width:700px){.workflow .request-overview{padding:16px}.workflow .request-section>section{padding:14px}.workflow .request-section>summary{padding:14px}}
+
+/* Same semantic appearance tokens for people and portfolios. */
+.workflow .professional-preview{border-top:3px solid var(--dv-emphasis)}
+.workflow .professional-preview h3{font-size:clamp(24px,3vw,34px)}
+.workflow .professional-preview dl{display:grid;grid-template-columns:minmax(130px,1fr) 2fr;gap:8px 20px}
+.workflow .professional-preview dt,.workflow .professional-preview dd{overflow-wrap:anywhere;min-width:0}
+.workflow .profile-visibility{padding:16px;border-left:3px solid var(--dv-emphasis);background:var(--dv-notice);color:var(--dv-notice-text)}
+.workflow [data-profile-status]{padding:12px 16px;background:var(--dv-notice);color:var(--dv-notice-text);border-left:3px solid var(--dv-emphasis)}
+.workflow .profile-actions{display:flex;flex-wrap:wrap;gap:8px}
+.workflow [data-profile-root] textarea{min-height:90px}
+@media(max-width:600px){.workflow .professional-preview dl{grid-template-columns:1fr;gap:4px}.workflow .professional-preview dd{margin-bottom:16px}}
+
+/* Authorized photo and gallery: preserve the whole design; enlarge only on request. */
+.workflow .professional-photo{width:112px;margin:0 0 18px;float:right}
+.workflow .professional-photo .portfolio-thumbnail{border-radius:50%;aspect-ratio:1;overflow:hidden}
+.workflow .professional-photo img{aspect-ratio:1;object-fit:cover}
+.workflow .professional-preview dl{clear:both}
+.workflow .portfolio-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}
+.workflow .portfolio-picture{margin:0;min-width:0}
+.workflow .portfolio-thumbnail{display:grid;place-items:center;width:100%;min-height:80px;aspect-ratio:4/3;padding:0;overflow:hidden;border:1px solid var(--dv-control-border);background:var(--dv-control);color:var(--dv-text);font:inherit;cursor:zoom-in}
+.workflow .portfolio-thumbnail img{display:block;width:100%;height:100%;object-fit:contain;max-width:100%}
+.workflow .professional-photo .portfolio-thumbnail img{object-fit:cover}
+.workflow .portfolio-thumbnail:hover{border-color:var(--dv-emphasis);background:var(--dv-selected)}
+.workflow figcaption{margin-top:8px;color:var(--dv-muted);font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.workflow .gallery-edit-row{padding:12px 0;border-bottom:1px solid var(--dv-line)}
+.workflow .portfolio-dialog{max-width:min(1000px,92vw);width:92vw;max-height:90dvh;box-sizing:border-box;padding:20px;border:2px solid var(--dv-emphasis);border-radius:5px;background:var(--dv-surface);color:var(--dv-text)}
+.workflow .portfolio-dialog::backdrop{background:color-mix(in srgb,var(--dv-background,#0b0f14) 85%,transparent)}
+.workflow .portfolio-dialog img{display:block;width:100%;height:auto;max-height:66dvh;object-fit:contain}
+@media(max-width:600px){.workflow .professional-photo{float:none;width:96px}.workflow .portfolio-gallery{grid-template-columns:1fr}.workflow .portfolio-dialog{padding:12px}}
+
+/* Editorial hierarchy: a journal of requests, with one clear next action. */
+.workflow-page:has(.request-journal){max-width:1320px}
+.workflow-page:has(.request-journal)>:is(h1,.workflow-lead,.hy-eyebrow),.workflow-page:has([data-request-overview])>.hy-eyebrow{display:none}
+.workflow:has(:is(.request-journal,[data-request-overview]))>.hy-note{display:none}
+.workflow:has(:is(.request-journal,[data-request-overview]))>[data-status]{padding:0;margin:0 0 16px;background:transparent;border:0;font-size:12px;color:var(--dv-muted)}
+.workflow .request-journal-head{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:36px;align-items:end;padding:34px 38px;background:var(--dv-action);color:var(--dv-on-action);border-radius:5px;position:relative;overflow:hidden}
+.workflow .request-journal-head::before{content:'';position:absolute;width:150px;height:150px;right:-95px;top:-80px;border:24px solid currentColor;transform:rotate(45deg);pointer-events:none}
+.workflow .request-journal-head .request-kicker{color:inherit;margin:0 0 18px;font:11px 'Space Mono',monospace;letter-spacing:.12em}
+.workflow .request-journal-head h2{font-size:clamp(38px,4.9vw,64px);letter-spacing:-.055em;line-height:1.02;margin:0;color:inherit}
+.workflow .request-journal-head h2 em{font-style:normal}
+.workflow .request-journal-head>div>p:last-child{max-width:48ch;margin:20px 0 0;font-size:16px}
+.workflow .request-journal-head aside{padding-left:28px;border-left:1px solid currentColor}
+.workflow .request-journal-head .journal-count{display:block;font:500 64px/1 'Space Mono',monospace;letter-spacing:-.08em}
+.workflow .request-journal-head aside strong{display:block;margin:10px 0;font-size:16px}.workflow .request-journal-head aside p{font-size:14px;margin:8px 0}.workflow .request-journal-head small{color:inherit;font-size:11px}
+.journal-toolbar{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:26px 0;border-bottom:2px solid var(--dv-text)}
+.journal-filters{display:flex;flex-wrap:wrap;gap:6px}.workflow .journal-filters .btn{margin:0;border-color:transparent;background:transparent;font-size:12px;padding:10px 12px}
+.workflow .journal-filters .btn[aria-pressed=true]{background:var(--dv-text);color:var(--dv-canvas);border-color:var(--dv-text)}
+.workflow .journal-filters .btn[aria-pressed=true]:hover{background:var(--dv-text);color:var(--dv-canvas)}
+.workflow .journal-search{width:min(310px,100%);margin:0;font-size:12px;color:var(--dv-muted)}
+.workflow .journal-search input{display:block;width:100%;padding:12px;min-height:46px;border:1px solid var(--dv-control-border);background:var(--dv-control);color:var(--dv-text);font:14px 'Schibsted Grotesk',sans-serif;border-radius:4px;margin-top:6px}
+.journal-list-heading{display:flex;align-items:center;gap:16px;padding:16px 0}.workflow .journal-list-heading h3{font-size:17px;margin:0}.workflow .journal-list-heading p{font:11px 'Space Mono',monospace;color:var(--dv-muted);margin-left:auto}.workflow .journal-list-heading .btn{margin:0;font-size:11px;min-height:44px}
+.workflow .request-row{display:grid;grid-template-columns:42px minmax(0,1fr) 210px;gap:24px;position:relative;padding:28px;margin:0 0 10px;background:var(--dv-surface);border:1px solid var(--dv-line);border-radius:3px;min-width:0}
+.request-row-index{font:12px 'Space Mono',monospace;color:var(--dv-emphasis);padding-top:5px}
+.workflow .request-row-category{font:11px/1.5 'Space Mono',monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--dv-emphasis);margin:0 0 10px}
+.workflow .request-row h4{font-size:clamp(20px,2vw,25px);line-height:1.28;margin:0;letter-spacing:-.035em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.workflow .request-row-meta{font-size:12px;color:var(--dv-muted);margin:14px 0 0}
+.request-row-action{display:flex;align-items:flex-start;flex-direction:column;gap:8px;border-left:1px solid var(--dv-line);padding-left:24px}
+.workflow .request-status-tag{display:inline-flex;padding:5px 9px;background:var(--dv-inset);color:var(--dv-text);font:11px 'Space Mono',monospace;border-radius:3px;min-height:26px;align-items:center}
+.workflow [data-request-state=answered] .request-status-tag{background:var(--dv-action);color:var(--dv-on-action)}
+.workflow [data-request-state=answered]{border-left:4px solid var(--dv-emphasis)}
+.workflow .request-row-action p{font-size:13px;line-height:1.5;margin:0;color:var(--dv-muted)}
+.workflow .request-row-action .btn{margin:8px 0 0;padding:0;border:0;border-radius:0;background:transparent;color:var(--dv-emphasis);font-size:12px;justify-content:flex-start}
+.request-row [data-open]::after{content:'';position:absolute;inset:0;cursor:pointer}
+.workflow .request-row:has([data-open]:focus-visible){outline:3px solid var(--dv-focus);outline-offset:3px}
+.workflow .request-row-action .btn:focus-visible{outline:none}
+.workflow .request-row-action .btn:is(:hover,:active){color:var(--dv-emphasis);background:transparent;box-shadow:none}
+.journal-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:22px 0}.workflow .journal-footer p{font-size:13px;color:var(--dv-muted);max-width:50ch}.journal-empty{padding:36px;background:var(--dv-surface)}
+.workflow .request-overview{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.7fr);gap:0;padding:0;border:0;background:transparent;margin:22px 0 32px}
+.request-heading{padding:28px 30px 28px 0;border-top:3px solid var(--dv-text)}
+.workflow .request-heading h2{font-size:clamp(30px,3.6vw,46px);line-height:1.08;letter-spacing:-.05em;margin:18px 0 22px}
+.workflow .request-brief{font-size:17px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+.request-facts{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px}.workflow .request-facts p{font-size:11px;text-transform:uppercase;color:var(--dv-muted);margin:0}.workflow .request-facts strong{display:block;text-transform:none;color:var(--dv-text);font-size:14px;margin-top:6px}
+.workflow .request-next{padding:28px;background:var(--dv-action);color:var(--dv-on-action);border-radius:0 5px 5px 0;display:flex;flex-direction:column}
+.workflow .request-next .request-kicker{color:inherit;font:11px 'Space Mono',monospace;letter-spacing:.1em;margin:0 0 20px}
+.workflow .request-next .request-state{color:inherit;font-size:27px;line-height:1.15;letter-spacing:-.035em;margin:0 0 16px;font-weight:700}
+.workflow .request-next>p{font-size:15px;line-height:1.6;margin-top:0}
+.workflow .request-next [data-primary]{background:var(--dv-on-action);color:var(--dv-action);border:2px solid var(--dv-on-action);margin:14px 0 0;width:100%;margin-top:auto}
+.workflow .request-next [data-primary]:is(:hover,:active){background:var(--dv-on-action);color:var(--dv-action);text-decoration:underline;text-underline-offset:4px}
+.workflow .request-next [data-primary]:focus-visible{outline-color:var(--dv-on-action)}
+.workflow .request-overview .request-access{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:0;margin:22px 0 0;border:1px solid var(--dv-control-border);border-radius:4px;overflow:visible}
+.workflow .request-overview .request-access .btn{display:block;text-align:left;padding:16px 14px;margin:0;width:100%;border:0;border-right:1px solid var(--dv-line);border-radius:0;min-height:90px;background:var(--dv-surface);font:600 13px 'Schibsted Grotesk',sans-serif;color:var(--dv-text)}
+.workflow .request-overview .request-access .btn:last-child{border-right:0}.request-access .btn>span{font:10px 'Space Mono',monospace;display:block;margin-bottom:7px;color:var(--dv-emphasis)}
+.workflow .request-overview .request-access small{font-weight:400;font-size:12px;margin-top:5px;color:var(--dv-muted)}
+.workflow [data-conversation]{border:0;border-top:2px solid var(--dv-text);padding:24px 0;background:transparent;margin:0 0 30px}
+.workflow [data-conversation]>h3{font-size:28px;letter-spacing:-.04em;margin:0 0 10px}.workflow [data-conversation]>p{color:var(--dv-muted);font-size:14px;max-width:64ch}
+.workflow [data-conversation]>[data-message]{padding:20px 24px;border:0;border-left:3px solid var(--dv-emphasis);background:var(--dv-surface);border-radius:0}
+.workflow [data-conversation] textarea{background:var(--dv-surface);min-height:110px}.workflow [data-message-send]{background:var(--dv-action);color:var(--dv-on-action)}
+.workflow [data-message-send]:not(:disabled):is(:hover,:active){background:var(--dv-action-hover);color:var(--dv-on-action)}
+.workflow details.request-section{border:0;border-top:1px solid var(--dv-control-border);border-radius:0;background:var(--dv-surface);margin:0 0 10px}
+.workflow .request-section>summary{padding:20px;font-size:18px;letter-spacing:-.025em;min-height:64px}
+.workflow .request-section[open]>summary{border-bottom:2px solid var(--dv-emphasis);background:var(--dv-selected)}
+@media(hover:hover) and (pointer:fine){.workflow .request-row:hover{background:var(--dv-selected);border-color:var(--dv-selected-border)}.workflow .request-overview .request-access .btn:hover{background:var(--dv-selected);box-shadow:inset 0 -3px var(--dv-emphasis)}.workflow .request-row:hover h4{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}}
+@media(prefers-reduced-motion:no-preference){.workflow .request-row{transition:border-color 140ms}.workflow .request-overview .request-access .btn{transition:box-shadow 140ms}}
+@media(max-width:800px){.workflow .request-journal-head::before{display:none}}
+@media(max-width:800px){.workflow .request-journal-head{grid-template-columns:1fr;gap:20px;padding:24px}.workflow .request-journal-head aside{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;border:0;border-top:1px solid currentColor;padding:14px 0 0}.workflow .request-journal-head .journal-count{font-size:32px}.workflow .request-journal-head aside :is(strong,p){margin:0;font-size:13px}.workflow .request-journal-head aside small{flex-basis:100%}.journal-toolbar{display:block;padding:20px 0}.workflow .journal-search{width:100%;margin-top:16px}.journal-list-heading{flex-wrap:wrap;gap:8px}.workflow .journal-list-heading p{order:3;flex-basis:100%;margin:0}.workflow .journal-list-heading .btn{margin-left:auto}.workflow .request-row{grid-template-columns:24px minmax(0,1fr);padding:20px 16px;gap:12px}.request-row-action{grid-column:2;border-left:0;border-top:1px solid var(--dv-line);padding:14px 0 0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}.workflow .request-row-action .btn{grid-column:1/-1;min-height:44px;margin:0}.workflow .request-row-action p{font-size:12px}.workflow .request-overview{grid-template-columns:1fr}.request-heading{padding:22px 0}.workflow .request-next{border-radius:4px;padding:24px}.workflow .request-next [data-primary]{margin-top:12px}.workflow .request-overview .request-access{grid-template-columns:repeat(2,minmax(0,1fr))}.workflow .request-overview .request-access .btn{border-bottom:1px solid var(--dv-line);min-height:100px}.workflow .request-overview .request-access .btn:nth-child(even){border-right:0}.workflow .request-overview .request-access .btn:nth-last-child(-n+2){border-bottom:0}.journal-footer{display:block}.workflow .journal-filters .btn{width:auto;padding:10px;font-size:11px}}
+@media(max-width:480px){
+ .workflow .request-journal-head{padding:20px;gap:16px}
+ .workflow .request-journal-head .request-kicker{font-size:10px;margin-bottom:14px}
+ .workflow .request-journal-head h2{font-size:36px}
+ .workflow .request-journal-head>div>p:last-child{font-size:14px;margin-top:12px}
+ .workflow .request-journal-head aside{padding-top:12px;gap:6px 8px}
+ .workflow .request-journal-head .journal-count{font-size:26px}
+ .journal-toolbar{padding:16px 0}
+ .journal-filters{flex-wrap:nowrap;overflow-x:auto;padding:3px}
+ .workflow .journal-filters .btn{flex:none;padding:8px;font-size:10px}
+ .workflow .journal-search{margin-top:10px}
+ .workflow .journal-list-heading .btn{width:auto}
+}
+.workflow .request-overview .request-access small{text-transform:none}

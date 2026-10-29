@@ -35,15 +35,22 @@
 <link rel="stylesheet" href="app/hybrid-demo.css">
 <link rel="stylesheet" href="brand/appearance/appearance.css">
 <link rel="stylesheet" href="app/appearance.css">
+<link rel="stylesheet" href="app/don-presence.css">
+<link rel="stylesheet" href="app/don-scenes.css">
+<link rel="stylesheet" href="app/workflow.css">
+<link rel="stylesheet" href="app/professional-space.css">
+<link rel="stylesheet" href="app/service-journey.css">
 <script src="brand/appearance/controller.js" defer></script>
 <script src="app/appearance.js" defer></script>
+<script src="app/control-help.js" defer></script>
 </head>
 <body>
 <div id="appearancePicker">
     <span id="appearanceStatus" data-dv-appearance-status aria-live="polite">Apariencia del sistema</span>
-    <button id="portalAppearance" type="button" aria-label="Cambiar apariencia" aria-describedby="appearanceStatus" aria-haspopup="menu" aria-expanded="false" aria-controls="appearanceMenu" disabled>
+    <button id="portalAppearance" type="button" aria-label="Cambiar apariencia" data-dv-tip="Apariencia · Elige claro, oscuro o según tu dispositivo." aria-describedby="appearanceStatus" aria-haspopup="menu" aria-expanded="false" aria-controls="appearanceMenu" disabled>
       <svg class="appearance-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
       <svg class="appearance-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z"/></svg>
+      <span class="icon-caption">Tema</span>
     </button>
     <div id="appearanceMenu" role="menu" aria-label="Apariencia" hidden>
       <button type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-appearance-choice="light"><span>Claro</span><span class="appearance-check" aria-hidden="true">✓</span></button>
@@ -85,7 +92,7 @@
 <script>
 DVEnvironmentIndicator.start({demoScripts:['data/seed.js','app/hybrid-demo.js','app/hybrid-demo-ui.js'], scripts:[
   'data/empty-state.js','app/config.js','app/util.js','app/store.js','app/auth.js',
-  'app/client.js','app/free.js','app/admin-invitations.js','app/staff.js?v=34','app/portal.js'
+  'app/hybrid-demo.js','app/draft-contract.js','app/drafts.js','app/don-presence.js','app/don-scenes.js','app/workflow-ui.js','app/professional-media.js','app/professional-space.js','app/professional-ui.js','app/recommendations.js','app/draft-ui.js','app/service-model.js','app/service-journey.js','app/improvements-ui.js','app/client.js','app/free.js','app/admin-invitations.js','app/staff.js?v=34','app/portal.js'
 ]});
 </script>
 </body>

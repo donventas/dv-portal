@@ -50,3 +50,86 @@
 .hy-demo .hy-section-intro{padding:0;border:0}.hy-demo .hy-section-intro p{color:var(--fg-soft)}
 /* Columns depend on the available form width, including a desktop sidebar. */
 @container(max-width:560px){.hy-fields,.hy-compare,.hy-options{grid-template-columns:1fr}.hy-demo .hy-choice{min-height:56px}}
+/* Optional onboarding: one short block, then a return panel. Existing brand tokens. */
+.draft-welcome header{padding:12px 0 16px}.draft-welcome h1{font-size:clamp(28px,3vw,40px);max-width:28ch;margin:12px 0}
+.draft-welcome header>p{margin:8px 0}.draft-welcome .hy-question{margin:24px 0 0;padding:20px 0}
+.draft-welcome .hy-choice{min-height:60px}.draft-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.draft-actions .btn{margin:6px 0}
+.draft-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.draft-panel article{margin:0}.draft-panel h3{margin-top:12px}
+.draft-welcome #draft-status{min-height:1.6em;color:var(--fg-soft);padding:12px 0}.draft-welcome #draft-exit-offer:not([hidden]){border:1px solid var(--action-bg);padding:16px;margin:16px 0}
+.draft-asset{border-bottom:1px solid var(--line);padding:12px 0}.draft-asset img{display:block;max-width:100%;max-height:200px;object-fit:contain;background:var(--panel);padding:12px}
+.draft-welcome [hidden]{display:none!important}.draft-welcome #draft-body>h2:focus{outline:none}
+@container(max-width:560px){.draft-panel{grid-template-columns:1fr}}
+@media(max-width:640px){.draft-actions>.btn{flex:1 1 140px}.draft-panel{grid-template-columns:1fr}.draft-welcome h1{font-size:28px}.draft-welcome .hy-question legend{font-size:20px}}
+/* Compact heading on repeat visits: the form block is the primary content. */
+.hy-demo.draft-welcome header h1{font-size:clamp(26px,3vw,34px);max-width:32ch;margin:10px 0}
+.hy-demo.draft-welcome header>p{font-size:14px;line-height:1.5;margin:8px 0}
+.hy-demo.draft-welcome header .draft-actions>.btn{flex:1 1 90px;padding:10px 8px;font-size:11px;max-width:200px}
+.hy-demo.draft-welcome .hy-body{padding:20px}.hy-demo.draft-welcome .hy-body>h2{font-size:28px;margin:8px 0 16px}
+.hy-demo.draft-welcome:not([data-block=negocio]) header>h1,.hy-demo.draft-welcome:not([data-block=negocio]) header>p,
+.hy-demo.draft-welcome[data-view=panel] header>h1,.hy-demo.draft-welcome[data-view=panel] header>p,
+.hy-demo.draft-welcome[data-view=contexto] header>h1,.hy-demo.draft-welcome[data-view=contexto] header>p,
+.hy-demo.draft-welcome[data-view=journey] header>h1,.hy-demo.draft-welcome[data-view=journey] header>p{display:none}
+@media(max-width:640px){.hy-demo.draft-welcome .hy-body{padding:16px}.hy-demo.draft-welcome .hy-body>h2{font-size:24px}.hy-demo.draft-welcome .hy-edition{padding-bottom:8px}}
+.hy-demo.draft-welcome input[type=color]{padding:4px;width:72px;height:44px;cursor:pointer}
+/* The five-step journey contains the optional welcome blocks; it is not progress completion. */
+.hy-demo.draft-welcome .draft-journey{margin:12px 0;border-bottom:1px solid var(--dv-control-border)}
+.draft-journey>summary{color:var(--dv-text)}
+.draft-map-label{font:11px/1.5 var(--mono);color:var(--dv-link);margin-left:10px}
+.draft-journey[open] .draft-map-label{display:none}
+.hy-demo.draft-welcome .draft-journey nav{display:block;margin:0;padding:0;border:0}
+.draft-journey ol{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;list-style:none;padding:0;margin:0}
+.draft-journey li{min-width:0;display:flex}
+.hy-demo.draft-welcome .draft-journey button,.draft-step-pending{display:grid;grid-template-rows:auto 1fr auto;gap:6px;padding:12px;width:100%;margin:0;text-align:left;border:1px solid var(--dv-line);background:var(--dv-surface);color:var(--dv-muted);font:14px/1.4 var(--display);border-radius:2px;overflow-wrap:anywhere}
+.hy-demo.draft-welcome .draft-journey button{color:var(--dv-text);cursor:pointer}
+.hy-demo.draft-welcome .draft-journey button[aria-current=step]{background:var(--dv-selected);border-color:var(--dv-selected-border);box-shadow:inset 0 -3px var(--dv-link)}
+.draft-welcome #draft-body dd{white-space:pre-wrap;overflow-wrap:anywhere;margin:4px 0 20px}
+.draft-step-number{font:12px/1.4 var(--mono)}
+.draft-journey small{font-size:11px}
+.hy-demo.draft-welcome .draft-journey>p{font-size:12px;color:var(--dv-muted);margin:10px 0 16px}
+/* One native button per card: equal status/title/hint/action tracks, no nested CTA. */
+.hy-demo.draft-welcome .draft-card{display:grid;grid-template-rows:minmax(2.8em,auto) minmax(2.4em,auto) 1fr auto;gap:8px;width:100%;min-width:0;margin:0;padding:24px;text-align:left;background:var(--dv-surface);color:var(--dv-text);border:1px solid var(--dv-control-border);border-radius:2px;font:inherit;cursor:pointer;transition:transform 140ms ease}
+.draft-card .hy-eyebrow{font-size:11px;letter-spacing:.07em;align-self:start}
+.draft-card-title{font-size:24px;font-weight:700;letter-spacing:-.025em;line-height:1.2}
+.draft-card-hint{font-size:16px;line-height:1.5}
+.draft-card-cta{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:44px;margin-top:12px;border-top:1px solid var(--dv-control-border);color:var(--dv-link);font:700 12px/1.5 var(--mono)}
+.draft-card-cta>span{font:24px/1 var(--display)}
+@supports(grid-template-rows:subgrid){.hy-demo.draft-welcome .draft-card{grid-template-rows:subgrid;grid-row:span 4}}
+.hy-demo.draft-welcome .draft-card:focus-visible{outline:3px solid var(--dv-focus);outline-offset:3px;background:var(--dv-selected);border-color:var(--dv-selected-border)}
+@media(hover:hover) and (pointer:fine){.hy-demo.draft-welcome .draft-card:hover{transform:translateY(-2px);background:var(--dv-selected);border-color:var(--dv-selected-border)}.hy-demo.draft-welcome .draft-journey button:hover{border-color:var(--dv-focus);box-shadow:inset 0 -2px var(--dv-link)}}
+.hy-demo.draft-welcome .draft-card:active{transform:translateY(0);background:var(--dv-inset);box-shadow:inset 0 0 0 2px var(--dv-focus)}
+/* Canonical static El Don, inline help: no floating overlay, autoplay or invented chat. */
+.hy-demo.draft-welcome .draft-guide{margin:16px 0;border:1px solid var(--dv-line);border-left:3px solid var(--dv-link);background:var(--dv-surface)}
+.hy-demo.draft-welcome .draft-guide>summary{display:flex;align-items:center;gap:16px;padding:12px;list-style:none}
+.draft-guide>summary::-webkit-details-marker{display:none}
+.draft-guide>summary::after{content:'+';color:var(--dv-link);font-size:24px;margin-left:auto}
+.draft-guide[open]>summary::after{content:'−'}
+.draft-guide img{width:72px;height:72px;flex:0 0 72px;object-fit:contain;border-radius:2px}
+.draft-guide>summary>span{display:grid;gap:4px;min-width:0}
+.draft-guide strong{font-size:17px}.draft-guide>summary>span>span{font-size:13px;color:var(--dv-link)}
+.draft-guide>div{padding:0 16px 12px}.draft-guide>div p{font-size:14px}
+@media(max-width:899px){.draft-journey ol{grid-template-columns:repeat(2,minmax(0,1fr))}.draft-journey li:first-child{grid-column:1/-1}}
+@media(max-width:640px){.hy-demo.draft-welcome .draft-card{padding:18px}.draft-card-title{font-size:22px}.draft-guide img{width:56px;height:56px;flex-basis:56px}.draft-guide strong{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.hy-demo.draft-welcome .draft-card{transition:none;transform:none!important}}
+@media(forced-colors:active){.hy-demo.draft-welcome .draft-card:focus-visible{outline-color:Highlight}.draft-card-cta{color:LinkText}}
+/* Share the utility row with the guide instead of introducing another full-width bar. */
+.draft-toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:16px;align-items:start;margin-top:10px}
+.hy-demo.draft-welcome .draft-toolbar .draft-guide{margin:0}
+.hy-demo.draft-welcome .draft-toolbar .draft-guide>summary{padding:8px;gap:12px}
+.draft-toolbar .draft-guide img{width:48px;height:48px;flex-basis:48px}
+.draft-toolbar .draft-guide strong{font-size:15px}
+.hy-demo.draft-welcome .draft-journey>summary{padding:12px 0}
+.hy-demo.draft-welcome #draft-status{padding:6px 0;margin:8px 0 12px;font-size:14px}
+@media(max-width:640px){.draft-toolbar{grid-template-columns:1fr;gap:8px}.draft-toolbar .draft-guide img{width:40px;height:40px;flex-basis:40px}}
+
+
+/* Optional brand notebook, aligned with the editorial portal without changing its steps. */
+.hy-demo.draft-welcome #draft-title{font-size:clamp(30px,3.8vw,48px);letter-spacing:-.05em;line-height:1.1;margin:18px 0}
+.hy-demo.draft-welcome .draft-card{border:1px solid var(--dv-line);border-top:3px solid var(--dv-emphasis);padding:28px}
+.hy-demo.draft-welcome .draft-card-title{font-size:28px;letter-spacing:-.04em}
+.hy-demo.draft-welcome .draft-card-hint{font-size:15px;color:var(--dv-muted)}
+.hy-demo.draft-welcome .draft-journey button[aria-current=step]{background:var(--dv-action);color:var(--dv-on-action);border-color:var(--dv-action);box-shadow:none}
+.hy-demo.draft-welcome .draft-journey button[aria-current=step] :is(small,.draft-step-hint){color:inherit}
+.hy-demo.draft-welcome .hy-question{border-top:2px solid var(--dv-text);padding-top:24px}
+.hy-demo.draft-welcome .hy-question legend{font-size:26px;letter-spacing:-.035em}
+.hy-demo.draft-welcome .hy-option[data-selected=true]{border-left:4px solid var(--dv-emphasis)}
+@media(max-width:640px){.hy-demo.draft-welcome .draft-card{padding:20px}.hy-demo.draft-welcome .draft-card-title{font-size:25px}.hy-demo.draft-welcome #draft-title{font-size:32px}}

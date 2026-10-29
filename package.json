@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "engines": {
-    "node": "24.x"
+    "node": ">=24.19.0 <25"
   },
   "scripts": {
-    "test:unit": "node --test tests/environment.test.js tests/write-guard.test.js tests/atomic-mutations.test.js tests/environment-indicator.test.js tests/lead-pipeline.test.js tests/h10-hardening.test.js tests/h11-workflow.test.js tests/auth-contract.test.js tests/invitations.test.js",
+    "test:unit": "node --test tests/environment.test.js tests/write-guard.test.js tests/atomic-mutations.test.js tests/environment-indicator.test.js tests/lead-pipeline.test.js tests/h10-hardening.test.js tests/h11-workflow.test.js tests/auth-contract.test.js tests/invitations.test.js tests/h12-drafts.test.js tests/don-presence.test.js tests/h12-review-mcp.test.js tests/service-model.test.js",
     "test:integration": "node --test tests/product-foundation.test.js",
     "test:browser": "playwright test",
     "test": "npm run test:unit && npm run test:integration",

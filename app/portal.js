@@ -4,7 +4,7 @@ window.DVPortal = (function () {
   let route = 'tablero';
 
   function mod() { const a = S.session().actor; return a === 'cliente' ? DVClient : a === 'freemium' ? DVFree : DVStaff; }
-  function defaultRoute() { const a = S.session().actor; return a === 'cliente' ? 'tablero' : a === 'freemium' ? 'diagnostico' : 'cuentas'; }
+  function defaultRoute() { if(window.DVImprovementsUI?.enabled())return S.session().actor==='cliente'?'improvements':'workflow'; if(window.DVServiceJourney?.enabled())return 'service'; if(window.DVDrafts?.enabled()) return S.session().actor==='cliente'?'draft':'workflow'; const a = S.session().actor; return a === 'cliente' ? 'tablero' : a === 'freemium' ? 'diagnostico' : 'cuentas'; }
 
   function boot() {
     U.el('auth').style.display = 'none';
@@ -12,9 +12,9 @@ window.DVPortal = (function () {
     route = defaultRoute();
     buildShell();
     go(route);
-    try { const v = S.getPreference('view-' + S.session().actor); if (v && hasRoute(v)) go(v); } catch (e) { }
+    try { const v = S.getPreference('view-' + S.session().actor); if (!window.DVServiceJourney?.enabled() && !window.DVImprovementsUI?.enabled() && v && hasRoute(v)) go(v); } catch (e) { }
   }
-  function hasRoute(v) { return (v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) || mod().nav().some(n => n.route === v); }
+  function hasRoute(v) { if(v==='professional')return !!window.DVDrafts?.enabled()&&S.session().actor==='staff'; if(window.DVImprovementsUI?.enabled())return S.session().actor==='cliente'?['improvements','workflow','draft'].includes(v):v==='workflow'; if(v==='service')return !!window.DVServiceJourney?.enabled(); if(window.DVDrafts?.enabled()) return S.session().actor==='cliente'?v==='draft':v==='workflow'; return (v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) || mod().nav().some(n => n.route === v); }
 
   function buildShell() {
     const s = S.session(), m = mod();
@@ -25,15 +25,15 @@ window.DVPortal = (function () {
       : '<span class="roleseg"><button id="rgA" class="' + (S.isAdmin() ? '' : 'on') + '" onclick="DVPortal.role(\'analista\')">Analista</button><button id="rgB" class="' + (S.isAdmin() ? 'on' : '') + '" onclick="DVPortal.role(\'admin\')">Admin</button></span>';
     U.el('topBar').innerHTML =
       '<button id="mobileNavToggle" class="mobile-nav-toggle" aria-controls="side" aria-expanded="false">Menú</button>' + U.WORDMARK +
-      '<span class="ctx">' + m.ctxLabel() + '</span>' +
+      '<span class="ctx">' + (window.DVDrafts?.enabled()&&s.actor==='staff'?U.esc(me.workspaceLabel||'Mi espacio de trabajo'):m.ctxLabel()) + '</span>' +
       '<span class="who">' + roleSeg +
-      '<div class="popwrap" onmouseenter="DVPortal.renderNoti()"><button class="iconbtn" onclick="DVPortal.pin(\'noti\')" aria-label="Notificaciones">' + U.icon('message') + '<span class="ndot"></span></button>' +
+      '<div class="popwrap" onmouseenter="DVPortal.renderNoti()"><button class="iconbtn" onclick="DVPortal.pin(\'noti\')" aria-label="Notificaciones" data-dv-tip="Notificaciones · Consulta las novedades de tus solicitudes.">' + U.icon('megaphone') + '<span class="icon-caption">Avisos</span><span class="ndot"></span></button>' +
       '<div class="pop" id="notiPop"><div class="ph">Notificaciones</div><div id="notiBody"></div></div></div>' +
-      '<div class="popwrap" onmouseenter="DVPortal.renderGloss()"><button class="iconbtn" onclick="DVPortal.pin(\'gloss\')" aria-label="Glosario">?</button>' +
+      '<div class="popwrap" onmouseenter="DVPortal.renderGloss()"><button class="iconbtn" onclick="DVPortal.pin(\'gloss\')" aria-label="Glosario" data-dv-tip="Glosario · Entiende los términos que usamos en el portal.">' + U.icon('article') + '<span class="icon-caption">Guía</span></button>' +
       '<div class="pop" id="glossPop"><div class="ph">Glosario</div><div class="ghead" id="glossHead"></div><div id="glossBody"></div></div></div>' +
       '<span class="pill" id="rolePill"></span><span class="av">' + U.esc(me.name ? me.name[0] : '·') + '</span>' +
-      '<button class="iconbtn" title="Salir" onclick="DVPortal.logout()" aria-label="Salir">⎋</button></span>';
-    U.el('rolePill').textContent = s.actor === 'freemium' ? 'Cuenta gratis' : s.actor === 'cliente' ? (S.isOwner() ? 'Owner' : 'Miembro') : (S.isAdmin() ? 'Admin' : 'Analista');
+      '<button class="iconbtn" data-dv-tip="Cerrar sesión · Sal de tu cuenta en este navegador. Guarda tus cambios antes." onclick="DVPortal.logout()" aria-label="Salir">' + U.icon('avance') + '<span class="icon-caption">Salir</span></button></span>';
+    U.el('rolePill').textContent = s.actor === 'freemium' ? 'Cuenta gratis' : s.actor === 'cliente' ? (S.isOwner() ? 'Titular' : 'Miembro') : (window.DVDrafts?.enabled() ? me.workspaceLabel||'Mi espacio' : S.isAdmin() ? 'Administrador' : 'Equipo');
     buildNav();
     U.el('app').classList.remove('nav-open');
     U.el('mobileNavToggle').onclick = () => {
@@ -44,6 +44,11 @@ window.DVPortal = (function () {
   }
 
   function buildNav() {
+    if(window.DVImprovementsUI?.enabled()&&S.session().actor==='cliente'){U.el('side').innerHTML='<button class="nav" data-nav="improvements" onclick="DVImprovementsUI.home();DVPortal.go(\'improvements\')">Mi panel<small>Lo pendiente y tu siguiente paso</small></button><button class="nav" data-nav="draft" onclick="DVPortal.go(\'draft\')">Mi marca<small>Respuestas, logo y colores</small></button><button class="nav" data-nav="workflow" onclick="DVPortal.go(\'workflow\')">Mis solicitudes<small>Conversaciones, entregas y personas</small></button><p class="nav-description">Tu marca y el equipo, en un mismo lugar.</p>';markNav();return;}
+    if(window.DVServiceJourney?.enabled()){const client=S.session().actor==='cliente';U.el('side').innerHTML='<button class="nav" data-nav="service" onclick="DVPortal.go(\'service\')">Tu marca con un equipo</button><p class="nav-description">Ensayo de la nueva experiencia de servicio.</p><button class="nav" data-nav="'+(client?'draft':'workflow')+'" onclick="DVPortal.go(\''+(client?'draft':'workflow')+'\')">Volver al recorrido habitual</button>';markNav();return;}
+    if(window.DVDrafts?.enabled()&&S.session().actor==='staff'){U.el('side').innerHTML='<button class="nav on" data-nav="workflow" onclick="DVPortal.go(\'workflow\')">'+U.icon('layers')+' Mi trabajo<small>Oportunidades y encargos</small></button><p class="nav-description">Tu trabajo y tu presentación profesional, cada uno en su lugar.</p><button class="nav" data-nav="professional" onclick="DVPortal.go(\'professional\')">Mi perfil profesional<small>Foto, experiencia y portafolio</small></button>';markNav();return;}
+    if(window.DVDrafts?.enabled()){U.el('side').innerHTML='<button class="nav on" data-nav="draft" onclick="DVPortal.go(\'draft\');DVDraftUI.showPanel()">Mi panel</button><p class="lbl">Resto de flujos pendiente</p>';return;}
+
     const icons = { tablero:'layers', impacto:'target', bitacora:'article', archivos:'order', cuenta:'coins', miembros:'users', cuentas:'layers', cola:'order', skills:'zap', mejoras:'bulb', waitlist:'calendar', capacidad:'chart', desempeno:'trending', resenas:'message', equipo:'users', accesos:'shield', facturacion:'coins', utilidad:'chart', valor:'target', prospectos:'search', aplicacion:'website', referidos:'users', diagnostico:'diagnosis' };
     U.el('side').innerHTML = (DVEnv.isDemo() && window.DVHybridDemo ? '<button class="nav" data-nav="hybrid" onclick="DVPortal.go(\'hybrid\')">' + U.icon('compass') + 'Recorrido de marca · DEMO</button>' : '') + mod().nav().map(n => {
       if (n.group) return '<div class="lbl">' + n.group + '</div>';
@@ -55,11 +60,19 @@ window.DVPortal = (function () {
   function markNav() { U.qsa('#side .nav[data-nav]').forEach(b => b.classList.toggle('on', b.dataset.nav === route)); }
 
   function go(v) {
+    if(window.DVDrafts?.enabled() && !hasRoute(v))return;
+
+    if(v!=='improvements')window.DVImprovementsUI?.leave();
     const menuWasOpen=U.el('app').classList.contains('nav-open');
     U.el('app').classList.remove('nav-open');
     U.el('mobileNavToggle')?.setAttribute('aria-expanded','false');
     route = v;
-    if(v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) DVHybridDemo.render(U.el('viewHost'));
+    if(v==='professional' && window.DVDrafts?.enabled()) DVProfessionalUI.render(U.el('viewHost'));
+    else if(v==='improvements' && window.DVImprovementsUI?.enabled()) DVImprovementsUI.render(U.el('viewHost'));
+    else if(v==='service' && window.DVServiceJourney?.enabled()) DVServiceJourney.render(U.el('viewHost'));
+    else if(v==='workflow' && window.DVDrafts?.enabled()) DVWorkflowUI.render(U.el('viewHost'));
+    else if(v==='draft' && window.DVDrafts?.enabled()) DVDraftUI.render(U.el('viewHost'));
+    else if(v==='hybrid' && DVEnv.isDemo() && window.DVHybridDemo) DVHybridDemo.render(U.el('viewHost'));
     else mod().render(v, U.el('viewHost'));
     applyCapabilities();
     markNav();
@@ -88,6 +101,9 @@ window.DVPortal = (function () {
     go(route);
   }
   async function logout() {
+    window.DVServiceJourney?.reset();
+    window.DVImprovementsUI?.reset();
+    window.DVProfessionalUI?.reset();
     const signingOut = window.DVSupa && DVSupa.BACKEND() ? DVSupa.signOut() : null;
     S.logout();
     ['side','topBar','viewHost','modalHost'].forEach(id => { U.el(id).innerHTML = ''; });
@@ -128,6 +144,11 @@ window.DVPortal = (function () {
   };
   const VIEWTERMS_F = { diagnostico: ['Diagnóstico', 'Fit', 'Arquetipo', 'Capas de servicio'], contratar: ['Capas de servicio', 'Reserva', 'Fit'] };
   function renderGloss() {
+    if(window.DVDrafts?.enabled()){
+      U.el('glossHead').textContent='Para seguir el recorrido';
+      const terms=[['Borrador','Tus respuestas privadas. Guardar no envía una solicitud.'],['Solicitud','La versión que decidiste compartir con el equipo para revisión.'],['Contexto compartido','Solo la información autorizada para esa solicitud o encargo.'],['Nota interna','Un mensaje que solo puede consultar el equipo Don Ventas.'],['Devolución','La respuesta que una persona del equipo revisó y aprobó para el cliente.'],['Encargo','Una colaboración con acceso limitado y su propia conversación.'],['Referencia externa','Compartir contexto con un especialista externo requiere autorización específica del cliente.']];
+      U.el('glossBody').innerHTML=terms.map(([title,copy])=>'<div class="gterm"><b>'+title+'</b><p>'+copy+'</p></div>').join('');return;
+    }
     const act = S.session().actor;
     const G = act === 'cliente' ? GLOSS_C : act === 'freemium' ? GLOSS_F : GLOSS_S;
     const VT = act === 'cliente' ? VIEWTERMS_C : act === 'freemium' ? VIEWTERMS_F : VIEWTERMS_S;
@@ -140,12 +161,14 @@ window.DVPortal = (function () {
   const NOTI_F = [{ t: 'Tu diagnóstico está listo', d: 'Revísalo y da el siguiente paso', go: () => go('diagnostico') }, { t: 'Aparta tu lugar', d: 'Arranca con Fundación', go: () => go('contratar') }];
   function renderNoti() {
     const act = S.session().actor;
+    if(window.DVDrafts?.enabled()){U.el('notiBody').innerHTML='<p>Consulta «Mis avisos» dentro de tu bandeja para ver las novedades de solicitudes y encargos.</p>';return;}
     const list = !DVEnv.isDemo() ? [] : act === 'cliente' ? NOTI_C : act === 'freemium' ? NOTI_F : NOTI_S;
     window.__noti = list;
     U.el('notiBody').innerHTML = list.map((n, i) => '<div class="noti" onclick="DVPortal.notiGo(' + i + ')" style="cursor:pointer"><b>' + n.t + '</b><p>' + n.d + '</p></div>').join('');
   }
   function notiGo(i) { U.el('notiPop').classList.remove('pin'); if (window.__noti && window.__noti[i]) window.__noti[i].go(); }
-  function pin(which) { const p = U.el(which === 'noti' ? 'notiPop' : 'glossPop'); which === 'noti' ? renderNoti() : renderGloss(); p.classList.toggle('pin'); }
+  function pin(which) { const p = U.el(which === 'noti' ? 'notiPop' : 'glossPop'); which === 'noti' ? renderNoti() : renderGloss(); const open=!p.classList.contains('pin');closePops();p.classList.toggle('pin',open);p.parentElement.querySelector('button').setAttribute('aria-expanded',String(open)); }
+  function closePops(){U.qsa('.pop').forEach(p=>{p.classList.remove('pin');p.parentElement.querySelector('button')?.setAttribute('aria-expanded','false');});}
 
   /* ── modales ── */
   function modal(kind) {
@@ -181,8 +204,9 @@ window.DVPortal = (function () {
   async function doRound() { const d = (U.el('rDeliv').value || '').trim(), n = (U.el('rNote').value || '').trim(); if (await DVStaff.saveRound(d, n)) closeModal(); }
 
   document.addEventListener('click', e => {
-    if (!(e.target.closest && e.target.closest('.popwrap'))) U.qsa('.pop').forEach(p => p.classList.remove('pin'));
+    if (!(e.target.closest && e.target.closest('.popwrap'))) closePops();
   });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const p=document.querySelector('.pop.pin');if(p){const trigger=p.parentElement.querySelector('button');closePops();trigger.focus();}}});
 
   return { applyCapabilities, boot, go, role, logout, renderGloss, renderNoti, notiGo, pin, modal, closeModal, doComment, doRound };
 })();

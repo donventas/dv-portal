@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "date": "2026-10-26T17:36:12.919Z",
+  "checks": [
+    "Submission consent, immutable exact saved version, chosen files, private deselected notes, retry receipt and session recovery",
+    "Real Auth, server account grants, no direct-table access and one winner for concurrent state changes",
+    "Persistent conversation audiences, replay without duplicates, per-member notices and read state",
+    "Leased analysis, expired lease recovery, failure/retry, source validation, original version, internal-only result and human publication gate",
+    "Assignment acceptance, selected context only, separate channel, no assets or analysis, revocation and exact referral consent",
+    "Rejected/expired invitations, reassignment, current grant revocation and actor revocation",
+    "All pre-existing draft documents and versions preserved byte-for-byte"
+  ],
+  "scope": "loopback synthetic only; no hosted release"
+}

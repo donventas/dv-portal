@@ -113,3 +113,46 @@ producción. Supuestos abiertos: alcance comercial del primer release, personas
 responsables, fechas, proveedor/configuración alojada y política de conservación.
 Decisión futura de Arturo: priorizar alcance H1.2 y autorizar por separado cualquier
 operación alojada. Este backlog no requiere resolver esa decisión para quedar registrado.
+
+## Avance H1.2 aislado — sin cierre operativo
+
+Arturo aprobó comenzar base técnica, permisos y guardado/recuperación. El primer
+incremento se documenta en [H1.2](h12-drafts/REPORT.md): borrador por cuenta,
+versiones, reintentos, separación de identidades e historial paginado en
+laboratorio. Los 39 IDs conservan su estado PENDIENTE para operación alojada.
+La hidratación general, envío, consentimiento de solicitud y revisión posterior
+no se cierran por este ensayo. No hay publicación ni migración remota.
+
+## Avance aislado · bienvenida opcional y kit · 2026-10-26
+
+PROD-01 permite omitir toda la bienvenida, completar bloques y recuperar respuestas
+guardadas desde un panel. PROD-16 tiene un recorte aislado de archivos privados
+para el kit opcional, con límites e historial inmutable. Véase h12-drafts/CONTRACT.md.
+Los 39 IDs continúan PENDIENTES para operación alojada; no se cierra ningún flujo
+ni se habilitan solicitudes, revisión, correos, merge o despliegue por este avance.
+
+## Avance aislado · solicitudes, revisión y colaboración · 2026-10-26
+
+Por mandato posterior de Arturo se trabajaron los cinco puntos de la secuencia.
+PROD-01/04/05/06 tienen ahora un [corte local verificable](h12-workflow/REPORT.md):
+envío confirmado e inmutable, bandeja por cuenta, mensajes con audiencias separadas,
+devolución aprobada, notificaciones por miembro y captura de correo en Mailpit,
+MCP con análisis simulado y asignaciones con contexto mínimo/consentimiento.
+No se cierra ninguno de los **39 IDs** para operación alojada. Modelo real,
+correo real, identidad del trabajador e integración Git siguen sujetos al
+[gate de activación](h12-workflow/ACTIVATION.md). El shell local de equipo y
+colaborador y su revisión independiente se completaron después de este corte;
+esa evidencia no habilita su operación alojada.
+No hubo cambios a producción, merge ni despliegue.
+
+## Diseño de servicio humano · 2026-10-26
+
+La dirección validada se tradujo al [PRD de servicio](h12-service-design/PRD.md)
+y su [arquitectura candidata](h12-service-design/ARCHITECTURE.md). Principio rector:
+no sobrecomplicar. El cliente expresa una necesidad, revisa el alcance y recibe
+la entrega; Don Ventas coordina capacidad, colaboración y calidad.
+
+El ensayo `?experience=human` solo usa datos ficticios en sesión. No añade
+comandos operativos, pagos ni personas reales. La tabla del PRD vincula el trabajo
+con PROD-01/04/05/06/09/10/13/16 y UX-01/BRAND-01, sin crear ni cerrar IDs.
+Los **39 flujos** permanecen pendientes para operación alojada.

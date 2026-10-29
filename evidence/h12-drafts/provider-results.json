@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-26T10:09:41.923Z",
+  "scope": "Isolated real GoTrue/PostgREST, sanitized restored schema, synthetic accounts only",
+  "checks": [
+    "Owner-only RPC, tenant-derived identity, no direct table access, idempotent receipt and changed-key conflict",
+    "Exact partial text and deselected notes survive a new real Auth session; invalid payloads fail atomically",
+    "Concurrent same-version writes have exactly one winner",
+    "History keyset pagination remains bounded and complete while a newer version is written",
+    "Revocation blocks reads and replay; restore requires a new Auth session",
+    "Expired/tampered JWT and signed-out real sessions are rejected",
+    "Optional kit persists exact text and immutable private attachment; replay, tenant/role/type/signature/size and revoked-session checks pass",
+    "Asset count quota serialized under concurrent uploads; 16 MB quota enforced; empty welcome saves without required answers"
+  ],
+  "productionConnections": 0,
+  "externalEmails": 0
+}

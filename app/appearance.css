@@ -21,6 +21,15 @@ body>#appearancePicker{position:fixed;top:calc(var(--env-banner-h) + 12px);right
 #portalAppearance{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--dv-control-border);border-radius:5px;background:var(--dv-control);color:var(--dv-text);cursor:pointer;transition:none}
 #portalAppearance:disabled{color:var(--dv-disabled-text);background:var(--dv-disabled);cursor:default}
 #portalAppearance svg{width:22px;height:22px}
+/* Header actions consume exact B05 symbols, aligned with the appearance control. */
+.top .iconbtn{width:44px;height:44px;flex:0 0 44px;padding:0;border-radius:5px;background:var(--dv-control);color:var(--dv-text)}
+.top .iconbtn .dv-icon{width:22px;height:22px;flex-basis:22px}
+.top .iconbtn:is(:focus-visible,:active) .icon-rest{display:none}
+.top .iconbtn:is(:focus-visible,:active) .icon-active{display:initial}
+@media(hover:hover) and (pointer:fine){
+ .top .iconbtn:hover .icon-rest{display:none}
+ .top .iconbtn:hover .icon-active{display:initial}
+}
 #portalAppearance .appearance-sun{display:var(--dv-show-light)}
 #portalAppearance .appearance-moon{display:var(--dv-show-dark)}
 #appearanceMenu{position:fixed;width:232px;max-width:calc(100vw - 28px);padding:6px;background:var(--dv-surface);color:var(--dv-text);border:1px solid var(--dv-control-border);border-radius:5px;max-height:calc(100dvh - 16px);overflow:auto;z-index:10002}
@@ -207,3 +216,38 @@ input[type=checkbox],input[type=radio]{accent-color:var(--dv-action)}
  :is(button,input,select,textarea,.hy-option,.nav.on){border:1px solid ButtonText}
  :is(button,a,input,select,textarea,summary):focus-visible{outline-color:Highlight}
 }
+
+/* Shared control help inherits the approved surface and state roles. */
+.dv-control-help{position:fixed;z-index:20000;width:max-content;max-width:min(300px,calc(100vw - 16px));box-sizing:border-box;padding:12px 16px;border:1px solid var(--dv-control-border);border-left:3px solid var(--dv-emphasis);border-radius:4px;background:var(--dv-raised);color:var(--dv-text);font:500 14px/1.5 'Schibsted Grotesk',sans-serif;box-shadow:0 5px 18px #0002;overflow-wrap:anywhere}
+.dv-control-help[hidden]{display:none}
+.icon-caption{display:none}
+.popwrap:hover .pop:not(.pin),.pop:not(.pin):hover{opacity:0;pointer-events:none;visibility:hidden}
+.pop.pin{visibility:visible}
+.pop:not(.pin){visibility:hidden}
+.hy-demo.draft-welcome .draft-journey button{grid-template-rows:auto auto 1fr auto}
+.nav-description{padding:0 16px;font-size:13px;line-height:1.6;color:var(--dv-muted)}
+.draft-step-hint{font:400 13px/1.55 'Schibsted Grotesk',sans-serif;color:var(--dv-muted);display:block;text-transform:none;letter-spacing:0}
+.draft-journey button:is(:hover,:focus-visible,:active) .draft-step-hint{color:inherit}
+@media(max-width:600px){
+ #topBar .iconbtn,#topBar #portalAppearance{display:flex;flex-direction:column;gap:3px;min-width:44px;width:44px;height:58px;padding:5px 3px}
+ #topBar .icon-caption{display:block;font:10px/1.2 'Space Mono',monospace;letter-spacing:0;text-transform:none;color:inherit}
+ #topBar .av,#topBar #rolePill{display:none}
+}
+
+/* Compact mobile header: identity first, then one aligned utility row. */
+@media(max-width:600px){
+ #topBar{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:'logo logo logo theme' 'menu tools tools tools' 'context context context context';gap:8px;padding:10px 14px;align-items:center}
+ #topBar .mobile-nav-toggle{grid-area:menu;justify-self:stretch;width:100%;min-width:44px;min-height:52px;margin:0}
+ #topBar .brand-wordmark{grid-area:logo;justify-self:start;width:90px;margin:0}
+ #topBar .ctx{grid-area:context;order:initial;display:flex;flex-wrap:wrap;width:auto;min-width:0;margin:0;padding:0;gap:5px;line-height:1.35;overflow-wrap:anywhere}
+ #topBar .ctx b{white-space:normal;overflow:visible;text-overflow:clip}
+ #topBar .who{grid-area:tools;order:initial;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:auto;min-width:0;margin:0;align-items:stretch}
+ #topBar .who .popwrap{position:static;display:block;min-width:0}
+ #topBar .who .iconbtn,#topBar #portalAppearance{width:100%;height:52px;min-width:44px;margin:0}
+ #topBar #appearancePicker{grid-area:theme;justify-self:end;align-self:center;width:52px;margin:0}
+ #topBar .roleseg{grid-column:1/-1;display:flex;width:100%}
+ #topBar .roleseg button{flex:1}
+ #topBar .pop{position:absolute;top:calc(100% + 6px);right:14px;left:auto;width:min(330px,calc(100vw - 28px));max-height:55dvh}
+ #app.nav-open #side{max-height:min(40dvh,22rem);overscroll-behavior:contain}
+}
+@media(hover:none){.dv-control-help{pointer-events:none}}

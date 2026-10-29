@@ -15,7 +15,7 @@ window.DVStore = (function () {
   };
   let generation = 0;
   function cacheKey(key) { return key === 'session' ? key : 'actor:' + JSON.stringify([session && session.userId, session && session.accountId, session && session.email]) + ':' + key; }
-  function clearCaches() { _chats = null; _iters = null; _skillMeta = null; _backlog = null; _period = null; _work = null; ['DVClient','DVStaff','DVFree','DVAuth','DVHybridDemo','DVAdminInvitations'].forEach(name => { if (window[name] && window[name].resetTransient) window[name].resetTransient(); }); }
+  function clearCaches() { _chats = null; _iters = null; _skillMeta = null; _backlog = null; _period = null; _work = null; ['DVClient','DVStaff','DVFree','DVAuth','DVHybridDemo','DVAdminInvitations','DVDrafts'].forEach(name => { if (window[name] && window[name].resetTransient) window[name].resetTransient(); }); }
   function purgeCaches() {
     if (!DVEnv.storage || !window.localStorage) return;
     const prefix = DVEnv.storage.prefix, keys = [];

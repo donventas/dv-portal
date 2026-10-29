@@ -2,11 +2,14 @@
 // Explicitly authorized local rehearsal. Never connects to a hosted database.
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto'),cp=require('node:child_process'),assert=require('node:assert/strict');
 assert.ok(process.argv.includes('--authorized-local-identity'),'Explicit isolated Auth authorization required');
-const repo=path.resolve(__dirname,'../..'),dir=path.join(os.tmpdir(),'dv-portal-identity-20261025');
+const h12=process.argv.includes('--h12');
+const labId=h12?'h12-drafts':'identity-20261025';
+const repo=path.resolve(__dirname,'../..'),dir=path.join(os.tmpdir(),'dv-portal-'+labId);
 const backup=path.join(process.env.LOCALAPPDATA,'DonVentas/Backups/portal-20261025-132427');
 const podman=path.join(process.env.LOCALAPPDATA,'Programs/Podman/podman.exe');
-const network='dv-portal-identity-20261025',db='dv-identity-db',auth='dv-identity-auth',rest='dv-identity-rest',mail='dv-identity-mail';
-const label='dv.rehearsal=identity-20261025';
+const network='dv-portal-'+labId,db=h12?'dv-h12-db':'dv-identity-db',auth=h12?'dv-h12-auth':'dv-identity-auth',rest=h12?'dv-h12-rest':'dv-identity-rest',mail=h12?'dv-h12-mail':'dv-identity-mail';
+const label='dv.rehearsal='+labId;
+const ports=h12?{auth:55461,rest:55462,mail:55463,ui:55464}:{auth:55451,rest:55452,mail:55453,ui:55454};
 function pod(args,input){try{return cp.execFileSync(podman,['--connection','dv-portal-h1',...args],{input,encoding:'utf8',windowsHide:true,stdio:['pipe','pipe','pipe']}).trim();}catch(e){throw new Error('LOCAL_PODMAN_FAILED: '+args[0]+' '+String(e.stderr||'').slice(0,350));}}
 function sql(q,user='supabase_admin'){return pod(['exec','-i',db,'psql','-X','-qAt','-h','127.0.0.1','-U',user,'-d','portal_h10_disposable','-v','ON_ERROR_STOP=1'],q);}
 function copy(file,target){pod(['cp',file,db+':'+target]);}
@@ -19,11 +22,11 @@ async function ready(url){for(let n=0;n<50;n++){try{if((await fetch(url,{signal:
  if(process.argv.includes('--reset-owned-lab')){
   for(const name of [auth,rest,mail,db]){
    let state;try{state=JSON.parse(pod(['inspect',name]))[0];}catch{continue;}
-   assert.equal(state.Config.Labels?.['dv.rehearsal'],'identity-20261025','Refuse removal of unowned container');
+   assert.equal(state.Config.Labels?.['dv.rehearsal'],labId,'Refuse removal of unowned container');
    pod(['rm','-f',name]);
   }
   let net;try{net=JSON.parse(pod(['network','inspect',network]))[0];}catch{}
-  if(net){assert.equal(net.labels?.['dv.rehearsal'],'identity-20261025');pod(['network','rm',network]);}
+  if(net){assert.equal(net.labels?.['dv.rehearsal'],labId);pod(['network','rm',network]);}
   if(fs.existsSync(dir))fs.renameSync(dir,dir+'-previous-'+Date.now());
  }
  assert.ok(!fs.existsSync(dir),'Fresh private lab directory required');
@@ -66,14 +69,15 @@ async function ready(url){for(let n=0;n<50;n++){try{if((await fetch(url,{signal:
  pod(['exec',db,'rm','/tmp/original.dump']);
  apply('supabase/proposals/h10-command-contract.sql');
  apply('supabase/proposals/h10-identity-contract.sql');
+ if(h12)apply('supabase/proposals/h12-drafts.sql');
  console.log('PASS private restored rows removed; H10 and identity candidates applied as NOSUPERUSER');
  const dbCredential=crypto.randomBytes(24).toString('hex'),jwtKey=crypto.randomBytes(32).toString('hex');
  sql(`ALTER ROLE supabase_auth_admin PASSWORD '${dbCredential}'; ALTER ROLE authenticator PASSWORD '${dbCredential}';`);
- pod(['run','-d','--name',mail,'--label',label,'--network',network,'-p','127.0.0.1:55453:8025','docker.io/axllent/mailpit:v1.32.0']);
+ pod(['run','-d','--name',mail,'--label',label,'--network',network,'-p','127.0.0.1:'+ports.mail+':8025','docker.io/axllent/mailpit:v1.32.0']);
  const authEnv=envFile('auth.env',{
   GOTRUE_DB_DRIVER:'postgres',GOTRUE_DB_DATABASE_URL:'postgres://supabase_auth_admin:'+dbCredential+'@'+ip(db)+':5432/portal_h10_disposable',
-  GOTRUE_API_HOST:'0.0.0.0',GOTRUE_API_PORT:9999,API_EXTERNAL_URL:'http://127.0.0.1:55451',
-  GOTRUE_SITE_URL:'http://127.0.0.1:55454/',GOTRUE_URI_ALLOW_LIST:'http://127.0.0.1:55454/',
+  GOTRUE_API_HOST:'0.0.0.0',GOTRUE_API_PORT:9999,API_EXTERNAL_URL:'http://127.0.0.1:'+ports.auth,
+  GOTRUE_SITE_URL:'http://127.0.0.1:'+ports.ui+'/',GOTRUE_URI_ALLOW_LIST:'http://127.0.0.1:'+ports.ui+'/',
   GOTRUE_JWT_SECRET:jwtKey,GOTRUE_JWT_EXP:3600,GOTRUE_JWT_AUD:'authenticated',GOTRUE_JWT_DEFAULT_GROUP_NAME:'authenticated',GOTRUE_JWT_ADMIN_ROLES:'service_role',
   GOTRUE_DISABLE_SIGNUP:'false',GOTRUE_EXTERNAL_EMAIL_ENABLED:'true',GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED:'false',GOTRUE_EXTERNAL_PHONE_ENABLED:'false',
   GOTRUE_MAILER_AUTOCONFIRM:'false',GOTRUE_MAILER_OTP_EXP:900,GOTRUE_SMTP_HOST:ip(mail),GOTRUE_SMTP_PORT:1025,
@@ -83,9 +87,9 @@ async function ready(url){for(let n=0;n<50;n++){try{if((await fetch(url,{signal:
   GOTRUE_MAILER_URLPATHS_CONFIRMATION:'/verify',GOTRUE_MAILER_URLPATHS_INVITE:'/verify',GOTRUE_MAILER_URLPATHS_RECOVERY:'/verify'
  });
  const restEnv=envFile('rest.env',{PGRST_DB_URI:'postgres://authenticator:'+dbCredential+'@'+ip(db)+':5432/portal_h10_disposable',PGRST_DB_SCHEMAS:'public',PGRST_DB_ANON_ROLE:'anon',PGRST_JWT_SECRET:jwtKey});
- pod(['run','-d','--name',auth,'--label',label,'--network',network,'-p','127.0.0.1:55451:9999','--env-file',authEnv,'docker.io/supabase/gotrue:v2.197.0']);
- pod(['run','-d','--name',rest,'--label',label,'--network',network,'-p','127.0.0.1:55452:3000','--env-file',restEnv,'docker.io/postgrest/postgrest:v14.18']);
+ pod(['run','-d','--name',auth,'--label',label,'--network',network,'-p','127.0.0.1:'+ports.auth+':9999','--env-file',authEnv,'docker.io/supabase/gotrue:v2.197.0']);
+ pod(['run','-d','--name',rest,'--label',label,'--network',network,'-p','127.0.0.1:'+ports.rest+':3000','--env-file',restEnv,'docker.io/postgrest/postgrest:v14.18']);
  fs.writeFileSync(path.join(dir,'private.json'),JSON.stringify({jwtKey,network,containers:[db,auth,rest,mail]}));
- await ready('http://127.0.0.1:55451/health');await ready('http://127.0.0.1:55452/');await ready('http://127.0.0.1:55453/api/v1/messages');
+ await ready('http://127.0.0.1:'+ports.auth+'/health');await ready('http://127.0.0.1:'+ports.rest+'/');await ready('http://127.0.0.1:'+ports.mail+'/api/v1/messages');
  console.log('PASS isolated Auth/PostgREST/SMTP sink ready; fresh local keys; loopback APIs only');
 })().catch(e=>{console.error(String(e.message).slice(0,500));process.exitCode=1;});

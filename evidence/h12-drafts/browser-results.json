@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-26T10:22:26.786Z",
+  "scope": "Actual Portal optional welcome and real local Auth/PostgREST",
+  "checks": [
+    "One block at a time; light/dark/system at 320/390/1280 preserve unsaved text, selection, DOM and scroll; keyboard/reduced-motion pass",
+    "Omit does not save or block; panel preserves local input, save-and-exit restores exact partial responses and deselected notes in another tab",
+    "Optional identity and private files survive reload; ambiguous upload retries exactly once; manual downloads and logo detach persists without changing saved revisions",
+    "Concurrent tabs report real database conflict and retain local input; explicit reload adopts server version",
+    "Skip during save remains on panel; lost response retries one unchanged intention and creates exactly one version; bounded history preserved",
+    "Fresh touch session restores saved answers; Auth transport failure preserves input, authoritative rejection/logout clears DOM; another account can skip an empty welcome without saving"
+  ],
+  "externalRequests": 0,
+  "pageErrors": []
+}

@@ -85,7 +85,7 @@
       deploymentClass: binding.originClass,
       configIssuedAt: config.issuedAt,
       configExpiresAt: config.expiresAt,
-      features: Object.freeze({ syntheticSeed: config.declaredMode === 'DEMO' }),
+      features: Object.freeze({ syntheticSeed: config.declaredMode === 'DEMO', ...(config.declaredMode === 'SANDBOX' && binding.originClass === 'local' && config.h12Drafts === 'isolated-v1' ? { h12Drafts: 'isolated-v1' } : {}) }),
       writePolicy: config.declaredMode === 'DEMO' ? 'local-only' : 'rls',
       releaseBuildCommit: config.buildCommit,
       allowlistVersion: config.allowlistVersion
